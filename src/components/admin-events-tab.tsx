@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -32,6 +33,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
@@ -56,9 +58,18 @@ export default function AdminEventsTab() {
         title: "",
         location: "",
         description: "",
-        date: new Date(),
     }
   });
+
+  useEffect(() => {
+    form.reset({
+      title: "",
+      location: "",
+      description: "",
+      date: new Date(),
+    });
+  }, [form]);
+
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addEvent({
