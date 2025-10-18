@@ -1,56 +1,51 @@
-"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { initialClubs, type Club } from '../lib/data';
+'use client';
 
-const CLUBS_STORAGE_KEY = 'oncampus-clubs';
+import { useMemo } from 'react';
+import { collection, doc, deleteDoc, addDoc } from 'firebase/firestore';
 
-export const useClubs = () => {
-    const [clubs, setClubs] = useState<Club[]>(initialClubs);
-    const [isInitialized, setIsInitialized] = useState(false);
+import { useCollection, useFirestore } from '@/firebase';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
-    useEffect(() => {
-        try {
-            const storedClubs = localStorage.getItem(CLUBS_STORAGE_KEY);
-            if (storedClubs) {
-                setClubs(JSON.parse(storedClubs));
-            } else {
-                localStorage.setItem(CLUBS_STORAGE_KEY, JSON.stringify(initialClubs));
-                setClubs(initialClubs);
-            }
-        } catch (error) {
-            console.error("Failed to access or parse clubs from localStorage", error);
-            setClubs(initialClubs);
-        }
-        setIsInitialized(true);
-    }, []);
+export interface Club {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  imageId: string;
+}
 
-    const addClub = useCallback((newClubData: Omit<Club, 'id' | 'imageId'> & { imageId?: string }) => {
-        if (!isInitialized) return;
+export function useClubs() {
+  const firestore = useFirestore();
 
-        setClubs(prevClubs => {
-            const newClub: Club = {
-                ...newClubData,
-                id: new Date().toISOString(),
-                imageId: newClubData.imageId || `club-${Math.floor(Math.random() * 5) + 1}`,
-            };
-            const updatedClubs = [...prevClubs, newClub];
-            localStorage.setItem(CLUBS_STORAGE_KEY, JSON.stringify(updatedClubs));
-            return updatedClubs;
-        });
-    }, [isInitialized]);
+  const clubsCollection = useMemo(
+    () => (firestore ? collection(firestore, 'clubs') : null),
+    [firestore]
+  );
 
-    const removeClub = useCallback((clubId: string) => {
-        if (!isInitialized) return;
+  const {
+    data: clubs,
+    isLoading: isClubsLoading,
+    error: clubsError,
+  } = useCollection(clubsCollection);
 
-        setClubs(prevClubs => {
-            const updatedClubs = prevClubs.filter(c => c.id !== clubId);
-            localStorage.setItem(CLUBS_STORAGE_KEY, JSON.stringify(updatedClubs));
-            return updatedClubs;
-        });
-    }, [isInitialized]);
+  const addClub = async (club: Omit<Club, 'id'>) => {
+    if (!clubsCollection) return;
+    addDocumentNonBlocking(clubsCollection, club);
+  };
 
-    const safeClubs = isInitialized ? clubs : [];
+  const removeClub = async (clubId: string) => {
+    if (!firestore) return;
+    const clubDoc = doc(firestore, 'clubs', clubId);
+    deleteDocumentNonBlocking(clubDoc);
+  };
 
-    return { clubs: safeClubs, addClub, removeClub, isInitialized };
-};
+  return {
+    clubs: clubs || [],
+    isClubsLoading,
+    clubsError,
+    addClub,
+    removeClub,
+    isInitialized: !!firestore,
+  };
+}

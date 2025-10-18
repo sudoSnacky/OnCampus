@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -62,7 +63,7 @@ export default function AdminBenefitsTab() {
       imageUrl: "",
       redirectUrl: "",
     });
-  }, [form]);
+  }, [form, benefits]);
 
 
   const onSubmit: SubmitHandler<FormData> = (data) => {

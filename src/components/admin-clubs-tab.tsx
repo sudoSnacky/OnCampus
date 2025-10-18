@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -56,7 +57,7 @@ export default function AdminClubsTab() {
       description: "",
       imageUrl: "",
     });
-  }, [form]);
+  }, [form, clubs]);
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addClub({

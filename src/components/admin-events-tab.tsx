@@ -34,6 +34,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { useEffect } from "react";
+import { Timestamp } from "firebase/firestore";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
@@ -71,13 +72,12 @@ export default function AdminEventsTab() {
       date: new Date(),
       imageUrl: "",
     });
-  }, [form]);
+  }, [form, events]);
 
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addEvent({
       ...data,
-      date: data.date.toISOString(),
       imageId: data.imageUrl || '',
     });
     toast({
@@ -222,7 +222,7 @@ export default function AdminEventsTab() {
               >
                 <div>
                   <p className="font-semibold">{event.title}</p>
-                   <p className="text-sm text-muted-foreground">{format(new Date(event.date), "PPP")}</p>
+                   <p className="text-sm text-muted-foreground">{format(event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date), "PPP")}</p>
                 </div>
                 <Button
                   variant="ghost"

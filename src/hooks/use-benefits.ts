@@ -1,57 +1,54 @@
-"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { initialBenefits, type Benefit } from '../lib/data';
+'use client';
 
-const BENEFITS_STORAGE_KEY = 'oncampus-benefits';
+import { useMemo } from 'react';
+import { collection, doc, addDoc, deleteDoc } from 'firebase/firestore';
 
-export const useBenefits = () => {
-    const [benefits, setBenefits] = useState<Benefit[]>(initialBenefits);
-    const [isInitialized, setIsInitialized] = useState(false);
+import { useCollection, useFirestore } from '@/firebase';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
-    useEffect(() => {
-        try {
-            const storedBenefits = localStorage.getItem(BENEFITS_STORAGE_KEY);
-            if (storedBenefits) {
-                setBenefits(JSON.parse(storedBenefits));
-            } else {
-                localStorage.setItem(BENEFITS_STORAGE_KEY, JSON.stringify(initialBenefits));
-                setBenefits(initialBenefits);
-            }
-        } catch (error) {
-            console.error("Failed to access or parse benefits from localStorage", error);
-            setBenefits(initialBenefits);
-        }
-        setIsInitialized(true);
-    }, []);
 
-    const addBenefit = useCallback((newBenefitData: Omit<Benefit, 'id' | 'imageId'> & { imageId?: string }) => {
-        if (!isInitialized) return;
+export interface Benefit {
+  id: string;
+  title: string;
+  provider: string;
+  description: string;
+  category: string;
+  imageId: string;
+  redirectUrl?: string;
+}
 
-        setBenefits(prevBenefits => {
-            const newBenefit: Benefit = {
-                ...newBenefitData,
-                id: new Date().toISOString(),
-                imageId: newBenefitData.imageId || `benefit-${Math.floor(Math.random() * 5) + 1}`,
-                redirectUrl: newBenefitData.redirectUrl,
-            };
-            const updatedBenefits = [...prevBenefits, newBenefit];
-            localStorage.setItem(BENEFITS_STORAGE_KEY, JSON.stringify(updatedBenefits));
-            return updatedBenefits;
-        });
-    }, [isInitialized]);
+export function useBenefits() {
+  const firestore = useFirestore();
 
-    const removeBenefit = useCallback((benefitId: string) => {
-        if (!isInitialized) return;
+  const benefitsCollection = useMemo(
+    () => (firestore ? collection(firestore, 'benefits') : null),
+    [firestore]
+  );
 
-        setBenefits(prevBenefits => {
-            const updatedBenefits = prevBenefits.filter(b => b.id !== benefitId);
-            localStorage.setItem(BENEFITS_STORAGE_KEY, JSON.stringify(updatedBenefits));
-            return updatedBenefits;
-        });
-    }, [isInitialized]);
+  const {
+    data: benefits,
+    isLoading: isBenefitsLoading,
+    error: benefitsError,
+  } = useCollection(benefitsCollection);
 
-    const safeBenefits = isInitialized ? benefits : [];
+  const addBenefit = async (benefit: Omit<Benefit, 'id'>) => {
+    if (!benefitsCollection) return;
+    addDocumentNonBlocking(benefitsCollection, benefit);
+  };
 
-    return { benefits: safeBenefits, addBenefit, removeBenefit, isInitialized };
-};
+  const removeBenefit = async (benefitId: string) => {
+    if (!firestore) return;
+    const benefitDoc = doc(firestore, 'benefits', benefitId);
+    deleteDocumentNonBlocking(benefitDoc);
+  };
+
+  return {
+    benefits: benefits || [],
+    isBenefitsLoading,
+    benefitsError,
+    addBenefit,
+    removeBenefit,
+    isInitialized: !!firestore,
+  };
+}

@@ -7,12 +7,17 @@ import { useEvents } from '../../../hooks/use-events';
 import { PlaceHolderImages } from '../../../lib/placeholder-images';
 import { format } from 'date-fns';
 import { Calendar, MapPin } from 'lucide-react';
+import { Timestamp } from 'firebase/firestore';
 
 export default function EventsPage() {
   const { events } = useEvents();
 
   // Sort events by date, future events first
-  const sortedEvents = [...events].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const sortedEvents = [...events].sort((a, b) => {
+    const dateA = a.date instanceof Timestamp ? a.date.toDate() : new Date(a.date);
+    const dateB = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
+    return dateA.getTime() - dateB.getTime();
+  });
 
   return (
     <div className="container mx-auto">
@@ -31,7 +36,7 @@ export default function EventsPage() {
           const image = !isUrl ? PlaceHolderImages.find(p => p.id === event.imageId) : null;
           const imageUrl = isUrl ? event.imageId : image?.imageUrl;
           const imageHint = image?.imageHint;
-          const eventDate = new Date(event.date);
+          const eventDate = event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date);
 
           return (
             <Card key={event.id} className="flex flex-col md:flex-row overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">

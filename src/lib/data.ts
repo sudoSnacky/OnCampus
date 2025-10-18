@@ -1,4 +1,6 @@
 
+import { Timestamp } from 'firebase/firestore';
+
 export type Benefit = {
   id: string;
   title: string;
@@ -20,7 +22,7 @@ export type Club = {
 export type CampusEvent = {
   id: string;
   title: string;
-  date: string;
+  date: string | Timestamp;
   location: string;
   description: string;
   imageId: string;
