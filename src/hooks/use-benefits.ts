@@ -33,6 +33,7 @@ export const useBenefits = () => {
                 ...newBenefitData,
                 id: new Date().toISOString(),
                 imageId: newBenefitData.imageId || `benefit-${Math.floor(Math.random() * 5) + 1}`,
+                redirectUrl: newBenefitData.redirectUrl,
             };
             const updatedBenefits = [...prevBenefits, newBenefit];
             localStorage.setItem(BENEFITS_STORAGE_KEY, JSON.stringify(updatedBenefits));

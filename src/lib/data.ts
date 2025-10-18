@@ -5,6 +5,7 @@ export type Benefit = {
   description: string;
   category: string;
   imageId: string;
+  redirectUrl: string;
 };
 
 export type Club = {
@@ -32,6 +33,7 @@ export const initialBenefits: Benefit[] = [
     description: "Get up to 50% off on movie tickets twice a month. Verified for all major cities in India.",
     category: "Entertainment",
     imageId: "benefit-1",
+    redirectUrl: "https://in.bookmyshow.com/offers/student-discount/STUDENT",
   },
   {
     id: "benefit-2",
@@ -40,6 +42,7 @@ export const initialBenefits: Benefit[] = [
     description: "Enjoy 6 months of Amazon Prime for free, then 50% off. Includes Prime Video, Music, and free delivery.",
     category: "Shopping",
     imageId: "benefit-2",
+    redirectUrl: "https://www.amazon.in/prime",
   },
   {
     id: "benefit-3",
@@ -48,6 +51,7 @@ export const initialBenefits: Benefit[] = [
     description: "Access all JetBrains professional desktop IDEs like IntelliJ IDEA Ultimate, PyCharm, and more for free.",
     category: "Software",
     imageId: "benefit-3",
+    redirectUrl: "https://www.jetbrains.com/community/education/#students",
   },
   {
     id: "benefit-4",
@@ -56,6 +60,7 @@ export const initialBenefits: Benefit[] = [
     description: "Get free access to the best developer tools in one place, including cloud hosting, domains, and more.",
     category: "Software",
     imageId: "benefit-4",
+    redirectUrl: "https://education.github.com/pack",
   },
   {
     id: "benefit-5",
@@ -64,6 +69,7 @@ export const initialBenefits: Benefit[] = [
     description: "Free access to a vast repository of e-books, journals, and educational content for all students in India.",
     category: "Education",
     imageId: "benefit-5",
+    redirectUrl: "https://ndl.iitkgp.ac.in/",
   },
 ];
 

@@ -24,12 +24,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title is required."),
   provider: z.string().min(2, "Provider is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  redirectUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -45,11 +48,29 @@ export default function AdminBenefitsTab() {
       provider: "",
       category: "",
       description: "",
+      imageUrl: "",
+      redirectUrl: "",
     },
   });
 
+   useEffect(() => {
+    form.reset({
+      title: "",
+      provider: "",
+      category: "",
+      description: "",
+      imageUrl: "",
+      redirectUrl: "",
+    });
+  }, [form]);
+
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    addBenefit(data);
+    addBenefit({
+      ...data,
+      imageId: data.imageUrl || '',
+      redirectUrl: data.redirectUrl || '',
+    });
     toast({
       title: "Benefit Added!",
       description: `"${data.title}" has been added.`,
@@ -66,7 +87,7 @@ export default function AdminBenefitsTab() {
             Add New Benefit
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new student benefit.
+            Fill in the details to add a new student benefit. You can use a site like ImgBB to upload images and get a URL.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -125,6 +146,32 @@ export default function AdminBenefitsTab() {
                         placeholder="Describe the benefit..."
                         {...field}
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="redirectUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Redirect URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/offer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

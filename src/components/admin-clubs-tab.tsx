@@ -24,11 +24,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
   name: z.string().min(3, "Club name is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -43,11 +45,24 @@ export default function AdminClubsTab() {
       name: "",
       category: "",
       description: "",
+      imageUrl: "",
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      name: "",
+      category: "",
+      description: "",
+      imageUrl: "",
+    });
+  }, [form]);
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    addClub(data);
+    addClub({
+      ...data,
+      imageId: data.imageUrl || '',
+    });
     toast({
       title: "Club Added!",
       description: `"${data.name}" has been added.`,
@@ -64,7 +79,7 @@ export default function AdminClubsTab() {
             Add New Club
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new student club.
+            Fill in the details to add a new student club. You can use a site like ImgBB to upload images and get a URL.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -110,6 +125,19 @@ export default function AdminClubsTab() {
                         placeholder="Describe the club..."
                         {...field}
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

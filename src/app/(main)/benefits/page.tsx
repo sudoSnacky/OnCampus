@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useBenefits } from '@/hooks/use-benefits';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function BenefitsPage() {
   const { benefits } = useBenefits();
@@ -22,17 +25,20 @@ export default function BenefitsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {benefits.map((benefit) => {
-          const image = PlaceHolderImages.find(p => p.id === benefit.imageId);
+          const isUrl = benefit.imageId.startsWith('http');
+          const image = !isUrl ? PlaceHolderImages.find(p => p.id === benefit.imageId) : null;
+          const imageUrl = isUrl ? benefit.imageId : image?.imageUrl;
+          const imageHint = image?.imageHint;
           return (
             <Card key={benefit.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
               <div className="relative h-48 w-full">
-                {image && (
+                {imageUrl && (
                    <Image
-                      src={image.imageUrl}
+                      src={imageUrl}
                       alt={benefit.title}
                       fill
                       style={{ objectFit: 'cover' }}
-                      data-ai-hint={image.imageHint}
+                      data-ai-hint={imageHint}
                    />
                 )}
               </div>
@@ -45,8 +51,15 @@ export default function BenefitsPage() {
                   <Badge variant="secondary" className="bg-accent/20 text-accent-foreground border-accent/30">{benefit.category}</Badge>
                 </div>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm text-foreground/80">{benefit.description}</p>
+              <CardContent className="flex-grow flex flex-col">
+                <p className="text-sm text-foreground/80 flex-grow">{benefit.description}</p>
+                 {benefit.redirectUrl && (
+                  <Button asChild className="mt-4 w-full">
+                    <Link href={benefit.redirectUrl} target="_blank" rel="noopener noreferrer">
+                      Go to Benefit <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                )}
               </CardContent>
             </Card>
           );
