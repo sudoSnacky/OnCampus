@@ -46,7 +46,7 @@ export default function MainLayout({
               </Button>
             </div>
           </PageHeader>
-          <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+          <main className="p-4 sm:p-6 lg:p-8 bg-gray-100 dark:bg-gray-900 flex-grow">{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>

@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 border-b border-border/50">
+        <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-2">
             <Icons.logo className="h-8 w-8 text-primary" />
             <span className="font-headline text-xl font-bold tracking-tight">
@@ -53,7 +53,7 @@ export default function Home() {
       </header>
 
       <main className="flex-grow">
-        <section className="relative py-20 md:py-32 bg-card/50">
+        <section className="relative py-20 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
@@ -89,7 +89,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="features" className="py-20 md:py-28">
+        <section id="features" className="py-20 md:py-28 bg-gray-100 dark:bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">
@@ -101,7 +101,7 @@ export default function Home() {
             </div>
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
               {features.map((feature) => (
-                <Card key={feature.title} className="text-center flex flex-col items-center p-8 bg-card/80 hover:bg-card transition-all duration-300 transform hover:-translate-y-2 shadow-lg hover:shadow-2xl rounded-2xl">
+                <Card key={feature.title} className="text-center flex flex-col items-center p-8 bg-card hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 transform hover:-translate-y-2 shadow-lg hover:shadow-2xl rounded-2xl">
                     <div className="bg-primary/10 p-4 rounded-full">
                       {feature.icon}
                     </div>
@@ -118,7 +118,7 @@ export default function Home() {
           </div>
         </section>
         
-        <section id="recommendations" className="py-20 md:py-28 bg-card/50">
+        <section id="recommendations" className="py-20 md:py-28">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
               <h2 className="font-headline text-3xl md:text-4xl font-bold flex items-center justify-center gap-3">
@@ -130,14 +130,18 @@ export default function Home() {
               </p>
             </div>
             <div className="mt-12 max-w-4xl mx-auto">
-              <RecommendationEngine />
+              <Card className="bg-white dark:bg-gray-900 shadow-xl border-border/80 rounded-2xl">
+                <CardContent className="p-8">
+                  <RecommendationEngine />
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
       </main>
 
-      <footer className="bg-card">
+      <footer className="bg-gray-100 dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2">

@@ -112,8 +112,7 @@ export default function RecommendationEngine() {
   };
 
   return (
-    <Card className="bg-card/80 shadow-xl border-border/80 rounded-2xl">
-      <CardContent className="p-8">
+    <>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -154,10 +153,10 @@ export default function RecommendationEngine() {
 
         {recommendations && (
           <div className="mt-8">
-            <Alert className="bg-accent/10 border-accent/30 text-accent-foreground">
-              <Sparkles className="h-4 w-4 text-accent" />
-              <AlertTitle className="font-headline text-accent">Here are your personalized recommendations!</AlertTitle>
-              <AlertDescription className="text-accent/80">
+            <Alert className="bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-300">
+              <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <AlertTitle className="font-headline text-blue-700 dark:text-blue-300">Here are your personalized recommendations!</AlertTitle>
+              <AlertDescription className="text-blue-700/80 dark:text-blue-300/80">
                 {recommendations.reasoning}
               </AlertDescription>
             </Alert>
@@ -196,7 +195,6 @@ export default function RecommendationEngine() {
             </Accordion>
           </div>
         )}
-      </CardContent>
-    </Card>
+    </>
   );
 }
