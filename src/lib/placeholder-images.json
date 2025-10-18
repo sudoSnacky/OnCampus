@@ -1,3 +1,88 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "Students collaborating in a modern campus environment.",
+      "imageUrl": "https://images.unsplash.com/photo-1758270705172-07b53627dfcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdHVkZW50cyUyMGNvbGxhYm9yYXRpbmd8ZW58MHx8fHwxNzYwNzMzNDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "students collaborating"
+    },
+    {
+      "id": "benefit-1",
+      "description": "Logo of a popular movie streaming service.",
+      "imageUrl": "https://images.unsplash.com/photo-1714623290324-97fd836c471f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtb3ZpZSUyMHN0cmVhbWluZ3xlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "movie streaming"
+    },
+    {
+      "id": "benefit-2",
+      "description": "Logo of an online shopping platform.",
+      "imageUrl": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBzaG9wcGluZ3xlbnwwfHx8fDE3NjA3MzYyMjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "online shopping"
+    },
+    {
+      "id": "benefit-3",
+      "description": "Logo of a software development tools company.",
+      "imageUrl": "https://images.unsplash.com/photo-1760548425298-22aa4b60fc16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkZXZlbG9wZXIlMjB0b29sc3xlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "developer tools"
+    },
+    {
+      "id": "benefit-4",
+      "description": "Logo of a developer community platform.",
+      "imageUrl": "https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb2RlJTIwcmVwb3NpdG9yeXxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "code repository"
+    },
+    {
+      "id": "benefit-5",
+      "description": "A pile of books representing library access.",
+      "imageUrl": "https://images.unsplash.com/photo-1579370318443-8da816457e3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxsaWJyYXJ5JTIwYm9va3N8ZW58MHx8fHwxNzYwNzMxMTc4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "library books"
+    },
+    {
+      "id": "club-1",
+      "description": "Students working on laptops with code on screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1560783112-3c64462b3f68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2RpbmclMjBjbHVifGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coding club"
+    },
+    {
+      "id": "club-2",
+      "description": "People giving a presentation in a business setting.",
+      "imageUrl": "https://images.unsplash.com/photo-1621763068543-ad5f9d62414d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxidXNpbmVzcyUyMGNsdWJ8ZW58MHx8fHwxNzYwNzcxMDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business club"
+    },
+    {
+      "id": "club-3",
+      "description": "A group of people performing a traditional Indian dance.",
+      "imageUrl": "https://images.unsplash.com/photo-1692663576178-be5ea950bcac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkYW5jZSUyMHBlcmZvcm1hbmNlfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dance performance"
+    },
+    {
+      "id": "club-4",
+      "description": "A person taking a photograph with a professional camera.",
+      "imageUrl": "https://images.unsplash.com/photo-1493156755127-9ddb45e755f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGhvdG9ncmFwaHklMjBjYW1lcmF8ZW58MHx8fHwxNzYwNzcxMDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "photography camera"
+    },
+    {
+      "id": "club-5",
+      "description": "People debating on a stage.",
+      "imageUrl": "https://images.unsplash.com/photo-1572232564961-5392cd6ebfe8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkZWJhdGUlMjBzdGFnZXxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "debate stage"
+    },
+    {
+      "id": "event-1",
+      "description": "A workshop with people learning a new skill.",
+      "imageUrl": "https://images.unsplash.com/photo-1753164726974-24cf03de80ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxsZWFybmluZyUyMHdvcmtzaG9wfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "learning workshop"
+    },
+    {
+      "id": "event-2",
+      "description": "A person giving a seminar to an audience.",
+      "imageUrl": "https://images.unsplash.com/photo-1758691736821-f1a600c0c3f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZW1pbmFyJTIwYXVkaWVuY2V8ZW58MHx8fHwxNzYwNzcxMDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "seminar audience"
+    },
+    {
+      "id": "event-3",
+      "description": "A vibrant cultural festival with many people.",
+      "imageUrl": "https://images.unsplash.com/photo-1709105492660-c6fd6702a9fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjdWx0dXJhbCUyMGZlc3RpdmFsfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cultural festival"
+    }
+  ]
 }
