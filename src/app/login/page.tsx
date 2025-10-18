@@ -40,16 +40,15 @@ const AUTH_KEY = "campusconnect_auth";
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [authStatus, setAuthStatus] = useState<"checking" | "authenticated" | "unauthenticated">("checking");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check auth status on mount
     const isAuthenticated = localStorage.getItem(AUTH_KEY) === "true";
     if (isAuthenticated) {
-        setAuthStatus("authenticated");
         router.replace("/admin");
     } else {
-        setAuthStatus("unauthenticated");
+        setIsLoading(false);
     }
   }, [router]);
 
@@ -68,7 +67,7 @@ export default function LoginPage() {
         title: "Login Successful",
         description: "Redirecting to admin dashboard...",
       });
-      setAuthStatus("authenticated");
+      setIsLoading(true);
       router.push("/admin");
     } else {
       toast({
@@ -79,12 +78,12 @@ export default function LoginPage() {
     }
   };
 
-  if (authStatus !== "unauthenticated") {
+  if (isLoading) {
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-background">
             <DinoLoader />
             <p className="mt-4 text-lg text-foreground/70">
-              {authStatus === "checking" ? "Checking credentials..." : "Redirecting..."}
+              Loading...
             </p>
         </div>
     );
