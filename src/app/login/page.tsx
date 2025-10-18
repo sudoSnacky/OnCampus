@@ -59,21 +59,24 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     setIsLoading(true);
-    if (data.username === "ABC1234" && data.password === "ABC1234") {
-      localStorage.setItem(AUTH_KEY, "true");
-      toast({
-        title: "Login Successful",
-        description: "Redirecting to admin dashboard...",
-      });
-      router.push("/admin");
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: "Incorrect username or password.",
-      });
-      setIsLoading(false);
-    }
+    // Simulate API call
+    setTimeout(() => {
+        if (data.username === "ABC1234" && data.password === "ABC1234") {
+          localStorage.setItem(AUTH_KEY, "true");
+          toast({
+            title: "Login Successful",
+            description: "Redirecting to admin dashboard...",
+          });
+          router.push("/admin");
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "Incorrect username or password.",
+          });
+          setIsLoading(false);
+        }
+    }, 500);
   };
 
 
