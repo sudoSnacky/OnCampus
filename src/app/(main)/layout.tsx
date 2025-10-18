@@ -1,17 +1,9 @@
 import Link from "next/link";
-import {
-  SidebarProvider,
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { MainNav } from "@/components/main-nav";
-import { PageHeader } from "@/components/page-header";
 import { ArrowLeft } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 
 export default function MainLayout({
   children,
@@ -19,34 +11,23 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen">
-        <Sidebar>
-          <SidebarHeader>
+    <div className="min-h-screen flex flex-col">
+      <PageHeader>
+        <div className="container mx-auto flex items-center justify-between h-full">
             <Link href="/" className="flex items-center gap-2">
               <Icons.logo className="h-8 w-8 text-primary" />
-              <span className="font-headline text-xl font-bold tracking-tight text-sidebar-foreground">
+              <span className="font-headline text-xl font-bold tracking-tight">
                 CampusConnect
               </span>
             </Link>
-          </SidebarHeader>
-          <SidebarContent>
+          <div className="flex items-center gap-4">
             <MainNav />
-          </SidebarContent>
-        </Sidebar>
-        <SidebarInset>
-          <PageHeader>
-            <div className="flex items-center gap-4">
-              <SidebarTrigger className="md:hidden" />
-              <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
-                <Link href="/">
-                    <ArrowLeft />
-                    <span className="sr-only">Back to Home</span>
-                </Link>
-              </Button>
-            </div>
-          </PageHeader>
-          <main className="p-4 sm:p-6 lg:p-8 bg-gray-100 dark:bg-gray-900 flex-grow">{children}</main>
-        </SidebarInset>
-      </div>
+          </div>
+        </div>
+      </PageHeader>
+      <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
+        {children}
+      </main>
+    </div>
   );
 }
