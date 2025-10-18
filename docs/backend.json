@@ -1,0 +1,189 @@
+{
+  "entities": {
+    "Event": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Event",
+      "type": "object",
+      "description": "Represents an event happening on campus.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the event."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the event."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the event."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location where the event is held."
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Start time of the event.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "End time of the event.",
+          "format": "date-time"
+        },
+        "organizer": {
+          "type": "string",
+          "description": "Name of the organizer of the event."
+        },
+        "clubId": {
+          "type": "string",
+          "description": "Reference to Club. (Relationship: Club 1:N Event).  If the event is organized by a club."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "location",
+        "startTime",
+        "endTime",
+        "organizer"
+      ]
+    },
+    "Club": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Club",
+      "type": "object",
+      "description": "Represents a student club or society.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the club."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the club."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the club."
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "Contact email address for the club.",
+          "format": "email"
+        },
+        "websiteUrl": {
+          "type": "string",
+          "description": "Website URL for the club.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "contactEmail"
+      ]
+    },
+    "Benefit": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Benefit",
+      "type": "object",
+      "description": "Represents a benefit associated with the college ID.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the benefit."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the benefit."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the benefit."
+        },
+        "provider": {
+          "type": "string",
+          "description": "Provider of the benefit (e.g., BookMyShow, Amazon)."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL for an image representing the benefit.",
+          "format": "uri"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the benefit (e.g., Discount, Free Software)."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "provider"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/events/{eventId}",
+        "definition": {
+          "entityName": "Event",
+          "schema": {
+            "$ref": "#/backend/entities/Event"
+          },
+          "description": "Stores event information. Includes 'clubId' for association with clubs.",
+          "params": [
+            {
+              "name": "eventId",
+              "description": "Unique identifier for the event."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/clubs/{clubId}",
+        "definition": {
+          "entityName": "Club",
+          "schema": {
+            "$ref": "#/backend/entities/Club"
+          },
+          "description": "Stores club information.",
+          "params": [
+            {
+              "name": "clubId",
+              "description": "Unique identifier for the club."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/benefits/{benefitId}",
+        "definition": {
+          "entityName": "Benefit",
+          "schema": {
+            "$ref": "#/backend/entities/Benefit"
+          },
+          "description": "Stores benefit information.",
+          "params": [
+            {
+              "name": "benefitId",
+              "description": "Unique identifier for the benefit."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support the CampusConnect India application, focusing on events, clubs, and benefits. It prioritizes authorization independence and efficient data retrieval.  The key collections are `/events`, `/clubs`, and `/benefits`. Events are associated with clubs through the `clubId` field within each event document. This structure facilitates easy querying of events by club and allows for efficient display on the event calendar and club directory. Benefits are stored in a flat collection. This structure is designed for simple reads and queries, optimizing performance for displaying information on the static webpage. No user-specific private data is stored, and no authentication is required to view data. Therefore, no authorization independence or membership maps are required.\n\nThis structure also supports the required QAPs by enabling secure `list` operations.  Since all data is public, there are no filtering requirements for listing events, clubs, or benefits.  The structural segregation ensures that each collection has a homogeneous security posture (publicly readable).\n"
+  }
+}
