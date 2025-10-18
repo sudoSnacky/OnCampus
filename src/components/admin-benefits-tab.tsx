@@ -1,0 +1,173 @@
+"use client";
+
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { useBenefits } from "@/hooks/use-benefits";
+import { PlusCircle, Trash2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+const FormSchema = z.object({
+  title: z.string().min(3, "Title is required."),
+  provider: z.string().min(2, "Provider is required."),
+  category: z.string().min(2, "Category is required."),
+  description: z.string().min(10, "Description is required."),
+});
+
+type FormData = z.infer<typeof FormSchema>;
+
+export default function AdminBenefitsTab() {
+  const { toast } = useToast();
+  const { benefits, addBenefit, removeBenefit, isInitialized } = useBenefits();
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      title: "",
+      provider: "",
+      category: "",
+      description: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    addBenefit(data);
+    toast({
+      title: "Benefit Added!",
+      description: `"${data.title}" has been added.`,
+    });
+    form.reset();
+  };
+
+  return (
+    <div className="space-y-6 pt-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <PlusCircle />
+            Add New Benefit
+          </CardTitle>
+          <CardDescription>
+            Fill in the details to add a new student benefit.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Benefit Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Student Discount" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="provider"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Provider</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., BookMyShow" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Entertainment" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={3}
+                        placeholder="Describe the benefit..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" disabled={!isInitialized}>
+                Add Benefit
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Existing Benefits</CardTitle>
+          <CardDescription>
+            Here is a list of all current benefits.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-4">
+            {benefits.map((benefit) => (
+              <li
+                key={benefit.id}
+                className="flex items-center justify-between rounded-md border p-4"
+              >
+                <div>
+                  <p className="font-semibold">{benefit.title}</p>
+                  <p className="text-sm text-muted-foreground">{benefit.provider}</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeBenefit(benefit.id)}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

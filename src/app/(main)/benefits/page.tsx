@@ -1,10 +1,14 @@
+"use client";
+
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { benefits, type Benefit } from '@/lib/data';
+import { useBenefits } from '@/hooks/use-benefits';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function BenefitsPage() {
+  const { benefits } = useBenefits();
+
   return (
     <div className="container mx-auto">
       <div className="mb-12">
@@ -17,7 +21,7 @@ export default function BenefitsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {benefits.map((benefit: Benefit) => {
+        {benefits.map((benefit) => {
           const image = PlaceHolderImages.find(p => p.id === benefit.imageId);
           return (
             <Card key={benefit.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">

@@ -24,7 +24,7 @@ export type CampusEvent = {
   imageId: string;
 };
 
-export const benefits: Benefit[] = [
+export const initialBenefits: Benefit[] = [
   {
     id: "benefit-1",
     title: "Student Discount",
@@ -67,7 +67,7 @@ export const benefits: Benefit[] = [
   },
 ];
 
-export const clubs: Club[] = [
+export const initialClubs: Club[] = [
   {
     id: "club-1",
     name: "The Coding Circle",

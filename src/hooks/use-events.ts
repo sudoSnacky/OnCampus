@@ -41,10 +41,20 @@ export const useEvents = () => {
             return updatedEvents;
         });
     }, [isInitialized]);
+    
+    const removeEvent = useCallback((eventId: string) => {
+        if (!isInitialized) return;
+
+        setEvents(prevEvents => {
+            const updatedEvents = prevEvents.filter(e => e.id !== eventId);
+            localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(updatedEvents));
+            return updatedEvents;
+        });
+    }, [isInitialized]);
 
     // Return an empty array until the client-side has initialized
     // to prevent hydration mismatches.
     const safeEvents = isInitialized ? events : [];
 
-    return { events: safeEvents, addEvent, isInitialized };
+    return { events: safeEvents, addEvent, removeEvent, isInitialized };
 };

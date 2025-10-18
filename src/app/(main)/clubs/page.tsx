@@ -1,11 +1,15 @@
+"use client";
+
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { clubs, type Club } from '@/lib/data';
+import { useClubs } from '@/hooks/use-clubs';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function ClubsPage() {
+  const { clubs } = useClubs();
+
   return (
     <div className="container mx-auto">
       <div className="mb-12">
@@ -18,7 +22,7 @@ export default function ClubsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {clubs.map((club: Club) => {
+        {clubs.map((club) => {
           const image = PlaceHolderImages.find(p => p.id === club.imageId);
           return (
             <Card key={club.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
