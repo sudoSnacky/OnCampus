@@ -19,8 +19,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
-      <div className="min-h-screen">
+    <div className="min-h-screen">
         <Sidebar>
           <SidebarHeader>
             <Link href="/" className="flex items-center gap-2">
@@ -49,6 +48,5 @@ export default function MainLayout({
           <main className="p-4 sm:p-6 lg:p-8 bg-gray-100 dark:bg-gray-900 flex-grow">{children}</main>
         </SidebarInset>
       </div>
-    </SidebarProvider>
   );
 }
