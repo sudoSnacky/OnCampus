@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { initialBenefits, type Benefit } from '@/lib/data';
 
-const BENEFITS_STORAGE_KEY = 'campusconnect-benefits';
+const BENEFITS_STORAGE_KEY = 'oncampus-benefits';
 
 export const useBenefits = () => {
     const [benefits, setBenefits] = useState<Benefit[]>(initialBenefits);

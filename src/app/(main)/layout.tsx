@@ -17,7 +17,7 @@ export default function MainLayout({
             <Link href="/" className="flex items-center gap-2">
               <Icons.logo className="h-8 w-8 text-primary" />
               <span className="font-headline text-xl font-bold tracking-tight">
-                CampusConnect
+                OnCampus
               </span>
             </Link>
           <div className="flex items-center gap-4">

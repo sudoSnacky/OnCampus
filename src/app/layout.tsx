@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CampusConnect India",
+  title: "OnCampus India",
   description: "Your all-in-one platform for student benefits, clubs, and events across India.",
 };
 

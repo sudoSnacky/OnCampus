@@ -38,7 +38,7 @@ export default function Home() {
           <Link href="/" className="flex items-center gap-2">
             <Icons.logo className="h-8 w-8 text-primary" />
             <span className="font-headline text-xl font-bold tracking-tight">
-              CampusConnect
+              OnCampus
             </span>
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
@@ -62,7 +62,7 @@ export default function Home() {
                   <span className="text-primary">Supercharged</span>.
                 </h1>
                 <p className="max-w-xl text-lg text-foreground/80">
-                  Welcome to CampusConnect India! The single platform to discover student benefits, join exciting clubs, and never miss an event. Powered by AI to personalize your campus experience.
+                  Welcome to OnCampus India! The single platform to discover student benefits, join exciting clubs, and never miss an event. Powered by AI to personalize your campus experience.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" asChild>
@@ -146,11 +146,11 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <Icons.logo className="h-6 w-6 text-foreground/80" />
               <span className="font-headline text-md font-semibold">
-                CampusConnect India
+                OnCampus India
               </span>
             </div>
             <p className="text-sm text-foreground/60 mt-4 md:mt-0">
-              © {new Date().getFullYear()} CampusConnect. All rights reserved.
+              © {new Date().getFullYear()} OnCampus. All rights reserved.
             </p>
           </div>
         </div>

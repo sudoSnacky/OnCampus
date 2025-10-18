@@ -18,7 +18,7 @@ import AdminEventsTab from "@/components/admin-events-tab";
 import AdminClubsTab from "@/components/admin-clubs-tab";
 import AdminBenefitsTab from "@/components/admin-benefits-tab";
 
-const AUTH_KEY = "campusconnect_auth";
+const AUTH_KEY = "oncampus_auth";
 
 export default function AdminPage() {
   const router = useRouter();

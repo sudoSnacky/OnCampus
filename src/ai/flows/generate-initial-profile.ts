@@ -47,7 +47,7 @@ const initialProfilePrompt = ai.definePrompt({
   name: 'initialProfilePrompt',
   input: {schema: InitialProfileInputSchema},
   output: {schema: InitialProfileOutputSchema},
-  prompt: `You are an AI assistant designed to create initial user profiles for the CampusConnect India application.
+  prompt: `You are an AI assistant designed to create initial user profiles for the OnCampus India application.
 
   Based on the users provided interests, generate a user profile that contains their name, major, university, and lists of suggested clubs, benefits, and events.
 

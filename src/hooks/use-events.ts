@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { initialEvents, type CampusEvent } from '@/lib/data';
 
-const EVENTS_STORAGE_KEY = 'campusconnect-events';
+const EVENTS_STORAGE_KEY = 'oncampus-events';
 
 export const useEvents = () => {
     const [events, setEvents] = useState<CampusEvent[]>(initialEvents);

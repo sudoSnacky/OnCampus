@@ -34,7 +34,7 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-const AUTH_KEY = "campusconnect_auth";
+const AUTH_KEY = "oncampus_auth";
 
 export default function LoginPage() {
   const router = useRouter();
