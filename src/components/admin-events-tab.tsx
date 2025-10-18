@@ -44,6 +44,7 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "A date for the event is required.",
   }),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -58,6 +59,7 @@ export default function AdminEventsTab() {
         title: "",
         location: "",
         description: "",
+        imageUrl: "",
     }
   });
 
@@ -67,6 +69,7 @@ export default function AdminEventsTab() {
       location: "",
       description: "",
       date: new Date(),
+      imageUrl: "",
     });
   }, [form]);
 
@@ -75,6 +78,7 @@ export default function AdminEventsTab() {
     addEvent({
       ...data,
       date: data.date.toISOString(),
+      imageId: data.imageUrl || '',
     });
     toast({
       title: "Event Created!",
@@ -92,7 +96,7 @@ export default function AdminEventsTab() {
             Add New Event
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new event to the calendar.
+            Fill in the details to add a new event to the calendar. You can use a site like ImgBB to upload images and get a URL.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -106,6 +110,19 @@ export default function AdminEventsTab() {
                     <FormLabel>Event Title</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Annual Tech Fest" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
@@ -27,7 +28,7 @@ export const useEvents = () => {
         setIsInitialized(true);
     }, []);
 
-    const addEvent = useCallback((newEventData: Omit<CampusEvent, 'id' | 'imageId'> & { imageId?: string }) => {
+    const addEvent = useCallback((newEventData: Omit<CampusEvent, 'id'>) => {
         if (!isInitialized) return;
 
         setEvents(prevEvents => {

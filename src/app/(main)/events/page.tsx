@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -26,20 +27,23 @@ export default function EventsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {sortedEvents.map((event) => {
-          const image = PlaceHolderImages.find(p => p.id === event.imageId);
+          const isUrl = event.imageId.startsWith('http');
+          const image = !isUrl ? PlaceHolderImages.find(p => p.id === event.imageId) : null;
+          const imageUrl = isUrl ? event.imageId : image?.imageUrl;
+          const imageHint = image?.imageHint;
           const eventDate = new Date(event.date);
 
           return (
             <Card key={event.id} className="flex flex-col md:flex-row overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
               <div className="relative h-48 md:h-auto md:w-1/3">
-                {image && (
+                {imageUrl && (
                   <Image
-                    src={image.imageUrl}
+                    src={imageUrl}
                     alt={event.title}
                     fill
                     style={{ objectFit: 'cover' }}
                     className="md:rounded-l-lg md:rounded-r-none rounded-t-lg"
-                    data-ai-hint={image.imageHint}
+                    data-ai-hint={imageHint}
                   />
                 )}
               </div>
