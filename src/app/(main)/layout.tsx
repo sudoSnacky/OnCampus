@@ -15,10 +15,7 @@ export default function MainLayout({
       <PageHeader>
         <div className="container mx-auto flex items-center justify-between h-full">
             <Link href="/" className="flex items-center gap-2">
-              <Icons.logo className="h-8 w-8 text-primary" />
-              <span className="font-headline text-xl font-bold tracking-tight">
-                OnCampus
-              </span>
+              <Icons.logo className="h-8 w-auto" />
             </Link>
           <div className="flex items-center gap-4">
             <MainNav />
