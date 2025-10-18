@@ -9,7 +9,7 @@
  * - `InitialProfileOutput`: The output type for the flow, representing the generated user profile.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai} from '../genkit';
 import {z} from 'genkit';
 
 const InitialProfileInputSchema = z.object({

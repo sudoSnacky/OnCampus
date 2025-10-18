@@ -2,9 +2,9 @@
 "use client";
 
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { useEvents } from '@/hooks/use-events';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/card';
+import { useEvents } from '../../../hooks/use-events';
+import { PlaceHolderImages } from '../../../lib/placeholder-images';
 import { format } from 'date-fns';
 import { Calendar, MapPin } from 'lucide-react';
 

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { initialEvents, type CampusEvent } from '@/lib/data';
+import { initialEvents, type CampusEvent } from '../lib/data';
 
 const EVENTS_STORAGE_KEY = 'oncampus-events';
 

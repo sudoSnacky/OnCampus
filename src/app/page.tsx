@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Ticket, Users, Calendar, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Icons } from "@/components/icons";
-import RecommendationEngine from "@/components/recommendation-engine";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Icons } from "../components/icons";
+import RecommendationEngine from "../components/recommendation-engine";
+import { PlaceHolderImages } from "../lib/placeholder-images";
 
 const features = [
   {

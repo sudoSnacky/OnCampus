@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
-import { MainNav } from "@/components/main-nav";
+import { Button } from "../../components/ui/button";
+import { Icons } from "../../components/icons";
+import { MainNav } from "../../components/main-nav";
 import { ArrowLeft } from "lucide-react";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "../../components/page-header";
 
 export default function MainLayout({
   children,

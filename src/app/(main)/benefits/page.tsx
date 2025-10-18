@@ -2,11 +2,11 @@
 "use client";
 
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useBenefits } from '@/hooks/use-benefits';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/card';
+import { Badge } from '../../../components/ui/badge';
+import { useBenefits } from '../../../hooks/use-benefits';
+import { PlaceHolderImages } from '../../../lib/placeholder-images';
+import { Button } from '../../../components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 

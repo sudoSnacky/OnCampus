@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
 import {
   Form,
   FormControl,
@@ -21,9 +21,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { Icons } from "@/components/icons";
+} from "../../components/ui/form";
+import { useToast } from "../../hooks/use-toast";
+import { Icons } from "../../components/icons";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 

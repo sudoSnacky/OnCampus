@@ -2,21 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+} from "../../components/ui/card";
+import { useToast } from "../../hooks/use-toast";
 import { LogOut, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AdminEventsTab from "@/components/admin-events-tab";
-import AdminClubsTab from "@/components/admin-clubs-tab";
-import AdminBenefitsTab from "@/components/admin-benefits-tab";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import AdminEventsTab from "../../components/admin-events-tab";
+import AdminClubsTab from "../../components/admin-clubs-tab";
+import AdminBenefitsTab from "../../components/admin-benefits-tab";
 
 const AUTH_KEY = "oncampus_auth";
 

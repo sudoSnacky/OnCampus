@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { initialClubs, type Club } from '@/lib/data';
+import { initialClubs, type Club } from '../lib/data';
 
 const CLUBS_STORAGE_KEY = 'oncampus-clubs';
 

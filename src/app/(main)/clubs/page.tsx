@@ -1,11 +1,11 @@
 "use client";
 
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useClubs } from '@/hooks/use-clubs';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Badge } from '../../../components/ui/badge';
+import { useClubs } from '../../../hooks/use-clubs';
+import { PlaceHolderImages } from '../../../lib/placeholder-images';
 
 export default function ClubsPage() {
   const { clubs } = useClubs();

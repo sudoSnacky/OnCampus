@@ -7,20 +7,20 @@ import { z } from "zod";
 import {
   generateInitialProfile,
   type InitialProfileOutput,
-} from "@/ai/flows/generate-initial-profile";
+} from "../ai/flows/generate-initial-profile";
 import {
   getPersonalizedRecommendations,
   type PersonalizedRecommendationsOutput,
-} from "@/ai/flows/personalized-recommendations";
-import { Button } from "@/components/ui/button";
+} from "../ai/flows/personalized-recommendations";
+import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+} from "./ui/card";
+import { Textarea } from "./ui/textarea";
 import {
   Form,
   FormControl,
@@ -28,16 +28,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "./ui/form";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { useToast } from "@/hooks/use-toast";
+} from "./ui/accordion";
+import { useToast } from "../hooks/use-toast";
 import { Sparkles, Loader2, Wand2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Skeleton } from "./ui/skeleton";
 
 const FormSchema = z.object({
