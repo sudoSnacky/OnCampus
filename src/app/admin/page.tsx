@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminEventsTab from "@/components/admin-events-tab";
 import AdminClubsTab from "@/components/admin-clubs-tab";
 import AdminBenefitsTab from "@/components/admin-benefits-tab";
+import { DinoLoader } from "@/components/dino-loader";
 
 const AUTH_KEY = "campusconnect_auth";
 
@@ -45,8 +46,9 @@ export default function AdminPage() {
 
   if (isAuthenticating) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <p>Loading...</p>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+        <DinoLoader />
+        <p className="mt-4 text-lg text-foreground/70">Loading...</p>
       </div>
     );
   }

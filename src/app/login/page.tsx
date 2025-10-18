@@ -26,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { DinoLoader } from "@/components/dino-loader";
 
 const FormSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -77,8 +78,9 @@ export default function LoginPage() {
 
   if (isAuthenticated) {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background">
-            <p>Redirecting...</p>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+            <DinoLoader />
+            <p className="mt-4 text-lg text-foreground/70">Redirecting...</p>
         </div>
     );
   }
