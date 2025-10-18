@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -54,7 +55,7 @@ export default function BenefitsPage() {
               <CardContent className="flex-grow flex flex-col">
                 <p className="text-sm text-foreground/80 flex-grow">{benefit.description}</p>
                  {benefit.redirectUrl && (
-                  <Button asChild className="mt-4 w-full bg-primary/20 border-primary/30 text-primary-foreground hover:bg-primary/30 backdrop-blur-lg border transition-all duration-300">
+                  <Button asChild className="mt-4 w-full bg-primary/90 text-primary-foreground hover:bg-primary/100 backdrop-blur-lg border border-primary/30 transition-all duration-300">
                     <Link href={benefit.redirectUrl} target="_blank" rel="noopener noreferrer">
                       Redeem
                     </Link>
