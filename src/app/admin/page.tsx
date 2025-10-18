@@ -17,21 +17,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminEventsTab from "@/components/admin-events-tab";
 import AdminClubsTab from "@/components/admin-clubs-tab";
 import AdminBenefitsTab from "@/components/admin-benefits-tab";
-import { DinoLoader } from "@/components/dino-loader";
 
 const AUTH_KEY = "campusconnect_auth";
 
 export default function AdminPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [isAuthenticating, setIsAuthenticating] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const authStatus = localStorage.getItem(AUTH_KEY) === "true";
     if (!authStatus) {
       router.replace("/login");
     } else {
-      setIsAuthenticating(false);
+      setIsAuthenticated(true);
     }
   }, [router]);
 
@@ -44,13 +43,8 @@ export default function AdminPage() {
     router.replace("/login");
   };
 
-  if (isAuthenticating) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <DinoLoader />
-        <p className="mt-4 text-lg text-foreground/70">Loading...</p>
-      </div>
-    );
+  if (!isAuthenticated) {
+    return null; // Don't render anything until authenticated
   }
 
   return (

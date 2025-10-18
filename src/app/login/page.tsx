@@ -26,7 +26,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { DinoLoader } from "@/components/dino-loader";
 
 const FormSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -40,15 +39,13 @@ const AUTH_KEY = "campusconnect_auth";
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Check auth status on mount
     const isAuthenticated = localStorage.getItem(AUTH_KEY) === "true";
     if (isAuthenticated) {
         router.replace("/admin");
-    } else {
-        setIsLoading(false);
     }
   }, [router]);
 
@@ -61,13 +58,13 @@ export default function LoginPage() {
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
+    setIsLoading(true);
     if (data.username === "ABC1234" && data.password === "ABC1234") {
       localStorage.setItem(AUTH_KEY, "true");
       toast({
         title: "Login Successful",
         description: "Redirecting to admin dashboard...",
       });
-      setIsLoading(true);
       router.push("/admin");
     } else {
       toast({
@@ -75,19 +72,10 @@ export default function LoginPage() {
         title: "Login Failed",
         description: "Incorrect username or password.",
       });
+      setIsLoading(false);
     }
   };
 
-  if (isLoading) {
-    return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-            <DinoLoader />
-            <p className="mt-4 text-lg text-foreground/70">
-              Loading...
-            </p>
-        </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -115,7 +103,7 @@ export default function LoginPage() {
                                     <FormItem>
                                         <FormLabel>Username</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="ABC1234" {...field} />
+                                            <Input placeholder="ABC1234" {...field} disabled={isLoading} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -128,14 +116,14 @@ export default function LoginPage() {
                                     <FormItem>
                                         <FormLabel>Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" placeholder="••••••••" {...field} />
+                                            <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="w-full mt-2">
-                                Login
+                            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+                                {isLoading ? 'Logging in...' : 'Login'}
                             </Button>
                         </form>
                     </Form>
