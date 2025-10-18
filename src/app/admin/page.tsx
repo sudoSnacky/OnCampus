@@ -25,11 +25,12 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useEvents } from "@/hooks/use-events";
-import { Calendar as CalendarIcon, Loader2, LogOut } from "lucide-react";
+import { Calendar as CalendarIcon, Loader2, LogOut, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import Link from "next/link";
 
 const AUTH_KEY = "campusconnect_auth";
 
@@ -97,7 +98,12 @@ export default function AdminPage() {
     <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
         <header className="flex justify-between items-center mb-8">
             <h1 className="font-headline text-3xl font-bold">Admin Dashboard</h1>
-            <Button variant="ghost" onClick={handleLogout}><LogOut className="mr-2 h-4 w-4" /> Logout</Button>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" asChild>
+                  <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Home</Link>
+              </Button>
+              <Button variant="ghost" onClick={handleLogout}><LogOut className="mr-2 h-4 w-4" /> Logout</Button>
+            </div>
         </header>
         <main className="flex items-start justify-center">
             <Card className="w-full max-w-2xl shadow-xl">
