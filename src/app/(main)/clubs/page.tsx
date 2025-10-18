@@ -35,7 +35,7 @@ export default function ClubsPage() {
                       src={imageUrl}
                       alt={club.name}
                       fill
-                      style={{ objectFit: 'cover' }}
+                      className="object-cover"
                       data-ai-hint={imageHint}
                    />
                 )}

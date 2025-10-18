@@ -37,7 +37,7 @@ export default function BenefitsPage() {
                       src={imageUrl}
                       alt={benefit.title}
                       fill
-                      style={{ objectFit: 'cover' }}
+                      className="object-cover"
                       data-ai-hint={imageHint}
                    />
                 )}

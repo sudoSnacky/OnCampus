@@ -41,8 +41,7 @@ export default function EventsPage() {
                     src={imageUrl}
                     alt={event.title}
                     fill
-                    style={{ objectFit: 'cover' }}
-                    className="md:rounded-l-lg md:rounded-r-none rounded-t-lg"
+                    className="object-cover md:rounded-l-lg md:rounded-r-none rounded-t-lg"
                     data-ai-hint={imageHint}
                   />
                 )}
