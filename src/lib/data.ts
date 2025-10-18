@@ -1,3 +1,4 @@
+
 export type Benefit = {
   id: string;
   title: string;
@@ -42,7 +43,7 @@ export const initialBenefits: Benefit[] = [
     description: "Enjoy 6 months of Amazon Prime for free, then 50% off. Includes Prime Video, Music, and free delivery.",
     category: "Shopping",
     imageId: "benefit-2",
-    redirectUrl: "https://www.amazon.in/prime",
+    redirectUrl: "https://www.amazon.in/amazon-student-offer/b?ie=UTF8&node=21423439031",
   },
   {
     id: "benefit-3",
