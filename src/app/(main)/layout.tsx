@@ -15,7 +15,7 @@ export default function MainLayout({
       <PageHeader>
         <div className="container mx-auto flex items-center justify-between h-full">
             <Link href="/" className="flex items-center gap-2">
-              <Icons.logo className="h-8 w-auto" />
+              <Icons.logo />
             </Link>
           <div className="flex items-center gap-4">
             <MainNav />

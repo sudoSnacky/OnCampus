@@ -36,7 +36,7 @@ export default function Home() {
       <header className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-2">
-            <Icons.logo className="h-8 w-auto" />
+            <Icons.logo />
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/benefits" className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">Benefits</Link>
@@ -141,7 +141,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2">
-              <Icons.logo className="h-6 w-auto" />
+              <Icons.logo />
             </div>
             <p className="text-sm text-foreground/60 mt-4 md:mt-0">
               © {new Date().getFullYear()} OnCampus. All rights reserved.
