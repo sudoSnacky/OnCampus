@@ -57,7 +57,7 @@ export default function AdminClubsTab() {
       description: "",
       imageUrl: "",
     });
-  }, [form, clubs]);
+  }, [clubs]);
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addClub({

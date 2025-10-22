@@ -77,7 +77,7 @@ export default function AdminEventsTab() {
       date: new Date(),
       imageUrl: "",
     });
-  }, [form, events]);
+  }, [events]);
 
 
   const onSubmit: SubmitHandler<FormData> = (data) => {

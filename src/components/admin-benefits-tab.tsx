@@ -63,7 +63,7 @@ export default function AdminBenefitsTab() {
       imageUrl: "",
       redirectUrl: "",
     });
-  }, [form, benefits]);
+  }, [benefits]);
 
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
