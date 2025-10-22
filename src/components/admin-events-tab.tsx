@@ -17,7 +17,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useEvents } from "../hooks/use-events";
-import { Calendar as CalendarIcon, PlusCircle, Trash2 } from "lucide-react";
+import { Calendar as CalendarIcon, PlusCircle, Sparkles, Trash2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import {
   Popover,
@@ -34,6 +34,8 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Timestamp } from "firebase/firestore";
+import { generateEventContent } from "@/ai/flows/generate-content-flow";
+import { useState } from "react";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
@@ -52,9 +54,14 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
+// Check if the Gemini API key is available in the environment
+const isAiEnabled = !!process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+
+
 export default function AdminEventsTab() {
   const { toast } = useToast();
   const { events, addEvent, removeEvent, isInitialized } = useEvents();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -66,6 +73,42 @@ export default function AdminEventsTab() {
         imageUrl: "",
     }
   });
+
+  const handleGenerateContent = async () => {
+    const title = form.getValues("title");
+    if (!title) {
+      toast({
+        variant: "destructive",
+        title: "Title is missing",
+        description: "Please enter a title to generate content.",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const result = await generateEventContent(title);
+      if (result) {
+        form.setValue("description", result.description, { shouldValidate: true });
+        form.setValue("longDescription", result.longDescription, { shouldValidate: true });
+        form.setValue("imageUrl", result.imageUrl, { shouldValidate: true });
+        toast({
+          title: "Content Generated!",
+          description: "AI has created the description and image URL.",
+        });
+      }
+    } catch (error) {
+      console.error("AI Generation Error:", error);
+      toast({
+        variant: "destructive",
+        title: "AI Generation Failed",
+        description: "Could not generate content. Please check your API key and try again.",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addEvent({
@@ -211,9 +254,26 @@ export default function AdminEventsTab() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={!isInitialized}>
-                Create Event
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button type="submit" className="w-full sm:w-auto" disabled={!isInitialized}>
+                  Create Event
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={handleGenerateContent}
+                  disabled={!isAiEnabled || isGenerating}
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  {isGenerating ? "Generating..." : "Generate with AI"}
+                </Button>
+              </div>
+              {!isAiEnabled && (
+                <p className="text-xs text-muted-foreground text-center">
+                  To enable AI generation, add your Gemini API key to the .env.local file.
+                </p>
+              )}
             </form>
           </Form>
         </CardContent>
