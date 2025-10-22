@@ -1,10 +1,9 @@
 
 'use client';
 
-import { useMemo } from 'react';
-import { collection, doc, deleteDoc, addDoc } from 'firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
 
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface Club {
@@ -18,7 +17,7 @@ export interface Club {
 export function useClubs() {
   const firestore = useFirestore();
 
-  const clubsCollection = useMemo(
+  const clubsCollection = useMemoFirebase(
     () => (firestore ? collection(firestore, 'clubs') : null),
     [firestore]
   );
@@ -27,7 +26,7 @@ export function useClubs() {
     data: clubs,
     isLoading: isClubsLoading,
     error: clubsError,
-  } = useCollection(clubsCollection);
+  } = useCollection<Club>(clubsCollection);
 
   const addClub = async (club: Omit<Club, 'id'>) => {
     if (!clubsCollection) return;

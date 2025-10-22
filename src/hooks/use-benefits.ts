@@ -1,10 +1,9 @@
 
 'use client';
 
-import { useMemo } from 'react';
-import { collection, doc, addDoc, deleteDoc } from 'firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
 
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 
@@ -21,7 +20,7 @@ export interface Benefit {
 export function useBenefits() {
   const firestore = useFirestore();
 
-  const benefitsCollection = useMemo(
+  const benefitsCollection = useMemoFirebase(
     () => (firestore ? collection(firestore, 'benefits') : null),
     [firestore]
   );
@@ -30,7 +29,7 @@ export function useBenefits() {
     data: benefits,
     isLoading: isBenefitsLoading,
     error: benefitsError,
-  } = useCollection(benefitsCollection);
+  } = useCollection<Benefit>(benefitsCollection);
 
   const addBenefit = async (benefit: Omit<Benefit, 'id'>) => {
     if (!benefitsCollection) return;

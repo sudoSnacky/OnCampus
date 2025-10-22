@@ -1,16 +1,13 @@
 
 'use client';
 
-import { useMemo } from 'react';
 import {
   collection,
   doc,
-  deleteDoc,
-  addDoc,
   Timestamp,
 } from 'firebase/firestore';
 
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface CampusEvent {
@@ -25,7 +22,7 @@ export interface CampusEvent {
 export function useEvents() {
   const firestore = useFirestore();
 
-  const eventsCollection = useMemo(
+  const eventsCollection = useMemoFirebase(
     () => (firestore ? collection(firestore, 'events') : null),
     [firestore]
   );
@@ -34,7 +31,7 @@ export function useEvents() {
     data: events,
     isLoading: isEventsLoading,
     error: eventsError,
-  } = useCollection(eventsCollection);
+  } = useCollection<CampusEvent>(eventsCollection);
 
   const addEvent = async (event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
     if (!eventsCollection) return;
