@@ -8,7 +8,7 @@ import { PlaceHolderImages } from '../../../lib/placeholder-images';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, MapPin } from 'lucide-react';
 import { Timestamp } from 'firebase/firestore';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar } from '../../../components/ui/calendar';
 import { Button } from '../../../components/ui/button';
 
@@ -47,8 +47,12 @@ export default function EventsPage() {
       const dateString = format(eventDate, 'yyyy-MM-dd');
       
       if (!eventDates.has(dateString)) {
-        const randomColor = googleColors[Math.floor(Math.random() * googleColors.length)];
-        const modifierClass = colorMap[randomColor];
+        // Use a deterministic way to pick a color based on the date
+        const dayOfMonth = eventDate.getDate();
+        const colorIndex = dayOfMonth % googleColors.length;
+        const stableColor = googleColors[colorIndex];
+        const modifierClass = colorMap[stableColor];
+
         if (modifierClass) {
             modifiers[modifierClass].push(eventDate);
         }
