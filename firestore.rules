@@ -1,57 +1,51 @@
 /**
- * @fileoverview Firestore Security Rules for CampusConnect India.
+ * @file Firebase Security Rules for CampusConnect India.
  *
- * Core Philosophy:
- * This ruleset allows public read access to all data (events, clubs, benefits) and disables write access, as the data is intended to be managed by administrators through other means (e.g., a separate admin panel or direct database updates).  This is for the Prototyping Phase where no client-side writes are needed.
+ * @core_philosophy This ruleset enforces a public-read, public-write model. No authentication is required.
+ * @data_structure Top-level collections for `/events`, `/clubs`, and `/benefits`. Events have a `clubId` to link them to clubs.
+ * @key_security_decisions All data is publicly accessible (read and write).
  *
- * Data Structure:
- * - /events/{eventId}: Stores event information.
- * - /clubs/{clubId}: Stores club information.
- * - /benefits/{benefitId}: Stores benefit information.
- *
- * Key Security Decisions:
- * - Public read access is granted to all collections.
- * - All write operations (create, update, delete) are explicitly denied to client applications, since no auth is required to view data.
- * - No ownership checks or role-based access control is implemented in this version.
+ * WARNING: These rules are for PROTOTYPING ONLY and provide minimal security.
+ *          In a production environment, you MUST implement proper authorization.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to events and denies all write operations.
+     * @description Allows public read and write access to the /events collection.
      * @path /events/{eventId}
-     * @allow get, list: Any unauthenticated user can read event data.
-     * @deny create, update, delete: No user can create, update, or delete event data.
-     * @principle Public read, no client-side writes.
+     * @allow (create, get, list, update, delete) Any unauthenticated user can create, read, update, and delete events.
+     * @deny None - all operations are allowed for all users.
+     * @principle Public read and write access for prototyping.
      */
     match /events/{eventId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create, update, delete: if true;
     }
 
     /**
-     * @description Grants public read access to clubs and denies all write operations.
+     * @description Allows public read and write access to the /clubs collection.
      * @path /clubs/{clubId}
-     * @allow get, list: Any unauthenticated user can read club data.
-     * @deny create, update, delete: No user can create, update, or delete club data.
-     * @principle Public read, no client-side writes.
+     * @allow (create, get, list, update, delete) Any unauthenticated user can create, read, update, and delete clubs.
+     * @deny None - all operations are allowed for all users.
+     * @principle Public read and write access for prototyping.
      */
     match /clubs/{clubId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create, update, delete: if true;
     }
 
     /**
-     * @description Grants public read access to benefits and denies all write operations.
+     * @description Allows public read and write access to the /benefits collection.
      * @path /benefits/{benefitId}
-     * @allow get, list: Any unauthenticated user can read benefit data.
-     * @deny create, update, delete: No user can create, update, or delete benefit data.
-     * @principle Public read, no client-side writes.
+     * @allow (create, get, list, update, delete) Any unauthenticated user can create, read, update, and delete benefits.
+     * @deny None - all operations are allowed for all users.
+     * @principle Public read and write access for prototyping.
      */
     match /benefits/{benefitId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create, update, delete: if true;
     }
   }
 }
