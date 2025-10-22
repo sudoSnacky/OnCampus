@@ -60,8 +60,8 @@ export default function EventsPage() {
                         }}
                         modifiersStyles={{
                           event: {
-                            color: 'hsl(var(--primary-foreground))',
-                            backgroundColor: 'hsl(var(--primary))',
+                            fontWeight: 'bold',
+                            boxShadow: '0 0 4px 1px #4285F4, 0 0 4px 1px #DB4437, 0 0 4px 1px #F4B400, 0 0 4px 1px #0F9D58',
                           },
                         }}
                     />
