@@ -2,79 +2,56 @@
  * @fileoverview Firestore Security Rules for CampusConnect India.
  *
  * Core Philosophy:
- * This ruleset provides open read access to all data (events, clubs, benefits)
- * and restricts write access to only authenticated users. This is suitable for
- * a static website where all content is intended to be public and managed by
- * authorized administrators via a separate backend process.
+ * This ruleset allows public read access to all data (events, clubs, benefits) and disables write access, as the data is intended to be managed by administrators through other means (e.g., a separate admin panel or direct database updates).  This is for the Prototyping Phase where no client-side writes are needed.
  *
  * Data Structure:
- * - /events/{eventId}: Stores information about campus events.
- * - /clubs/{clubId}: Stores information about student clubs.
- * - /benefits/{benefitId}: Stores information about college ID benefits.
+ * - /events/{eventId}: Stores event information.
+ * - /clubs/{clubId}: Stores club information.
+ * - /benefits/{benefitId}: Stores benefit information.
  *
  * Key Security Decisions:
- * - Public Read Access: All collections are publicly readable to allow for
- *   easy display on the static website without authentication.
- * - Authenticated Writes: All write operations (create, update, delete) are
- *   restricted to authenticated users. Specific authorization checks based on
- *   roles or ownership are not implemented in this prototyping phase.
- *
- * Denormalization for Authorization:
- * Not applicable in this scenario because all data is public.
- *
- * Structural Segregation:
- * All collections are top-level and publicly readable, simplifying the
- * security rules.
+ * - Public read access is granted to all collections.
+ * - All write operations (create, update, delete) are explicitly denied to client applications, since no auth is required to view data.
+ * - No ownership checks or role-based access control is implemented in this version.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read events, but only authenticated users can create, update, or delete them.
+     * @description Grants public read access to events and denies all write operations.
      * @path /events/{eventId}
-     * @allow (get, list)
-     * @deny (create)
-     * @principle Allows public read access and authenticated writes.
+     * @allow get, list: Any unauthenticated user can read event data.
+     * @deny create, update, delete: No user can create, update, or delete event data.
+     * @principle Public read, no client-side writes.
      */
     match /events/{eventId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows anyone to read clubs, but only authenticated users can create, update, or delete them.
+     * @description Grants public read access to clubs and denies all write operations.
      * @path /clubs/{clubId}
-     * @allow (get, list)
-     * @deny (create)
-     * @principle Allows public read access and authenticated writes.
+     * @allow get, list: Any unauthenticated user can read club data.
+     * @deny create, update, delete: No user can create, update, or delete club data.
+     * @principle Public read, no client-side writes.
      */
     match /clubs/{clubId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows anyone to read benefits, but only authenticated users can create, update, or delete them.
+     * @description Grants public read access to benefits and denies all write operations.
      * @path /benefits/{benefitId}
-     * @allow (get, list)
-     * @deny (create)
-     * @principle Allows public read access and authenticated writes.
+     * @allow get, list: Any unauthenticated user can read benefit data.
+     * @deny create, update, delete: No user can create, update, or delete benefit data.
+     * @principle Public read, no client-side writes.
      */
     match /benefits/{benefitId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
-    }
-
-    // Helper function to check if the user is signed in.
-    function isSignedIn() {
-      return request.auth != null;
+      allow create, update, delete: if false;
     }
   }
 }
