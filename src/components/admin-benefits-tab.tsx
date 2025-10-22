@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useBenefits } from "../hooks/use-benefits";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2, Upload } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,6 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import Link from "next/link";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title is required."),
@@ -145,9 +146,16 @@ export default function AdminBenefitsTab() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
+                    <div className="flex items-center gap-2">
+                      <FormControl>
+                        <Input placeholder="https://example.com/image.png" {...field} />
+                      </FormControl>
+                      <Button variant="outline" asChild>
+                        <Link href="https://postimages.org/" target="_blank">
+                          <Upload className="mr-2 h-4 w-4" /> Upload
+                        </Link>
+                      </Button>
+                    </div>
                     <FormDescription>
                       The URL of an image for the benefit.
                     </FormDescription>

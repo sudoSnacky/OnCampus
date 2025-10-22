@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useClubs } from "../hooks/use-clubs";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2, Upload } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,6 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import Link from "next/link";
 
 
 const FormSchema = z.object({
@@ -126,9 +127,16 @@ export default function AdminClubsTab() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
+                     <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input placeholder="https://example.com/image.png" {...field} />
+                        </FormControl>
+                        <Button variant="outline" asChild>
+                            <Link href="https://postimages.org/" target="_blank">
+                                <Upload className="mr-2 h-4 w-4" /> Upload
+                            </Link>
+                        </Button>
+                    </div>
                     <FormDescription>
                       The URL of an image for the club.
                     </FormDescription>
