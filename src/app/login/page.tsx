@@ -91,7 +91,7 @@ export default function LoginPage() {
             <Card className="w-full max-w-sm shadow-2xl">
                 <CardHeader className="text-center">
                     <div className="mx-auto mb-4 flex justify-center">
-                        <Icons.logo className="h-12 w-auto" />
+                        <Icons.logo />
                     </div>
                     <CardTitle className="font-headline text-2xl">Admin Login</CardTitle>
                     <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
