@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 import { Button } from '../../../components/ui/button';
 import { Badge } from '../../../components/ui/badge';
 import { useClubs } from '../../../hooks/use-clubs';
-import { PlaceHolderImages } from '../../../lib/placeholder-images';
 
 export default function ClubsPage() {
   const { clubs } = useClubs();
@@ -24,13 +23,12 @@ export default function ClubsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {clubs.map((club) => {
-          const image = PlaceHolderImages.find(p => p.id === club.imageId);
           return (
             <Card key={club.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
               <div className="relative h-48 w-full">
-                {image && (
+                {club.imageUrl && (
                    <Image
-                      src={image.imageUrl}
+                      src={club.imageUrl}
                       alt={club.name}
                       fill
                       className="object-cover"

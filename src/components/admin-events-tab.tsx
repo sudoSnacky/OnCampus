@@ -45,7 +45,7 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "A date for the event is required.",
   }),
-  imageId: z.string().optional(),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -60,14 +60,12 @@ export default function AdminEventsTab() {
         title: "",
         location: "",
         description: "",
+        imageUrl: "",
     }
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    addEvent({
-      ...data,
-      imageId: data.imageId || '',
-    });
+    addEvent(data);
     toast({
       title: "Event Created!",
       description: `"${data.title}" has been added to the calendar.`,
@@ -181,15 +179,15 @@ export default function AdminEventsTab() {
 
                <FormField
                 control={form.control}
-                name="imageId"
+                name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image Placeholder ID</FormLabel>
+                    <FormLabel>Image URL</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., event-1" {...field} />
+                      <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
                     <FormDescription>
-                      This ID connects the event to an image in `src/lib/placeholder-images.json`.
+                      The URL of an image for the event.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

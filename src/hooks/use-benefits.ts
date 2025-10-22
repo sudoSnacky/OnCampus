@@ -13,7 +13,7 @@ export interface Benefit {
   provider: string;
   description: string;
   category: string;
-  imageId: string;
+  imageUrl: string;
   redirectUrl?: string;
 }
 

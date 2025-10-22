@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/card';
 import { Badge } from '../../../components/ui/badge';
 import { useBenefits } from '../../../hooks/use-benefits';
-import { PlaceHolderImages } from '../../../lib/placeholder-images';
 import { Button } from '../../../components/ui/button';
 import Link from 'next/link';
 
@@ -25,13 +24,12 @@ export default function BenefitsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {benefits.map((benefit) => {
-          const image = PlaceHolderImages.find(p => p.id === benefit.imageId);
           return (
             <Card key={benefit.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
               <div className="relative h-48 w-full">
-                {image && (
+                {benefit.imageUrl && (
                    <Image
-                      src={image.imageUrl}
+                      src={benefit.imageUrl}
                       alt={benefit.title}
                       fill
                       className="object-cover"

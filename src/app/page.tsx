@@ -1,10 +1,12 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Ticket, Users, Calendar } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Icons } from "../components/icons";
-import { PlaceHolderImages } from "../lib/placeholder-images";
+import { initialEvents } from "../lib/data";
+
 
 const features = [
   {
@@ -27,7 +29,10 @@ const features = [
   },
 ];
 
-const heroImage = PlaceHolderImages.find(p => p.id === 'hero-1');
+const heroImage = {
+  imageUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHVkZW50cyUyMGNvbGxhYm9yYXRpbmd8ZW58MHx8fHwxNzYwNzMzNDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+  description: "Students collaborating in a modern campus environment."
+};
 
 export default function Home() {
   return (

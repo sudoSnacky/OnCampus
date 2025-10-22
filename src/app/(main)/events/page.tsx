@@ -4,7 +4,6 @@
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/card';
 import { useEvents } from '../../../hooks/use-events';
-import { PlaceHolderImages } from '../../../lib/placeholder-images';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, MapPin } from 'lucide-react';
 import { Timestamp } from 'firebase/firestore';
@@ -107,15 +106,14 @@ export default function EventsPage() {
         <div className="md:col-span-2 space-y-8">
             {filteredEvents.length > 0 ? (
                 filteredEvents.map((event) => {
-                const image = PlaceHolderImages.find(p => p.id === event.imageId);
                 const eventDate = event.dateObj;
 
                 return (
                     <Card key={event.id} className="flex flex-col md:flex-row overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                         <div className="relative h-48 md:h-auto md:w-1/3">
-                            {image && (
+                            {event.imageUrl && (
                             <Image
-                                src={image.imageUrl}
+                                src={event.imageUrl}
                                 alt={event.title}
                                 fill
                                 className="object-cover md:rounded-l-lg md:rounded-r-none rounded-t-lg"
@@ -145,9 +143,9 @@ export default function EventsPage() {
                                 <DialogContent className="sm:max-w-[600px] bg-card">
                                   <DialogHeader>
                                     <div className="relative h-64 w-full rounded-lg overflow-hidden mb-4">
-                                      {image && (
+                                      {event.imageUrl && (
                                         <Image
-                                          src={image.imageUrl}
+                                          src={event.imageUrl}
                                           alt={event.title}
                                           fill
                                           className="object-cover"

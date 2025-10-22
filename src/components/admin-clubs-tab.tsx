@@ -32,7 +32,7 @@ const FormSchema = z.object({
   name: z.string().min(3, "Club name is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
-  imageId: z.string().optional(),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -47,15 +47,12 @@ export default function AdminClubsTab() {
       name: "",
       category: "",
       description: "",
-      imageId: ""
+      imageUrl: ""
     },
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    addClub({
-      ...data,
-      imageId: data.imageId || '',
-    });
+    addClub(data);
     toast({
       title: "Club Added!",
       description: `"${data.name}" has been added.`,
@@ -125,15 +122,15 @@ export default function AdminClubsTab() {
               />
                <FormField
                 control={form.control}
-                name="imageId"
+                name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image Placeholder ID</FormLabel>
+                    <FormLabel>Image URL</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., club-1" {...field} />
+                      <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
                     <FormDescription>
-                      This ID connects the club to an image in `src/lib/placeholder-images.json`.
+                      The URL of an image for the club.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

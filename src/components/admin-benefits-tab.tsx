@@ -32,7 +32,7 @@ const FormSchema = z.object({
   provider: z.string().min(2, "Provider is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
-  imageId: z.string().optional(),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
   redirectUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
 });
 
@@ -49,7 +49,7 @@ export default function AdminBenefitsTab() {
       provider: "",
       category: "",
       description: "",
-      imageId: "",
+      imageUrl: "",
       redirectUrl: "",
     },
   });
@@ -57,7 +57,6 @@ export default function AdminBenefitsTab() {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addBenefit({
       ...data,
-      imageId: data.imageId || '',
       redirectUrl: data.redirectUrl || '',
     });
     toast({
@@ -142,15 +141,15 @@ export default function AdminBenefitsTab() {
               />
               <FormField
                 control={form.control}
-                name="imageId"
+                name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image Placeholder ID</FormLabel>
+                    <FormLabel>Image URL</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., benefit-1" {...field} />
+                      <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
                     <FormDescription>
-                      This ID connects the benefit to an image in `src/lib/placeholder-images.json`.
+                      The URL of an image for the benefit.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

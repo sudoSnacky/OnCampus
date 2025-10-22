@@ -16,7 +16,7 @@ export interface CampusEvent {
   date: string | Timestamp;
   location: string;
   description: string;
-  imageId: string;
+  imageUrl: string;
 }
 
 export function useEvents() {

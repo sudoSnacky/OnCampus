@@ -11,7 +11,7 @@ export interface Club {
   name: string;
   category: string;
   description: string;
-  imageId: string;
+  imageUrl: string;
 }
 
 export function useClubs() {
