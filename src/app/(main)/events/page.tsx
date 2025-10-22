@@ -8,7 +8,7 @@ import { PlaceHolderImages } from '../../../lib/placeholder-images';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, MapPin } from 'lucide-react';
 import { Timestamp } from 'firebase/firestore';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Calendar } from '../../../components/ui/calendar';
 import { Button } from '../../../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '../../../components/ui/dialog';
@@ -18,11 +18,13 @@ export default function EventsPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
   // Sort events by date, future events first
-  const sortedEvents = [...events].sort((a, b) => {
-    const dateA = a.date instanceof Timestamp ? a.date.toDate() : new Date(a.date);
-    const dateB = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
-    return dateA.getTime() - dateB.getTime();
-  });
+  const sortedEvents = useMemo(() => {
+    return [...events].sort((a, b) => {
+      const dateA = a.date instanceof Timestamp ? a.date.toDate() : new Date(a.date);
+      const dateB = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }, [events]);
   
   const googleColors = ['#4285F4', '#DB4437', '#F4B400', '#0F9D58'];
 
