@@ -17,7 +17,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useEvents } from "../hooks/use-events";
-import { Calendar as CalendarIcon, PlusCircle, Trash2 } from "lucide-react";
+import { Calendar as CalendarIcon, PlusCircle, Sparkles, Trash2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import {
   Popover,
@@ -34,6 +34,8 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Timestamp } from "firebase/firestore";
+import { useState } from "react";
+import { generateContent } from "@/ai/flows/generate-content-flow";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters long."),
@@ -55,6 +57,7 @@ type FormData = z.infer<typeof FormSchema>;
 export default function AdminEventsTab() {
   const { toast } = useToast();
   const { events, addEvent, removeEvent, isInitialized } = useEvents();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -66,6 +69,38 @@ export default function AdminEventsTab() {
         imageUrl: "",
     }
   });
+
+  const handleGenerateContent = async () => {
+    const title = form.getValues("title");
+    if (!title) {
+      toast({
+        variant: "destructive",
+        title: "Title is required",
+        description: "Please enter an event title to generate content.",
+      });
+      return;
+    }
+    setIsGenerating(true);
+    try {
+      const result = await generateContent({ name: title, type: "Event" });
+      form.setValue("description", result.description);
+      form.setValue("longDescription", result.description);
+      form.setValue("imageUrl", `https://source.unsplash.com/800x600/?${encodeURIComponent(result.imageQuery)}`);
+      toast({
+        title: "Content Generated!",
+        description: "Description and image URL have been filled in.",
+      });
+    } catch (error) {
+      console.error("Failed to generate content:", error);
+      toast({
+        variant: "destructive",
+        title: "Generation Failed",
+        description: "Could not generate content. Please try again.",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addEvent({
@@ -180,7 +215,19 @@ export default function AdminEventsTab() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Short Description</FormLabel>
+                    <div className="flex items-center justify-between">
+                        <FormLabel>Short Description</FormLabel>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleGenerateContent}
+                            disabled={isGenerating}
+                        >
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            {isGenerating ? "Generating..." : "Generate with AI"}
+                        </Button>
+                    </div>
                     <FormControl>
                       <Textarea
                         rows={2}
