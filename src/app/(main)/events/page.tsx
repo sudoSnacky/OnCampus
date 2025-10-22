@@ -150,7 +150,7 @@ export default function EventsPage() {
                                 <DialogTrigger asChild>
                                   <Button variant="outline" className="mt-auto">Learn More</Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[600px] bg-background/95 backdrop-blur-sm">
+                                <DialogContent className="sm:max-w-[600px] bg-card">
                                   <DialogHeader>
                                     <div className="relative h-64 w-full rounded-lg overflow-hidden mb-4">
                                       {imageUrl && (
