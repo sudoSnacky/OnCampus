@@ -17,7 +17,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useEvents } from "../hooks/use-events";
-import { Calendar as CalendarIcon, PlusCircle, Sparkles, Trash2 } from "lucide-react";
+import { Calendar as CalendarIcon, Image as ImageIcon, PlusCircle, Sparkles, Trash2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import {
   Popover,
@@ -34,7 +34,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Timestamp } from "firebase/firestore";
-import { generateEventContent } from "@/ai/flows/generate-content-flow";
+import { generateEventDescription, generateEventImage } from "@/ai/flows/generate-content-flow";
 import { useState } from "react";
 
 const FormSchema = z.object({
@@ -50,6 +50,7 @@ const FormSchema = z.object({
     required_error: "A date for the event is required.",
   }),
   imageUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  imagePrompt: z.string().optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -61,7 +62,8 @@ const isAiEnabled = !!process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 export default function AdminEventsTab() {
   const { toast } = useToast();
   const { events, addEvent, removeEvent, isInitialized } = useEvents();
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
+  const [isGeneratingImg, setIsGeneratingImg] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -71,10 +73,11 @@ export default function AdminEventsTab() {
         description: "",
         longDescription: "",
         imageUrl: "",
+        imagePrompt: "",
     }
   });
 
-  const handleGenerateContent = async () => {
+  const handleGenerateDescription = async () => {
     const title = form.getValues("title");
     if (!title) {
       toast({
@@ -85,27 +88,60 @@ export default function AdminEventsTab() {
       return;
     }
 
-    setIsGenerating(true);
+    setIsGeneratingDesc(true);
     try {
-      const result = await generateEventContent(title);
+      const result = await generateEventDescription(title);
       if (result) {
         form.setValue("description", result.description, { shouldValidate: true });
         form.setValue("longDescription", result.longDescription, { shouldValidate: true });
-        form.setValue("imageUrl", result.imageUrl, { shouldValidate: true });
+        form.setValue("imagePrompt", result.imagePrompt, { shouldValidate: true });
         toast({
           title: "Content Generated!",
-          description: "AI has created the description and image URL.",
+          description: "AI has created the description and image prompt.",
         });
       }
     } catch (error) {
-      console.error("AI Generation Error:", error);
+      console.error("AI Description Generation Error:", error);
       toast({
         variant: "destructive",
         title: "AI Generation Failed",
-        description: "Could not generate content. Please check your API key and try again.",
+        description: "Could not generate text content. Please check your API key and try again.",
       });
     } finally {
-      setIsGenerating(false);
+      setIsGeneratingDesc(false);
+    }
+  };
+
+  const handleGenerateImage = async () => {
+    const imagePrompt = form.getValues("imagePrompt");
+    if (!imagePrompt) {
+      toast({
+        variant: "destructive",
+        title: "Image Prompt is missing",
+        description: "Please generate a description first to get an image prompt.",
+      });
+      return;
+    }
+
+    setIsGeneratingImg(true);
+    try {
+      const result = await generateEventImage(imagePrompt);
+      if (result) {
+        form.setValue("imageUrl", result.imageUrl, { shouldValidate: true });
+        toast({
+          title: "Image Generated!",
+          description: "AI has created a new image for your event.",
+        });
+      }
+    } catch (error) {
+      console.error("AI Image Generation Error:", error);
+      toast({
+        variant: "destructive",
+        title: "AI Image Generation Failed",
+        description: "Could not generate an image. Please try again.",
+      });
+    } finally {
+      setIsGeneratingImg(false);
     }
   };
 
@@ -132,7 +168,7 @@ export default function AdminEventsTab() {
             Add New Event
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new event to the calendar. You can use a site like ImgBB to upload images and get a URL.
+            Fill in the details to add a new event to the calendar. You can use AI to help with content creation.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -151,19 +187,7 @@ export default function AdminEventsTab() {
                   </FormItem>
                 )}
               />
-               <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              
               <FormField
                 control={form.control}
                 name="location"
@@ -254,19 +278,51 @@ export default function AdminEventsTab() {
                   </FormItem>
                 )}
               />
+                {isAiEnabled && (
+                <div className="flex items-center justify-center rounded-lg border border-dashed p-4">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="w-full"
+                    onClick={handleGenerateDescription}
+                    disabled={isGeneratingDesc || isGeneratingImg}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    {isGeneratingDesc ? "Generating Text..." : "Generate Descriptions with AI"}
+                  </Button>
+                </div>
+              )}
+               <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <Input placeholder="https://example.com/image.png" {...field} />
+                         {isAiEnabled && (
+                           <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={handleGenerateImage}
+                            disabled={isGeneratingImg || isGeneratingDesc || !form.watch("imagePrompt")}
+                            title="Generate Image with AI"
+                           >
+                            <ImageIcon className="h-4 w-4"/>
+                           </Button>
+                         )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button type="submit" className="w-full sm:w-auto" disabled={!isInitialized}>
                   Create Event
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full sm:w-auto"
-                  onClick={handleGenerateContent}
-                  disabled={!isAiEnabled || isGenerating}
-                >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  {isGenerating ? "Generating..." : "Generate with AI"}
                 </Button>
               </div>
               {!isAiEnabled && (
