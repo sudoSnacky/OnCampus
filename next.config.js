@@ -15,6 +15,13 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Exclude server-only modules from client-side bundles
+      config.externals.push('long-timeout', 'nice-grpc-prometheus', '@opentelemetry/sdk-node');
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig;
