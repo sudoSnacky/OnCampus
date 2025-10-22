@@ -70,3 +70,18 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+    .day-google-blue[aria-selected="true"] {
+        @apply bg-[#4285F4] text-primary-foreground;
+    }
+    .day-google-red[aria-selected="true"] {
+        @apply bg-[#DB4437] text-primary-foreground;
+    }
+    .day-google-yellow[aria-selected="true"] {
+        @apply bg-[#F4B400] text-primary-foreground;
+    }
+    .day-google-green[aria-selected="true"] {
+        @apply bg-[#0F9D58] text-primary-foreground;
+    }
+}

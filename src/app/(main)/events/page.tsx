@@ -8,7 +8,7 @@ import { PlaceHolderImages } from '../../../lib/placeholder-images';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, MapPin } from 'lucide-react';
 import { Timestamp } from 'firebase/firestore';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Calendar } from '../../../components/ui/calendar';
 import { Button } from '../../../components/ui/button';
 
@@ -25,12 +25,20 @@ export default function EventsPage() {
   
   const googleColors = ['#4285F4', '#DB4437', '#F4B400', '#0F9D58'];
 
-  const eventModifiers = useMemo(() => {
-    const modifiers: { [key: string]: Date[] } = {
+  const [eventModifiers, setEventModifiers] = useState<Record<string, Date[]>>({});
+
+  useEffect(() => {
+    const modifiers: Record<string, Date[]> = {
         googleBlue: [],
         googleRed: [],
         googleYellow: [],
         googleGreen: [],
+    };
+    const colorMap: Record<string, string> = {
+        '#4285F4': 'googleBlue',
+        '#DB4437': 'googleRed',
+        '#F4B400': 'googleYellow',
+        '#0F9D58': 'googleGreen',
     };
     const eventDates = new Set<string>();
 
@@ -40,15 +48,14 @@ export default function EventsPage() {
       
       if (!eventDates.has(dateString)) {
         const randomColor = googleColors[Math.floor(Math.random() * googleColors.length)];
-        if (randomColor === '#4285F4') modifiers.googleBlue.push(eventDate);
-        else if (randomColor === '#DB4437') modifiers.googleRed.push(eventDate);
-        else if (randomColor === '#F4B400') modifiers.googleYellow.push(eventDate);
-        else if (randomColor === '#0F9D58') modifiers.googleGreen.push(eventDate);
+        const modifierClass = colorMap[randomColor];
+        if (modifierClass) {
+            modifiers[modifierClass].push(eventDate);
+        }
         eventDates.add(dateString);
       }
     });
-
-    return modifiers;
+    setEventModifiers(modifiers);
   }, [sortedEvents]);
 
 
@@ -81,11 +88,17 @@ export default function EventsPage() {
                         onSelect={setSelectedDate}
                         className="rounded-md"
                         modifiers={eventModifiers}
+                        modifiersClassNames={{
+                            googleBlue: 'day-google-blue',
+                            googleRed: 'day-google-red',
+                            googleYellow: 'day-google-yellow',
+                            googleGreen: 'day-google-green',
+                        }}
                         modifiersStyles={{
-                            googleBlue: { boxShadow: '0 0 0 2px #4285F4' },
-                            googleRed: { boxShadow: '0 0 0 2px #DB4437' },
-                            googleYellow: { boxShadow: '0 0 0 2px #F4B400' },
-                            googleGreen: { boxShadow: '0 0 0 2px #0F9D58' },
+                            googleBlue: { boxShadow: '0 0 8px 2px #4285F4' },
+                            googleRed: { boxShadow: '0 0 8px 2px #DB4437' },
+                            googleYellow: { boxShadow: '0 0 8px 2px #F4B400' },
+                            googleGreen: { boxShadow: '0 0 8px 2px #0F9D58' },
                         }}
                     />
                 </CardContent>
