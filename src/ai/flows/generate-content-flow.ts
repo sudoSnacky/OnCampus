@@ -1,41 +1,48 @@
 'use server';
 /**
- * @fileOverview This file defines Genkit flows for generating event content.
- * It uses AI to create descriptions and image URLs based on an event title.
+ * @fileOverview This file defines a generic Genkit flow for generating content.
+ * It uses AI to create descriptions and image prompts based on a title and entity type.
  *
- * - generateEventDescription: Generates text content (descriptions, image prompt).
- * - generateEventImage: Generates an image from a given prompt.
+ * - generateEntityDescription: Generates text content for an entity.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-// Define the output schema for the description generation prompt.
-const DescriptionGenerationSchema = z.object({
-  description: z.string().describe('A short, engaging description for the event, suitable for a summary card. Max 2-3 sentences.'),
-  longDescription: z.string().describe('A longer, more detailed description for an event details page. Can be a few paragraphs.'),
-  imagePrompt: z.string().describe('A creative, descriptive prompt for a text-to-image model to generate a visually appealing and relevant image for the event. This should be abstract or conceptual, not literal.'),
+// Define the input schema for the content generation flow.
+const GenerateContentInputSchema = z.object({
+    title: z.string(),
+    type: z.enum(['Event', 'Club', 'Benefit']),
 });
 
-export type EventDescription = z.infer<typeof DescriptionGenerationSchema>;
+// Define the output schema for the content generation flow.
+const GeneratedContentSchema = z.object({
+  description: z.string().describe('A short, engaging description for the entity, suitable for a summary card. Max 2-3 sentences.'),
+  longDescription: z.string().describe('A longer, more detailed description for the entity details page. Can be a few paragraphs.'),
+  imagePrompt: z.string().describe('A creative, descriptive prompt for a text-to-image model to generate a visually appealing and relevant image for the entity. This should be abstract or conceptual, not literal.'),
+});
+
+export type GeneratedContent = z.infer<typeof GeneratedContentSchema>;
+
+// Define the prompt using the schemas.
+const contentGenerationPrompt = ai.definePrompt({
+    name: 'contentGenerationPrompt',
+    input: { schema: GenerateContentInputSchema },
+    output: { schema: GeneratedContentSchema },
+    prompt: `You are an expert marketer for a college campus in India.
+    Given the {{type}} titled "{{title}}", generate a short description, a long description, and a creative image prompt.
+    The tone should be exciting and tailored to students.`,
+});
 
 
 /**
- * Generates textual content for an event based on its title.
- * @param title The title of the event.
+ * Generates textual content for an event, club, or benefit.
+ * @param title The title of the entity.
+ * @param type The type of entity ('Event', 'Club', or 'Benefit').
  * @returns An object containing a short description, long description, and an image prompt.
  */
-export async function generateEventDescription(title: string): Promise<EventDescription> {
-  const descriptionPrompt = ai.definePrompt({
-    name: 'descriptionGenerationPrompt',
-    input: { schema: z.string() },
-    output: { schema: DescriptionGenerationSchema },
-    prompt: `You are an expert event planner and marketer for a college campus in India.
-    Given the event title "{{query}}", generate a short description, a long description, and a creative image prompt.
-    The tone should be exciting and tailored to students.`,
-  });
-
-  const { output } = await descriptionPrompt(title);
+export async function generateEntityDescription(title: string, type: 'Event' | 'Club' | 'Benefit'): Promise<GeneratedContent> {
+  const { output } = await contentGenerationPrompt({ title, type });
 
   if (!output) {
     throw new Error('Failed to generate text content.');

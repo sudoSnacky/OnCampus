@@ -25,6 +25,7 @@ export type CampusEvent = {
   date: string | Timestamp;
   location: string;
   description: string;
+  longDescription?: string;
   imageId: string;
 };
 
@@ -139,4 +140,13 @@ export const initialEvents: CampusEvent[] = [
     description: "A grand celebration of Diwali with food stalls, cultural performances, and a spectacular light show.",
     imageId: "event-3",
   },
+   {
+    id: "event-4",
+    title: "Holi Celebration - Festival of Colors",
+    date: "2025-03-25T11:00:00Z",
+    location: "University Sports Complex",
+    description: "Join us for a vibrant and joyous Holi celebration! Play with organic colors, enjoy traditional music, and savor delicious festive treats.",
+    longDescription: "Get ready to immerse yourself in the festival of colors! The university is hosting a grand Holi celebration, complete with eco-friendly organic colors, a live DJ playing festive music, and food stalls offering traditional Indian sweets and snacks. It's a perfect opportunity to de-stress, have fun with friends, and experience the rich culture of this wonderful festival. Don't forget to wear white!",
+    imageId: "https://images.unsplash.com/photo-1580538162817-7a8932342370?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxIb2xpJTIwZmVzdGl2YWwlMjBjb2xvcnN8ZW58MHx8fHwxNzYwNzc4MjM3fDA&ixlib=rb-4.1.0&q=80&w=1080"
+  }
 ];

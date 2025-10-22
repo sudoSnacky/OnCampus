@@ -17,7 +17,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useClubs } from "../hooks/use-clubs";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Sparkles, Trash2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -25,19 +25,27 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { useState } from "react";
+import { generateEntityDescription } from "@/ai/flows/generate-content-flow";
+
 
 const FormSchema = z.object({
   name: z.string().min(3, "Club name is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
   imageUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  imagePrompt: z.string().optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
 
+// Check if the Gemini API key is available in the environment
+const isAiEnabled = !!process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+
 export default function AdminClubsTab() {
   const { toast } = useToast();
   const { clubs, addClub, removeClub, isInitialized } = useClubs();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -46,8 +54,44 @@ export default function AdminClubsTab() {
       category: "",
       description: "",
       imageUrl: "",
+      imagePrompt: ""
     },
   });
+
+  const handleGenerateContent = async () => {
+    const title = form.getValues("name");
+    if (!title) {
+      toast({
+        variant: "destructive",
+        title: "Name is missing",
+        description: "Please enter a club name to generate content.",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const result = await generateEntityDescription(title, 'Club');
+      if (result) {
+        // For clubs, we can concatenate short and long for the main description.
+        form.setValue("description", `${result.description}\n\n${result.longDescription}`, { shouldValidate: true });
+        form.setValue("imagePrompt", result.imagePrompt, { shouldValidate: true });
+        toast({
+          title: "Content Generated!",
+          description: "AI has created the description and an image prompt.",
+        });
+      }
+    } catch (error) {
+      console.error("AI Content Generation Error:", error);
+      toast({
+        variant: "destructive",
+        title: "AI Generation Failed",
+        description: "Could not generate content. Please check your API key and try again.",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addClub({
@@ -111,6 +155,18 @@ export default function AdminClubsTab() {
                   <FormItem>
                     <div className="flex items-center justify-between">
                       <FormLabel>Description</FormLabel>
+                       {isAiEnabled && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleGenerateContent}
+                          disabled={isGenerating}
+                        >
+                          <Sparkles className="mr-2 h-4 w-4" />
+                          {isGenerating ? "Generating..." : "Generate with AI"}
+                        </Button>
+                      )}
                     </div>
                     <FormControl>
                       <Textarea

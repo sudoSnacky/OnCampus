@@ -34,7 +34,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Timestamp } from "firebase/firestore";
-import { generateEventDescription, generateEventImage } from "@/ai/flows/generate-content-flow";
+import { generateEntityDescription, generateEventImage } from "@/ai/flows/generate-content-flow";
 import { useState } from "react";
 
 const FormSchema = z.object({
@@ -62,7 +62,7 @@ const isAiEnabled = !!process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 export default function AdminEventsTab() {
   const { toast } = useToast();
   const { events, addEvent, removeEvent, isInitialized } = useEvents();
-  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingImg, setIsGeneratingImg] = useState(false);
 
   const form = useForm<FormData>({
@@ -88,9 +88,9 @@ export default function AdminEventsTab() {
       return;
     }
 
-    setIsGeneratingDesc(true);
+    setIsGenerating(true);
     try {
-      const result = await generateEventDescription(title);
+      const result = await generateEntityDescription(title, 'Event');
       if (result) {
         form.setValue("description", result.description, { shouldValidate: true });
         form.setValue("longDescription", result.longDescription, { shouldValidate: true });
@@ -108,7 +108,7 @@ export default function AdminEventsTab() {
         description: "Could not generate text content. Please check your API key and try again.",
       });
     } finally {
-      setIsGeneratingDesc(false);
+      setIsGenerating(false);
     }
   };
 
@@ -242,6 +242,22 @@ export default function AdminEventsTab() {
                   </FormItem>
                 )}
               />
+              
+              {isAiEnabled && (
+                <div className="flex items-center justify-center rounded-lg border border-dashed p-4">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="w-full"
+                    onClick={handleGenerateDescription}
+                    disabled={isGenerating || isGeneratingImg}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    {isGenerating ? "Generating Text..." : "Generate Descriptions with AI"}
+                  </Button>
+                </div>
+              )}
+
               <FormField
                 control={form.control}
                 name="description"
@@ -278,20 +294,7 @@ export default function AdminEventsTab() {
                   </FormItem>
                 )}
               />
-                {isAiEnabled && (
-                <div className="flex items-center justify-center rounded-lg border border-dashed p-4">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="w-full"
-                    onClick={handleGenerateDescription}
-                    disabled={isGeneratingDesc || isGeneratingImg}
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    {isGeneratingDesc ? "Generating Text..." : "Generate Descriptions with AI"}
-                  </Button>
-                </div>
-              )}
+
                <FormField
                 control={form.control}
                 name="imageUrl"
@@ -307,7 +310,7 @@ export default function AdminEventsTab() {
                             variant="outline"
                             size="icon"
                             onClick={handleGenerateImage}
-                            disabled={isGeneratingImg || isGeneratingDesc || !form.watch("imagePrompt")}
+                            disabled={isGeneratingImg || isGenerating || !form.watch("imagePrompt")}
                             title="Generate Image with AI"
                            >
                             <ImageIcon className="h-4 w-4"/>
