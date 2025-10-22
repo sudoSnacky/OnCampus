@@ -17,7 +17,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useBenefits } from "../hooks/use-benefits";
-import { PlusCircle, Sparkles, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -25,28 +25,21 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { generateEntityDescription } from "@/ai/flows/generate-content-flow";
-import { useState } from "react";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title is required."),
   provider: z.string().min(2, "Provider is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
-  imageUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  imageId: z.string().optional(),
   redirectUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
-  imagePrompt: z.string().optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
 
-// Check if the Gemini API key is available in the environment
-const isAiEnabled = !!process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-
 export default function AdminBenefitsTab() {
   const { toast } = useToast();
   const { benefits, addBenefit, removeBenefit, isInitialized } = useBenefits();
-  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -55,53 +48,15 @@ export default function AdminBenefitsTab() {
       provider: "",
       category: "",
       description: "",
-      imageUrl: "",
+      imageId: "",
       redirectUrl: "",
-      imagePrompt: ""
     },
   });
   
-  const handleGenerateContent = async () => {
-    const title = form.getValues("title");
-    if (!title) {
-      toast({
-        variant: "destructive",
-        title: "Title is missing",
-        description: "Please enter a title to generate content.",
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-    try {
-      const result = await generateEntityDescription(title, 'Benefit');
-      if (result) {
-        form.setValue("description", result.description, { shouldValidate: true });
-        // For benefits, we can concatenate short and long for the main description.
-        form.setValue("description", `${result.description}\n\n${result.longDescription}`, { shouldValidate: true });
-        form.setValue("imagePrompt", result.imagePrompt, { shouldValidate: true });
-        toast({
-          title: "Content Generated!",
-          description: "AI has created the description and an image prompt.",
-        });
-      }
-    } catch (error) {
-      console.error("AI Content Generation Error:", error);
-      toast({
-        variant: "destructive",
-        title: "AI Generation Failed",
-        description: "Could not generate content. Please check your API key and try again.",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addBenefit({
       ...data,
-      imageId: data.imageUrl || '',
+      imageId: data.imageId || '',
       redirectUrl: data.redirectUrl || '',
     });
     toast({
@@ -120,7 +75,7 @@ export default function AdminBenefitsTab() {
             Add New Benefit
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new student benefit. You can use a site like ImgBB to upload images and get a URL.
+            Fill in the details to add a new student benefit.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -172,21 +127,7 @@ export default function AdminBenefitsTab() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center justify-between">
-                      <FormLabel>Description</FormLabel>
-                       {isAiEnabled && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleGenerateContent}
-                          disabled={isGenerating}
-                        >
-                          <Sparkles className="mr-2 h-4 w-4" />
-                           {isGenerating ? "Generating..." : "Generate with AI"}
-                        </Button>
-                      )}
-                    </div>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
                         rows={3}
@@ -200,12 +141,12 @@ export default function AdminBenefitsTab() {
               />
               <FormField
                 control={form.control}
-                name="imageUrl"
+                name="imageId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image URL</FormLabel>
+                    <FormLabel>Image Placeholder ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
+                      <Input placeholder="e.g., benefit-1" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

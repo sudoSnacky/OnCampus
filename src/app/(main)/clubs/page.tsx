@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -23,20 +24,16 @@ export default function ClubsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {clubs.map((club) => {
-          const isUrl = club.imageId.startsWith('http');
-          const image = !isUrl ? PlaceHolderImages.find(p => p.id === club.imageId) : null;
-          const imageUrl = isUrl ? club.imageId : image?.imageUrl;
-          const imageHint = image?.imageHint;
+          const image = PlaceHolderImages.find(p => p.id === club.imageId);
           return (
             <Card key={club.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
               <div className="relative h-48 w-full">
-                {imageUrl && (
+                {image && (
                    <Image
-                      src={imageUrl}
+                      src={image.imageUrl}
                       alt={club.name}
                       fill
                       className="object-cover"
-                      data-ai-hint={imageHint}
                    />
                 )}
               </div>

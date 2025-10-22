@@ -75,7 +75,6 @@ export default function Home() {
                       alt={heroImage.description}
                       fill
                       className="object-cover transition-transform duration-500 hover:scale-105"
-                      data-ai-hint={heroImage.imageHint}
                       priority
                     />
                 )}

@@ -107,22 +107,18 @@ export default function EventsPage() {
         <div className="md:col-span-2 space-y-8">
             {filteredEvents.length > 0 ? (
                 filteredEvents.map((event) => {
-                const isUrl = event.imageId.startsWith('http');
-                const image = !isUrl ? PlaceHolderImages.find(p => p.id === event.imageId) : null;
-                const imageUrl = isUrl ? event.imageId : image?.imageUrl;
-                const imageHint = image?.imageHint;
+                const image = PlaceHolderImages.find(p => p.id === event.imageId);
                 const eventDate = event.dateObj;
 
                 return (
                     <Card key={event.id} className="flex flex-col md:flex-row overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                         <div className="relative h-48 md:h-auto md:w-1/3">
-                            {imageUrl && (
+                            {image && (
                             <Image
-                                src={imageUrl}
+                                src={image.imageUrl}
                                 alt={event.title}
                                 fill
                                 className="object-cover md:rounded-l-lg md:rounded-r-none rounded-t-lg"
-                                data-ai-hint={imageHint}
                             />
                             )}
                         </div>
@@ -149,13 +145,12 @@ export default function EventsPage() {
                                 <DialogContent className="sm:max-w-[600px] bg-card">
                                   <DialogHeader>
                                     <div className="relative h-64 w-full rounded-lg overflow-hidden mb-4">
-                                      {imageUrl && (
+                                      {image && (
                                         <Image
-                                          src={imageUrl}
+                                          src={image.imageUrl}
                                           alt={event.title}
                                           fill
                                           className="object-cover"
-                                          data-ai-hint={imageHint}
                                         />
                                       )}
                                     </div>
@@ -172,7 +167,7 @@ export default function EventsPage() {
                                     </DialogDescription>
                                   </DialogHeader>
                                   <div className="py-4 text-foreground/80">
-                                    <p>{event.longDescription || event.description}</p>
+                                    <p>{event.description}</p>
                                   </div>
                                   <DialogFooter>
                                     <Button type="button" variant="secondary">RSVP (Placeholder)</Button>
