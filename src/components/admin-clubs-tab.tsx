@@ -41,6 +41,7 @@ export default function AdminClubsTab() {
   const { toast } = useToast();
   const { clubs, addClub, removeClub, isInitialized } = useClubs();
   const [isGenerating, setIsGenerating] = useState(false);
+  const isAiEnabled = !!process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -76,7 +77,7 @@ export default function AdminClubsTab() {
       toast({
         variant: "destructive",
         title: "Generation Failed",
-        description: "Could not generate content. Please try again.",
+        description: "Could not generate content. Is the Gemini API key configured?",
       });
     } finally {
       setIsGenerating(false);
@@ -150,7 +151,7 @@ export default function AdminClubsTab() {
                         variant="ghost"
                         size="sm"
                         onClick={handleGenerateContent}
-                        disabled={isGenerating}
+                        disabled={isGenerating || !isAiEnabled}
                       >
                         <Sparkles className="mr-2 h-4 w-4" />
                         {isGenerating ? "Generating..." : "Generate with AI"}
@@ -163,6 +164,7 @@ export default function AdminClubsTab() {
                         {...field}
                       />
                     </FormControl>
+                    {!isAiEnabled && <p className="text-xs text-muted-foreground">To enable AI generation, add your Gemini API Key to the .env.local file.</p>}
                     <FormMessage />
                   </FormItem>
                 )}
