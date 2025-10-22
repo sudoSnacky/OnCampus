@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Ticket, Users, Calendar, Sparkles } from "lucide-react";
+import { ArrowRight, Ticket, Users, Calendar } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Icons } from "../components/icons";
-import RecommendationEngine from "../components/recommendation-engine";
 import { PlaceHolderImages } from "../lib/placeholder-images";
 
 const features = [
@@ -59,11 +58,11 @@ export default function Home() {
                   <span className="text-primary">Supercharged</span>.
                 </h1>
                 <p className="max-w-xl text-lg text-foreground/80">
-                  Welcome to OnCampus India! The single platform to discover student benefits, join exciting clubs, and never miss an event. Powered by AI to personalize your campus experience.
+                  Welcome to OnCampus India! The single platform to discover student benefits, join exciting clubs, and never miss an event.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" asChild>
-                    <Link href="#recommendations">
+                    <Link href="#features">
                       Get Started <ArrowRight className="ml-2" />
                     </Link>
                   </Button>
@@ -110,27 +109,6 @@ export default function Home() {
                     </Button>
                 </Card>
               ))}
-            </div>
-          </div>
-        </section>
-        
-        <section id="recommendations" className="py-20 md:py-28">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold flex items-center justify-center gap-3">
-                <Sparkles className="h-8 w-8 text-primary" />
-                Personalized For You
-              </h2>
-              <p className="mt-4 text-lg text-foreground/70">
-                Tell us what you're passionate about, and our AI will curate a list of benefits, clubs, and events just for you.
-              </p>
-            </div>
-            <div className="mt-12 max-w-4xl mx-auto">
-              <Card className="bg-white dark:bg-gray-900 shadow-xl border-border/80 rounded-2xl">
-                <CardContent className="p-8">
-                  <RecommendationEngine />
-                </CardContent>
-              </Card>
             </div>
           </div>
         </section>
