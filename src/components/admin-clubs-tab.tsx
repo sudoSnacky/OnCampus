@@ -25,7 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useEffect } from "react";
 
 const FormSchema = z.object({
   name: z.string().min(3, "Club name is required."),
@@ -49,15 +48,6 @@ export default function AdminClubsTab() {
       imageUrl: "",
     },
   });
-
-  useEffect(() => {
-    form.reset({
-      name: "",
-      category: "",
-      description: "",
-      imageUrl: "",
-    });
-  }, [clubs]);
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addClub({

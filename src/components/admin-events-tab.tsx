@@ -33,7 +33,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useEffect } from "react";
 import { Timestamp } from "firebase/firestore";
 
 const FormSchema = z.object({
@@ -67,18 +66,6 @@ export default function AdminEventsTab() {
         imageUrl: "",
     }
   });
-
-  useEffect(() => {
-    form.reset({
-      title: "",
-      location: "",
-      description: "",
-      longDescription: "",
-      date: new Date(),
-      imageUrl: "",
-    });
-  }, [events]);
-
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addEvent({

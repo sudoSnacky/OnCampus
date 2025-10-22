@@ -25,7 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useEffect } from "react";
 
 const FormSchema = z.object({
   title: z.string().min(3, "Title is required."),
@@ -53,18 +52,6 @@ export default function AdminBenefitsTab() {
       redirectUrl: "",
     },
   });
-
-   useEffect(() => {
-    form.reset({
-      title: "",
-      provider: "",
-      category: "",
-      description: "",
-      imageUrl: "",
-      redirectUrl: "",
-    });
-  }, [benefits]);
-
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addBenefit({
