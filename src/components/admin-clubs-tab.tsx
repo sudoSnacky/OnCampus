@@ -17,7 +17,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useClubs } from "../hooks/use-clubs";
-import { PlusCircle, Sparkles, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -25,8 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useState } from "react";
-import { generateContent } from "@/ai/flows/generate-content-flow";
 
 const FormSchema = z.object({
   name: z.string().min(3, "Club name is required."),
@@ -40,8 +38,6 @@ type FormData = z.infer<typeof FormSchema>;
 export default function AdminClubsTab() {
   const { toast } = useToast();
   const { clubs, addClub, removeClub, isInitialized } = useClubs();
-  const [isGenerating, setIsGenerating] = useState(false);
-  const isAiEnabled = !!process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -52,37 +48,6 @@ export default function AdminClubsTab() {
       imageUrl: "",
     },
   });
-
-  const handleGenerateContent = async () => {
-    const name = form.getValues("name");
-    if (!name) {
-      toast({
-        variant: "destructive",
-        title: "Name is required",
-        description: "Please enter a club name to generate content.",
-      });
-      return;
-    }
-    setIsGenerating(true);
-    try {
-      const result = await generateContent({ name: name, type: "Club" });
-      form.setValue("description", result.description);
-      form.setValue("imageUrl", `https://source.unsplash.com/800x600/?${encodeURIComponent(result.imageQuery)}`);
-      toast({
-        title: "Content Generated!",
-        description: "Description and image URL have been filled in.",
-      });
-    } catch (error) {
-      console.error("Failed to generate content:", error);
-      toast({
-        variant: "destructive",
-        title: "Generation Failed",
-        description: "Could not generate content. Is the Gemini API key configured?",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     addClub({
@@ -146,16 +111,6 @@ export default function AdminClubsTab() {
                   <FormItem>
                     <div className="flex items-center justify-between">
                       <FormLabel>Description</FormLabel>
-                       <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleGenerateContent}
-                        disabled={isGenerating || !isAiEnabled}
-                      >
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        {isGenerating ? "Generating..." : "Generate with AI"}
-                      </Button>
                     </div>
                     <FormControl>
                       <Textarea
@@ -164,7 +119,6 @@ export default function AdminClubsTab() {
                         {...field}
                       />
                     </FormControl>
-                    {!isAiEnabled && <p className="text-xs text-muted-foreground">To enable AI generation, add your Gemini API Key to the .env.local file.</p>}
                     <FormMessage />
                   </FormItem>
                 )}
