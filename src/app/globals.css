@@ -76,15 +76,27 @@ body {
       @apply bg-primary text-primary-foreground;
     }
     .day-google-blue[aria-selected="true"] {
-        @apply bg-[#4285F4] text-primary-foreground;
+        @apply bg-[#4285F4] text-white;
+    }
+    .day-google-blue:hover {
+        @apply bg-[#4285F4]/80 text-white;
     }
     .day-google-red[aria-selected="true"] {
-        @apply bg-[#DB4437] text-primary-foreground;
+        @apply bg-[#DB4437] text-white;
+    }
+    .day-google-red:hover {
+        @apply bg-[#DB4437]/80 text-white;
     }
     .day-google-yellow[aria-selected="true"] {
-        @apply bg-[#F4B400] text-primary-foreground;
+        @apply bg-[#F4B400] text-white;
+    }
+    .day-google-yellow:hover {
+        @apply bg-[#F4B400]/80 text-white;
     }
     .day-google-green[aria-selected="true"] {
-        @apply bg-[#0F9D58] text-primary-foreground;
+        @apply bg-[#0F9D58] text-white;
+    }
+    .day-google-green:hover {
+        @apply bg-[#0F9D58]/80 text-white;
     }
 }
