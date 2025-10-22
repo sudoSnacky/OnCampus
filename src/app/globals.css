@@ -72,6 +72,9 @@ body {
 }
 
 @layer components {
+    .day-selected {
+      @apply bg-primary text-primary-foreground;
+    }
     .day-google-blue[aria-selected="true"] {
         @apply bg-[#4285F4] text-primary-foreground;
     }
