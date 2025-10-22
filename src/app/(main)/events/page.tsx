@@ -17,20 +17,17 @@ export default function EventsPage() {
   const { events } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
-  // Sort events by date, future events first
-  const sortedEvents = useMemo(() => {
-    return [...events].sort((a, b) => {
-      const dateA = a.date instanceof Timestamp ? a.date.toDate() : new Date(a.date);
-      const dateB = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
-      return dateA.getTime() - dateB.getTime();
-    });
+  // Consolidate date conversion at the beginning
+  const processedEvents = useMemo(() => {
+    return events.map(event => ({
+      ...event,
+      dateObj: event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date),
+    })).sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
   }, [events]);
-  
+
   const googleColors = ['#4285F4', '#DB4437', '#F4B400', '#0F9D58'];
 
-  const [eventModifiers, setEventModifiers] = useState<Record<string, Date[]>>({});
-
-  useEffect(() => {
+  const eventModifiers = useMemo(() => {
     const modifiers: Record<string, Date[]> = {
         googleBlue: [],
         googleRed: [],
@@ -45,33 +42,30 @@ export default function EventsPage() {
     };
     const eventDates = new Set<string>();
 
-    sortedEvents.forEach(event => {
-      const eventDate = event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date);
-      const dateString = format(eventDate, 'yyyy-MM-dd');
+    processedEvents.forEach(event => {
+      const dateString = format(event.dateObj, 'yyyy-MM-dd');
       
       if (!eventDates.has(dateString)) {
-        // Use a deterministic way to pick a color based on the date
-        const dayOfMonth = eventDate.getDate();
+        const dayOfMonth = event.dateObj.getDate();
         const colorIndex = dayOfMonth % googleColors.length;
         const stableColor = googleColors[colorIndex];
         const modifierClass = colorMap[stableColor];
 
         if (modifierClass) {
-            modifiers[modifierClass].push(eventDate);
+            modifiers[modifierClass].push(event.dateObj);
         }
         eventDates.add(dateString);
       }
     });
-    setEventModifiers(modifiers);
-  }, [sortedEvents]);
+    return modifiers;
+  }, [processedEvents]);
 
 
   const filteredEvents = selectedDate
-    ? sortedEvents.filter(event => {
-        const eventDate = event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date);
-        return format(eventDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+    ? processedEvents.filter(event => {
+        return format(event.dateObj, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
       })
-    : sortedEvents;
+    : processedEvents;
 
 
   return (
@@ -117,7 +111,7 @@ export default function EventsPage() {
                 const image = !isUrl ? PlaceHolderImages.find(p => p.id === event.imageId) : null;
                 const imageUrl = isUrl ? event.imageId : image?.imageUrl;
                 const imageHint = image?.imageHint;
-                const eventDate = event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date);
+                const eventDate = event.dateObj;
 
                 return (
                     <Card key={event.id} className="flex flex-col md:flex-row overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
