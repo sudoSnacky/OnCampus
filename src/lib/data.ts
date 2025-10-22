@@ -132,14 +132,6 @@ export const initialEvents: CampusEvent[] = [
     description: "Learn the art of pitching your startup idea to investors. Featuring successful founders from the Indian startup ecosystem.",
     imageId: "event-2",
   },
-  {
-    id: "event-3",
-    title: "Diwali Mela - Festival of Lights",
-    date: "2024-11-01T17:00:00Z",
-    location: "Campus Grounds",
-    description: "A grand celebration of Diwali with food stalls, cultural performances, and a spectacular light show.",
-    imageId: "event-3",
-  },
    {
     id: "event-4",
     title: "Holi Celebration - Festival of Colors",
@@ -148,5 +140,14 @@ export const initialEvents: CampusEvent[] = [
     description: "Join us for a vibrant and joyous Holi celebration! Play with organic colors, enjoy traditional music, and savor delicious festive treats.",
     longDescription: "Get ready to immerse yourself in the festival of colors! The university is hosting a grand Holi celebration, complete with eco-friendly organic colors, a live DJ playing festive music, and food stalls offering traditional Indian sweets and snacks. It's a perfect opportunity to de-stress, have fun with friends, and experience the rich culture of this wonderful festival. Don't forget to wear white!",
     imageId: "https://images.unsplash.com/photo-1580538162817-7a8932342370?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxIb2xpJTIwZmVzdGl2YWwlMjBjb2xvcnN8ZW58MHx8fHwxNzYwNzc4MjM3fDA&ixlib=rb-4.1.0&q=80&w=1080"
+  },
+  {
+    id: "event-5",
+    title: "DevFest 2025",
+    date: "2025-10-26T09:00:00Z",
+    location: "Grand Convention Center",
+    description: "A full day of talks, workshops, and networking with experts on Google Cloud, Android, Web, and AI. A premier tech conference for developers.",
+    longDescription: "Join us for DevFest 2025! A full day of talks, workshops, and networking with experts on Google Cloud, Android, Web, and AI. Whether you're a student, a professional developer, or a tech enthusiast, there's something for everyone. Don't miss this chance to learn, connect, and get inspired by the brightest minds in the industry. Food and swag will be provided!",
+    imageId: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwY29uZmVyZW5jZXxlbnwwfHx8fDE3MjE4MzQ5NDR8MA&ixlib=rb-4.1.0&q=80&w=1080"
   }
 ];
