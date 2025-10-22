@@ -3,86 +3,86 @@
     {
       "id": "hero-1",
       "description": "Students collaborating in a modern campus environment.",
-      "imageUrl": "https://images.unsplash.com/photo-1758270705172-07b53627dfcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdHVkZW50cyUyMGNvbGxhYm9yYXRpbmd8ZW58MHx8fHwxNzYwNzMzNDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHVkZW50cyUyMGNvbGxhYm9yYXRpbmd8ZW58MHx8fHwxNzYwNzMzNDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "students collaborating"
     },
     {
       "id": "benefit-1",
-      "description": "Logo of a popular movie streaming service.",
-      "imageUrl": "https://images.unsplash.com/photo-1714623290324-97fd836c471f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtb3ZpZSUyMHN0cmVhbWluZ3xlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "movie streaming"
+      "description": "Abstract graphic representing movie tickets.",
+      "imageUrl": "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb3ZpZSUyMHRpY2tldCUyMGFic3RyYWN0fGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "movie ticket abstract"
     },
     {
       "id": "benefit-2",
-      "description": "Logo of an online shopping platform.",
-      "imageUrl": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBzaG9wcGluZ3xlbnwwfHx8fDE3NjA3MzYyMjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "online shopping"
+      "description": "Colorful shopping bags.",
+      "imageUrl": "https://images.unsplash.com/photo-1595341888016-a392d8edb6a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBzaG9wcGluZyUyMGNvbG9yZnVsfGVufDB8fHx8MTc2MDczNjIyOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "online shopping colorful"
     },
     {
       "id": "benefit-3",
-      "description": "Logo of a software development tools company.",
-      "imageUrl": "https://images.unsplash.com/photo-1760548425298-22aa4b60fc16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkZXZlbG9wZXIlMjB0b29sc3xlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "developer tools"
+      "description": "A clean desk with developer tools.",
+      "imageUrl": "https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkZXZlbG9wZXIlMjB0b29scyUyMGNsZWFufGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "developer tools clean"
     },
     {
       "id": "benefit-4",
-      "description": "Logo of a developer community platform.",
-      "imageUrl": "https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb2RlJTIwcmVwb3NpdG9yeXxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "code repository"
+      "description": "Illustration of code repository and version control.",
+      "imageUrl": "https://images.unsplash.com/photo-1610416343589-952b07987251?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnaXRodWIlMjBhYnN0cmFjdHxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "github abstract"
     },
     {
       "id": "benefit-5",
-      "description": "A pile of books representing library access.",
-      "imageUrl": "https://images.unsplash.com/photo-1579370318443-8da816457e3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxsaWJyYXJ5JTIwYm9va3N8ZW58MHx8fHwxNzYwNzMxMTc4fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "library books"
+      "description": "Colorful abstract graphic of books.",
+      "imageUrl": "https://images.unsplash.com/photo-1507842217343-583bb7270b66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsaWJyYXJ5JTIwYm9va3MlMjBjb2xvcmZ1bHxlbnwwfHx8fDE3NjA3MzExNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "library books colorful"
     },
     {
       "id": "club-1",
-      "description": "Students working on laptops with code on screen.",
-      "imageUrl": "https://images.unsplash.com/photo-1560783112-3c64462b3f68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2RpbmclMjBjbHVifGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "coding club"
+      "description": "Students collaborating around a computer with colorful sticky notes.",
+      "imageUrl": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb2RpbmclMjBjb2xsYWJvcmF0aW9ufGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coding collaboration"
     },
     {
       "id": "club-2",
-      "description": "People giving a presentation in a business setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1621763068543-ad5f9d62414d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxidXNpbmVzcyUyMGNsdWJ8ZW58MHx8fHwxNzYwNzcxMDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "business club"
+      "description": "A diverse group of people in a bright, modern office setting.",
+      "imageUrl": "https://images.unsplash.com/photo-1552664730-d307ca884978?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMG1lZXRpbmd8ZW58MHx8fHwxNzYwNzcxMDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business meeting"
     },
     {
       "id": "club-3",
-      "description": "A group of people performing a traditional Indian dance.",
-      "imageUrl": "https://images.unsplash.com/photo-1692663576178-be5ea950bcac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkYW5jZSUyMHBlcmZvcm1hbmNlfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "dance performance"
+      "description": "A silhouette of a dancer against a colorful background.",
+      "imageUrl": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYW5jZSUyMGZlc3RpdmFsfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dance festival"
     },
     {
       "id": "club-4",
-      "description": "A person taking a photograph with a professional camera.",
-      "imageUrl": "https://images.unsplash.com/photo-1493156755127-9ddb45e755f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGhvdG9ncmFwaHklMjBjYW1lcmF8ZW58MHx8fHwxNzYwNzcxMDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "photography camera"
+      "description": "A vintage camera on a colorful, minimalist background.",
+      "imageUrl": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwaG90b2dyYXBoeSUyMGNvbG9yZnVsfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "photography colorful"
     },
     {
       "id": "club-5",
-      "description": "People debating on a stage.",
-      "imageUrl": "https://images.unsplash.com/photo-1572232564961-5392cd6ebfe8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkZWJhdGUlMjBzdGFnZXxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "debate stage"
+      "description": "Microphone on stage with a colorful, blurred background.",
+      "imageUrl": "https://images.unsplash.com/photo-1598288293399-25191b72b849?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkZWJhdGUlMjBtaWNyb3Bob25lfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "debate microphone"
     },
     {
       "id": "event-1",
-      "description": "A workshop with people learning a new skill.",
-      "imageUrl": "https://images.unsplash.com/photo-1753164726974-24cf03de80ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxsZWFybmluZyUyMHdvcmtzaG9wfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "learning workshop"
+      "description": "A bright and modern classroom setup for a workshop.",
+      "imageUrl": "https://images.unsplash.com/photo-1573495627361-ab2b3c41e873?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc2hvcHxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern workshop"
     },
     {
       "id": "event-2",
-      "description": "A person giving a seminar to an audience.",
-      "imageUrl": "https://images.unsplash.com/photo-1758691736821-f1a600c0c3f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZW1pbmFyJTIwYXVkaWVuY2V8ZW58MHx8fHwxNzYwNzcxMDAxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "seminar audience"
+      "description": "A speaker presenting at a conference with a large screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1543269865-cbf427effbad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZW1pbmFyJTIwcHJlc2VudGF0aW9ufGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "seminar presentation"
     },
     {
       "id": "event-3",
-      "description": "A vibrant cultural festival with many people.",
-      "imageUrl": "https://images.unsplash.com/photo-1709105492660-c6fd6702a9fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjdWx0dXJhbCUyMGZlc3RpdmFsfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cultural festival"
+      "description": "An outdoor festival with lights and people enjoying the event.",
+      "imageUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjdWx0dXJhbCUyMGZlc3RpdmFsJTIwbGlnaHRzfGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cultural festival lights"
     }
   ]
 }
