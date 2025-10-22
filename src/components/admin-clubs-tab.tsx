@@ -10,6 +10,7 @@ import { Textarea } from "./ui/textarea";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -131,6 +132,9 @@ export default function AdminClubsTab() {
                     <FormControl>
                       <Input placeholder="e.g., club-1" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      This ID connects the club to an image in `src/lib/placeholder-images.json`.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

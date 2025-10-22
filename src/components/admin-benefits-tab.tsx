@@ -10,6 +10,7 @@ import { Textarea } from "./ui/textarea";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -148,6 +149,9 @@ export default function AdminBenefitsTab() {
                     <FormControl>
                       <Input placeholder="e.g., benefit-1" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      This ID connects the benefit to an image in `src/lib/placeholder-images.json`.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
