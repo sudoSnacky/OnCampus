@@ -72,31 +72,40 @@ body {
 }
 
 @layer components {
-    .day-selected {
-      @apply bg-primary text-primary-foreground;
+    .shadow-glow-blue {
+        box-shadow: 0 0 12px 2px #4285F4;
+    }
+    .shadow-glow-red {
+        box-shadow: 0 0 12px 2px #DB4437;
+    }
+    .shadow-glow-green {
+        box-shadow: 0 0 12px 2px #0F9D58;
+    }
+    .shadow-glow-yellow {
+        box-shadow: 0 0 12px 2px #F4B400;
+    }
+    .day-google-blue:not([aria-selected="true"]):hover {
+        @apply bg-accent;
     }
     .day-google-blue[aria-selected="true"] {
         @apply bg-[#4285F4] text-white;
     }
-    .day-google-blue:hover {
-        @apply bg-[#4285F4]/80 text-white;
+    .day-google-red:not([aria-selected="true"]):hover {
+        @apply bg-accent;
     }
     .day-google-red[aria-selected="true"] {
         @apply bg-[#DB4437] text-white;
     }
-    .day-google-red:hover {
-        @apply bg-[#DB4437]/80 text-white;
+    .day-google-yellow:not([aria-selected="true"]):hover {
+        @apply bg-accent;
     }
     .day-google-yellow[aria-selected="true"] {
         @apply bg-[#F4B400] text-white;
     }
-    .day-google-yellow:hover {
-        @apply bg-[#F4B400]/80 text-white;
+    .day-google-green:not([aria-selected="true"]):hover {
+        @apply bg-accent;
     }
     .day-google-green[aria-selected="true"] {
         @apply bg-[#0F9D58] text-white;
-    }
-    .day-google-green:hover {
-        @apply bg-[#0F9D58]/80 text-white;
     }
 }
