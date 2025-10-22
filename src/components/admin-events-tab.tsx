@@ -42,6 +42,9 @@ const FormSchema = z.object({
   description: z
     .string()
     .min(10, "Description must be at least 10 characters long."),
+  longDescription: z
+    .string()
+    .optional(),
   date: z.date({
     required_error: "A date for the event is required.",
   }),
@@ -60,6 +63,7 @@ export default function AdminEventsTab() {
         title: "",
         location: "",
         description: "",
+        longDescription: "",
         imageUrl: "",
     }
   });
@@ -69,6 +73,7 @@ export default function AdminEventsTab() {
       title: "",
       location: "",
       description: "",
+      longDescription: "",
       date: new Date(),
       imageUrl: "",
     });
@@ -79,6 +84,7 @@ export default function AdminEventsTab() {
     addEvent({
       ...data,
       imageId: data.imageUrl || '',
+      longDescription: data.longDescription || '',
     });
     toast({
       title: "Event Created!",
@@ -187,11 +193,28 @@ export default function AdminEventsTab() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Short Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        rows={3}
-                        placeholder="Describe the event..."
+                        rows={2}
+                        placeholder="A brief summary of the event for the card view..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="longDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Detailed Description (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={5}
+                        placeholder="Provide more details about the event for the 'Learn More' dialog..."
                         {...field}
                       />
                     </FormControl>

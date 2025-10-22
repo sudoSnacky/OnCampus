@@ -11,6 +11,7 @@ import { Timestamp } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { Calendar } from '../../../components/ui/calendar';
 import { Button } from '../../../components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '../../../components/ui/dialog';
 
 export default function EventsPage() {
   const { events } = useEvents();
@@ -98,12 +99,6 @@ export default function EventsPage() {
                             googleYellow: 'day-google-yellow',
                             googleGreen: 'day-google-green',
                         }}
-                        modifiersStyles={{
-                            googleBlue: { boxShadow: '0 0 8px 2px #4285F4' },
-                            googleRed: { boxShadow: '0 0 8px 2px #DB4437' },
-                            googleYellow: { boxShadow: '0 0 8px 2px #F4B400' },
-                            googleGreen: { boxShadow: '0 0 8px 2px #0F9D58' },
-                        }}
                     />
                 </CardContent>
             </Card>
@@ -124,35 +119,72 @@ export default function EventsPage() {
 
                 return (
                     <Card key={event.id} className="flex flex-col md:flex-row overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-                    <div className="relative h-48 md:h-auto md:w-1/3">
-                        {imageUrl && (
-                        <Image
-                            src={imageUrl}
-                            alt={event.title}
-                            fill
-                            className="object-cover md:rounded-l-lg md:rounded-r-none rounded-t-lg"
-                            data-ai-hint={imageHint}
-                        />
-                        )}
-                    </div>
-                    <div className="flex flex-col flex-1">
-                        <CardHeader>
-                        <CardTitle className="font-headline text-xl">{event.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex-grow flex flex-col justify-between">
-                        <p className="text-sm text-foreground/80 mb-4">{event.description}</p>
-                        <div className="space-y-2 text-sm text-foreground/70">
-                            <div className="flex items-center gap-2">
-                            <CalendarIcon className="h-4 w-4" />
-                            <span>{format(eventDate, "MMMM d, yyyy 'at' h:mm a")}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4" />
-                            <span>{event.location}</span>
-                            </div>
+                        <div className="relative h-48 md:h-auto md:w-1/3">
+                            {imageUrl && (
+                            <Image
+                                src={imageUrl}
+                                alt={event.title}
+                                fill
+                                className="object-cover md:rounded-l-lg md:rounded-r-none rounded-t-lg"
+                                data-ai-hint={imageHint}
+                            />
+                            )}
                         </div>
-                        </CardContent>
-                    </div>
+                        <div className="flex flex-col flex-1 p-6">
+                            <CardHeader className="p-0">
+                                <CardTitle className="font-headline text-xl">{event.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0 flex-grow flex flex-col justify-between mt-4">
+                            <p className="text-sm text-foreground/80 mb-4 line-clamp-2">{event.description}</p>
+                            <div className="space-y-2 text-sm text-foreground/70 mb-4">
+                                <div className="flex items-center gap-2">
+                                <CalendarIcon className="h-4 w-4" />
+                                <span>{format(eventDate, "MMMM d, yyyy 'at' h:mm a")}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4" />
+                                <span>{event.location}</span>
+                                </div>
+                            </div>
+                             <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" className="mt-auto">Learn More</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[600px] bg-background/95 backdrop-blur-sm">
+                                  <DialogHeader>
+                                    <div className="relative h-64 w-full rounded-lg overflow-hidden mb-4">
+                                      {imageUrl && (
+                                        <Image
+                                          src={imageUrl}
+                                          alt={event.title}
+                                          fill
+                                          className="object-cover"
+                                          data-ai-hint={imageHint}
+                                        />
+                                      )}
+                                    </div>
+                                    <DialogTitle className="font-headline text-2xl">{event.title}</DialogTitle>
+                                    <DialogDescription className="space-y-2 text-md text-foreground/70 pt-2">
+                                        <div className="flex items-center gap-2">
+                                            <CalendarIcon className="h-4 w-4" />
+                                            <span>{format(eventDate, "MMMM d, yyyy 'at' h:mm a")}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="h-4 w-4" />
+                                            <span>{event.location}</span>
+                                        </div>
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="py-4 text-foreground/80">
+                                    <p>{event.longDescription || event.description}</p>
+                                  </div>
+                                  <DialogFooter>
+                                    <Button type="button" variant="secondary">RSVP (Placeholder)</Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            </CardContent>
+                        </div>
                     </Card>
                 );
                 })
