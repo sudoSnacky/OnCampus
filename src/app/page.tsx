@@ -139,7 +139,7 @@ export default function Home() {
               <Icons.logo />
             </div>
             <p className="text-sm text-foreground/60 mt-4 md:mt-0">
-              © {new Date().getFullYear()} OnCampus. All rights reserved.
+              Made with ❤️ by Prakrat & Manan & Atharv
             </p>
           </div>
         </div>
