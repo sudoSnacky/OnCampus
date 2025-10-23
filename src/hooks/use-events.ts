@@ -19,15 +19,9 @@ const uploadImage = async (file: File): Promise<string> => {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
-        canvas: true,
-        originalCanvas: true
     }
 
-    const compressedFileBlob = await imageCompression(file, options);
-    const compressedFile = new File([compressedFileBlob], file.name, {
-      type: file.type,
-      lastModified: Date.now(),
-    });
+    const compressedFile = await imageCompression(file, options);
     
     const filePath = `events/${Date.now()}-${compressedFile.name}`;
     const { data, error } = await supabase.storage
@@ -109,7 +103,7 @@ export function useEvents() {
             finalImageUrl = await uploadImage(imageFile);
         }
         
-        const { id, date, imageFile: omitImageFile, ...updateData } = event as any;
+        const { id, date, imageFile: _, ...updateData } = event as any;
         const payload: { [key: string]: any } = { ...updateData, imageUrl: finalImageUrl };
         if (date) {
             payload.date = date.toISOString();

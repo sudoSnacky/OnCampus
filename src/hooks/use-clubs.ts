@@ -22,20 +22,12 @@ const uploadImage = async (file: File): Promise<string> => {
         useWebWorker: true,
     }
 
-    const imageFile = await imageCompression(file, options);
-    const canvas = await imageCompression.loadImage(URL.createObjectURL(imageFile));
-    const resizedFile = await imageCompression.canvasToFile(
-      canvas,
-      imageFile.type,
-      imageFile.name,
-      imageFile.lastModified,
-      1 // Set quality to 1
-    );
+    const compressedFile = await imageCompression(file, options);
     
-    const filePath = `clubs/${Date.now()}-${resizedFile.name}`;
+    const filePath = `clubs/${Date.now()}-${compressedFile.name}`;
     const { data, error } = await supabase.storage
         .from('images')
-        .upload(filePath, resizedFile);
+        .upload(filePath, compressedFile);
 
     if (error) {
         console.error('Error uploading image:', error);
@@ -110,12 +102,11 @@ export function useClubs() {
             finalImageUrl = await uploadImage(imageFile);
         }
         
-        const updateData = { ...updatedClub, imageUrl: finalImageUrl };
-        delete updateData.imageFile;
+        const { id, imageFile: _, ...updateData } = updatedClub as any;
 
         const { data, error } = await supabase
             .from('clubs')
-            .update(updateData)
+            .update({ ...updateData, imageUrl: finalImageUrl })
             .eq('id', clubId)
             .select();
 
