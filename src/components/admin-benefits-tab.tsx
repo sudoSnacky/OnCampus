@@ -17,8 +17,8 @@ import {
   FormMessage,
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
-import { useBenefits } from "../hooks/use-benefits";
-import { PlusCircle, Trash2, Upload } from "lucide-react";
+import { useBenefits, type Benefit } from "../hooks/use-benefits";
+import { PlusCircle, Trash2, Upload, Pencil } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -27,8 +27,11 @@ import {
   CardTitle,
 } from "./ui/card";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "./ui/dialog";
+import { useState, useEffect } from "react";
 
 const FormSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(3, "Title is required."),
   provider: z.string().min(2, "Provider is required."),
   category: z.string().min(2, "Category is required."),
@@ -41,7 +44,8 @@ type FormData = z.infer<typeof FormSchema>;
 
 export default function AdminBenefitsTab() {
   const { toast } = useToast();
-  const { benefits, addBenefit, removeBenefit, isInitialized } = useBenefits();
+  const { benefits, addBenefit, removeBenefit, updateBenefit, isInitialized } = useBenefits();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -54,8 +58,18 @@ export default function AdminBenefitsTab() {
       redirectUrl: "",
     },
   });
-  
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+
+  const editForm = useForm<FormData>({
+    resolver: zodResolver(FormSchema),
+  });
+
+  useEffect(() => {
+    if (!isEditDialogOpen) {
+        editForm.reset();
+    }
+  }, [isEditDialogOpen, editForm]);
+
+  const onAddSubmit: SubmitHandler<FormData> = (data) => {
     addBenefit({
       ...data,
       redirectUrl: data.redirectUrl || '',
@@ -66,6 +80,25 @@ export default function AdminBenefitsTab() {
     });
     form.reset();
   };
+
+  const onEditSubmit: SubmitHandler<FormData> = (data) => {
+    if (!data.id) return;
+    updateBenefit(data.id, {
+        ...data,
+        redirectUrl: data.redirectUrl || '',
+    });
+    toast({
+      title: "Benefit Updated!",
+      description: `"${data.title}" has been updated.`,
+    });
+    setIsEditDialogOpen(false);
+  };
+  
+  const handleEditClick = (benefit: Benefit) => {
+    editForm.reset(benefit);
+    setIsEditDialogOpen(true);
+  };
+
 
   return (
     <div className="space-y-6 pt-6">
@@ -81,7 +114,7 @@ export default function AdminBenefitsTab() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onAddSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -202,18 +235,125 @@ export default function AdminBenefitsTab() {
                   <p className="font-semibold">{benefit.title}</p>
                   <p className="text-sm text-muted-foreground">{benefit.provider}</p>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeBenefit(benefit.id)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEditClick(benefit)}
+                    >
+                        <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeBenefit(benefit.id)}
+                    >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                </div>
               </li>
             ))}
           </ul>
         </CardContent>
       </Card>
+      
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Benefit</DialogTitle>
+          </DialogHeader>
+          <Form {...editForm}>
+            <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-6">
+              <FormField
+                control={editForm.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Benefit Title</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="provider"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Provider</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea rows={3} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="redirectUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Redirect URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end gap-2">
+                <DialogClose asChild>
+                    <Button type="button" variant="secondary">Cancel</Button>
+                </DialogClose>
+                <Button type="submit">Save Changes</Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
+    

@@ -4,7 +4,7 @@
 import { collection, doc } from 'firebase/firestore';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface Club {
   id: string;
@@ -28,15 +28,21 @@ export function useClubs() {
     error: clubsError,
   } = useCollection<Club>(clubsCollection);
 
-  const addClub = async (club: Omit<Club, 'id'>) => {
+  const addClub = (club: Omit<Club, 'id'>) => {
     if (!clubsCollection) return;
     addDocumentNonBlocking(clubsCollection, club);
   };
 
-  const removeClub = async (clubId: string) => {
+  const removeClub = (clubId: string) => {
     if (!firestore) return;
     const clubDoc = doc(firestore, 'clubs', clubId);
     deleteDocumentNonBlocking(clubDoc);
+  };
+  
+  const updateClub = (clubId: string, club: Omit<Club, 'id'>) => {
+    if (!firestore) return;
+    const clubDoc = doc(firestore, 'clubs', clubId);
+    updateDocumentNonBlocking(clubDoc, club);
   };
 
   return {
@@ -45,6 +51,9 @@ export function useClubs() {
     clubsError,
     addClub,
     removeClub,
+    updateClub,
     isInitialized: !!firestore,
   };
 }
+
+    

@@ -4,7 +4,7 @@
 import { collection, doc } from 'firebase/firestore';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 
 export interface Benefit {
@@ -31,16 +31,23 @@ export function useBenefits() {
     error: benefitsError,
   } = useCollection<Benefit>(benefitsCollection);
 
-  const addBenefit = async (benefit: Omit<Benefit, 'id'>) => {
+  const addBenefit = (benefit: Omit<Benefit, 'id'>) => {
     if (!benefitsCollection) return;
     addDocumentNonBlocking(benefitsCollection, benefit);
   };
 
-  const removeBenefit = async (benefitId: string) => {
+  const removeBenefit = (benefitId: string) => {
     if (!firestore) return;
     const benefitDoc = doc(firestore, 'benefits', benefitId);
     deleteDocumentNonBlocking(benefitDoc);
   };
+  
+  const updateBenefit = (benefitId: string, benefit: Omit<Benefit, 'id'>) => {
+    if (!firestore) return;
+    const benefitDoc = doc(firestore, 'benefits', benefitId);
+    updateDocumentNonBlocking(benefitDoc, benefit);
+  };
+
 
   return {
     benefits: benefits || [],
@@ -48,6 +55,9 @@ export function useBenefits() {
     benefitsError,
     addBenefit,
     removeBenefit,
+    updateBenefit,
     isInitialized: !!firestore,
   };
 }
+
+    

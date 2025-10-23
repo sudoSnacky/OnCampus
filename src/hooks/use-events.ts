@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface CampusEvent {
   id: string;
@@ -33,7 +33,7 @@ export function useEvents() {
     error: eventsError,
   } = useCollection<CampusEvent>(eventsCollection);
 
-  const addEvent = async (event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
+  const addEvent = (event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
     if (!eventsCollection) return;
     addDocumentNonBlocking(eventsCollection, {
       ...event,
@@ -41,11 +41,20 @@ export function useEvents() {
     });
   };
 
-  const removeEvent = async (eventId: string) => {
+  const removeEvent = (eventId: string) => {
     if (!firestore) return;
     const eventDoc = doc(firestore, 'events', eventId);
     deleteDocumentNonBlocking(eventDoc);
   };
+
+  const updateEvent = (eventId: string, event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
+    if (!firestore) return;
+    const eventDoc = doc(firestore, 'events', eventId);
+    updateDocumentNonBlocking(eventDoc, {
+        ...event,
+        date: Timestamp.fromDate(event.date),
+    });
+    };
 
   return {
     events: events || [],
@@ -53,6 +62,9 @@ export function useEvents() {
     eventsError,
     addEvent,
     removeEvent,
+    updateEvent,
     isInitialized: !!firestore,
   };
 }
+
+    
