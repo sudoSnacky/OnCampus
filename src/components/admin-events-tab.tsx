@@ -89,8 +89,9 @@ export default function AdminEventsTab() {
   const transformSubmitData = (data: z.infer<typeof FormSchema>) => {
     const [hours, minutes] = data.time.split(':').map(Number);
     const combinedDate = setMinutes(setHours(data.date, hours), minutes);
+    const { time, ...rest } = data;
     return {
-        ...data,
+        ...rest,
         date: combinedDate.toISOString(),
     };
   };
