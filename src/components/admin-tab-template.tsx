@@ -143,7 +143,6 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
                 description: `"${displayName}" has been added.`,
             });
             addForm.reset(defaultValues);
-            (addForm.control as any)._fields.imageFile._f.value = null;
             const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
             if (fileInput) fileInput.value = '';
         } catch (error: any) {
@@ -165,7 +164,7 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
         try {
             const finalData = transformSubmitData ? transformSubmitData(itemData as any) : itemData;
             await update(id, finalData as any, imageFile as File | undefined);
-            const displayName = getDisplayName ? getDisplayName(formData as T) : (formData.title || formData.name);
+            const displayName = itemData.title || itemData.name || title;
             toast({
                 title: `${title} Updated!`,
                 description: `"${displayName}" has been updated.`,
@@ -189,7 +188,7 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
     };
     
     const handleDeleteClick = async (item: T) => {
-        const displayName = getDisplayName ? getDisplayName(item) : title;
+        const displayName = getDisplayName ? getDisplayName(item) : (item.title || item.name || title);
         if(!confirm(`Are you sure you want to delete "${displayName}"?`)) return;
         try {
             await remove(item.id);
@@ -310,3 +309,6 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
         </div>
     );
 }
+
+
+    
