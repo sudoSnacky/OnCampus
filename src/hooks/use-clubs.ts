@@ -79,8 +79,28 @@ export function useClubs() {
     };
     
     const remove = async (id: string) => {
+        const itemToDelete = data.find(item => item.id === id);
+        if (!itemToDelete) throw new Error("Item not found");
+
+        // 1. Delete image from storage
+        try {
+            const imageUrl = itemToDelete.imageUrl;
+            const imageName = imageUrl.split('/').pop();
+            if (imageName) {
+                 const { error: storageError } = await supabase.storage.from('images').remove([`clubs/${imageName}`]);
+                 if (storageError) {
+                    console.error("Error deleting image, but proceeding with DB record deletion:", storageError);
+                 }
+            }
+        } catch(e) {
+            console.error("Error parsing image URL for deletion:", e);
+        }
+
+        // 2. Delete record from database
         const { error } = await supabase.from('clubs').delete().eq('id', id);
         if (error) throw error;
+
+        // 3. Refresh local data
         fetchClubs();
     };
 
