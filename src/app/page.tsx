@@ -79,7 +79,7 @@ export default function Home() {
                       src={heroImage.imageUrl}
                       alt={heroImage.description}
                       fill
-                      className="object-cover transition-transform duration-500 scale-110 hover:scale-115"
+                      className="object-cover transition-transform duration-300 ease-in-out hover:scale-105"
                       priority
                     />
                 )}
