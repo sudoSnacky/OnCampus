@@ -83,7 +83,8 @@ export function useEvents() {
 
         try {
             const imageUrl = itemToDelete.imageUrl;
-            const imagePath = imageUrl.substring(imageUrl.indexOf('events/'));
+            const urlParts = imageUrl.split('/');
+            const imagePath = urlParts.slice(urlParts.indexOf('events')).join('/');
             
             if (imagePath) {
                  const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);

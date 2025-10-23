@@ -84,25 +84,24 @@ export function useBenefits() {
         const itemToDelete = data.find(item => item.id === id);
         if (!itemToDelete) throw new Error("Item not found");
 
-        // 1. Delete image from storage
         try {
             const imageUrl = itemToDelete.imageUrl;
-            const imageName = imageUrl.split('/').pop();
-            if (imageName) {
-                 const { error: storageError } = await supabase.storage.from('images').remove([`benefits/${imageName}`]);
+            const urlParts = imageUrl.split('/');
+            const imagePath = urlParts.slice(urlParts.indexOf('benefits')).join('/');
+            
+            if (imagePath) {
+                 const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
                  if (storageError) {
-                    console.error("Error deleting image, but proceeding with DB record deletion:", storageError);
+                    console.error("Could not delete image from storage, but proceeding with DB record deletion:", storageError.message);
                  }
             }
         } catch(e) {
             console.error("Error parsing image URL for deletion:", e);
         }
 
-        // 2. Delete record from database
         const { error } = await supabase.from('benefits').delete().eq('id', id);
         if (error) throw error;
-
-        // 3. Refresh local data
+        
         fetchBenefits();
     };
 
