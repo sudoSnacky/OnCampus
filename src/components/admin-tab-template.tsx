@@ -93,12 +93,18 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const defaultValues = useMemo(() => Object.fromEntries(formFields.map(f => {
-        const fieldSchema = (formSchema as z.AnyZodObject).shape[f.name];
-        if (fieldSchema instanceof z.ZodDate) return [f.name, undefined];
-        if (fieldSchema instanceof z.ZodString) return [f.name, ''];
-        return [f.name, undefined]
-    })), [formFields, formSchema]);
+    const defaultValues = useMemo(() => {
+        const values = Object.fromEntries(formFields.map(f => {
+            const fieldSchema = (formSchema as z.AnyZodObject).shape[f.name];
+            if (fieldSchema instanceof z.ZodDate) return [f.name, undefined];
+            if (fieldSchema instanceof z.ZodString) return [f.name, ''];
+            return [f.name, undefined]
+        }));
+        if (title === 'Event') {
+            values.time = '12:00';
+        }
+        return values;
+    }, [formFields, formSchema, title]);
 
     const addForm = useForm<z.infer<TSchema>>({
         resolver: zodResolver(formSchema),
@@ -136,7 +142,7 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
                 title: `${title} Added!`,
                 description: `"${displayName}" has been added.`,
             });
-            addForm.reset();
+            addForm.reset(defaultValues);
             (addForm.control as any)._fields.imageFile._f.value = null;
             const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
             if (fileInput) fileInput.value = '';
