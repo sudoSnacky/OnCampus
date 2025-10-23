@@ -136,7 +136,7 @@ export default function AdminEventsTab() {
         <div className="flex justify-end mb-4">
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-                <Button onClick={openAddDialog} className="btn-animated-gradient">
+                <Button onClick={openAddDialog} className="btn-animated-gradient w-48">
                     <PlusCircle className="mr-2" /> Add Event
                 </Button>
             </DialogTrigger>
