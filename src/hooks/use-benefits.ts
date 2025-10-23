@@ -69,11 +69,9 @@ export function useBenefits() {
     const add = async (benefit: Omit<Benefit, 'id' | 'imageUrl' | 'created_at'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
         
-        const { imageFile: _, ...benefitData } = benefit as any;
-
         const { data: newData, error } = await supabase
             .from('benefits')
-            .insert([{ ...benefitData, imageUrl }])
+            .insert([{ ...benefit, imageUrl }])
             .select()
             .single();
 
@@ -82,24 +80,9 @@ export function useBenefits() {
     };
     
     const remove = async (id: string) => {
-        const itemToDelete = data.find(item => item.id === id);
-        if (!itemToDelete) throw new Error("Benefit not found");
-
-        const imageUrl = itemToDelete.imageUrl;
-        const imagePath = imageUrl.split('/images/')[1];
-
-        if (imagePath) {
-            const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
-            if (storageError) {
-                console.error("Could not delete image from storage:", storageError.message);
-                throw storageError;
-            }
-        }
-        
-        const { error: dbError } = await supabase.from('benefits').delete().eq('id', id);
-        if (dbError) throw dbError;
-        
-        setData(prevData => prevData.filter(item => item.id !== id));
+        const { error } = await supabase.from('benefits').delete().eq('id', id);
+        if (error) throw error;
+        fetchBenefits(); // Refetch
     };
 
     const update = async (id: string, updatedBenefit: Partial<Omit<Benefit, 'id' | 'created_at'>>, imageFile?: File) => {
@@ -107,20 +90,16 @@ export function useBenefits() {
         if (imageFile) {
             imageUrl = await uploadImage(imageFile);
         }
-
-        const { imageFile: _, ...updateData } = updatedBenefit as any;
         
         const { data: updatedData, error } = await supabase
             .from('benefits')
-            .update({ ...updateData, imageUrl })
+            .update({ ...updatedBenefit, imageUrl })
             .eq('id', id)
             .select()
             .single();
 
         if (error) throw error;
-        if(updatedData) {
-            setData(prevData => prevData.map(item => item.id === id ? updatedData : item));
-        }
+        fetchBenefits(); // Refetch
     };
 
     return {

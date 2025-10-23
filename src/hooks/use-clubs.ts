@@ -68,10 +68,9 @@ export function useClubs() {
 
     const add = async (club: Omit<Club, 'id' | 'imageUrl' | 'created_at'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
-        const { imageFile: _, ...clubData } = club as any;
         const { data: newData, error } = await supabase
             .from('clubs')
-            .insert([{ ...clubData, imageUrl }])
+            .insert([{ ...club, imageUrl }])
             .select()
             .single();
 
@@ -80,24 +79,9 @@ export function useClubs() {
     };
     
     const remove = async (id: string) => {
-        const itemToDelete = data.find(item => item.id === id);
-        if (!itemToDelete) throw new Error("Club not found");
-
-        const imageUrl = itemToDelete.imageUrl;
-        const imagePath = imageUrl.split('/images/')[1];
-        
-        if (imagePath) {
-             const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
-             if (storageError) {
-                console.error("Could not delete image from storage:", storageError.message);
-                throw storageError;
-             }
-        }
-        
-        const { error: dbError } = await supabase.from('clubs').delete().eq('id', id);
-        if (dbError) throw dbError;
-        
-        setData(prevData => prevData.filter(item => item.id !== id));
+        const { error } = await supabase.from('clubs').delete().eq('id', id);
+        if (error) throw error;
+        fetchClubs(); // Refetch
     };
 
     const update = async (id: string, updatedClub: Partial<Omit<Club, 'id' | 'created_at'>>, imageFile?: File) => {
@@ -105,20 +89,16 @@ export function useClubs() {
         if (imageFile) {
             imageUrl = await uploadImage(imageFile);
         }
-        
-        const { imageFile: _, ...updateData } = updatedClub as any;
 
         const { data: updatedData, error } = await supabase
             .from('clubs')
-            .update({ ...updateData, imageUrl })
+            .update({ ...updatedClub, imageUrl })
             .eq('id', id)
             .select()
             .single();
 
         if (error) throw error;
-        if(updatedData) {
-            setData(prevData => prevData.map(item => item.id === id ? updatedData : item));
-        }
+        fetchClubs(); // Refetch
     };
 
 

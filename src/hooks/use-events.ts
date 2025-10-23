@@ -67,10 +67,9 @@ export function useEvents() {
 
     const add = async (event: Omit<CampusEvent, 'id' | 'imageUrl' | 'created_at' >, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
-        const { imageFile: omitImageFile, ...newEvent } = event as any;
         const { data: newData, error } = await supabase
             .from('events')
-            .insert([{ ...newEvent, imageUrl }])
+            .insert([{ ...event, imageUrl }])
             .select()
             .single();
 
@@ -81,24 +80,9 @@ export function useEvents() {
     };
     
     const remove = async (id: string) => {
-        const itemToDelete = data.find(item => item.id === id);
-        if (!itemToDelete) throw new Error("Event not found");
-
-        const imageUrl = itemToDelete.imageUrl;
-        const imagePath = imageUrl.split('/images/')[1];
-        
-        if (imagePath) {
-             const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
-             if (storageError) {
-                console.error("Could not delete image from storage:", storageError.message);
-                throw storageError;
-             }
-        }
-
-        const { error: dbError } = await supabase.from('events').delete().eq('id', id);
-        if (dbError) throw dbError;
-        
-        setData(prevData => prevData.filter(item => item.id !== id));
+        const { error } = await supabase.from('events').delete().eq('id', id);
+        if (error) throw error;
+        fetchEvents(); // Refetch
     };
 
     const update = async (id: string, event: Partial<Omit<CampusEvent, 'id' | 'created_at'>>, imageFile?: File) => {
@@ -106,12 +90,10 @@ export function useEvents() {
         if (imageFile) {
             finalImageUrl = await uploadImage(imageFile);
         }
-        
-        const { imageFile: _, ...updateData } = event as any;
 
         const { data: updatedData, error } = await supabase
             .from('events')
-            .update({ ...updateData, imageUrl: finalImageUrl })
+            .update({ ...event, imageUrl: finalImageUrl })
             .eq('id', id)
             .select()
             .single();

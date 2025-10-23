@@ -48,8 +48,7 @@ export interface AdminTabProps<T extends DataItem, TSchema extends ZodType<any, 
       render: (field: any) => React.ReactNode;
   }[];
   renderItem: (item: T) => React.ReactNode;
-  transformSubmitData?: (data: z.infer<TSchema>) => T;
-  transformLoadData?: (item: T) => z.infer<TSchema>;
+  getDisplayName: (item: Partial<z.infer<TSchema>>) => string;
 }
 
 const MemoizedFormFields = memo(({ form, fields }: { form: UseFormReturn<any>, fields: AdminTabProps<any, any>['formFields'] }) => {
@@ -83,26 +82,14 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
   formSchema,
   formFields,
   renderItem,
-  transformSubmitData,
-  transformLoadData,
+  getDisplayName,
 }: AdminTabProps<T, TSchema>) {
     const { toast } = useToast();
     const { data, isLoading, isInitialized, add, remove, update } = dataHook;
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const defaultValues = useMemo(() => {
-        const values = Object.fromEntries(formFields.map(f => {
-            const fieldSchema = (formSchema as z.AnyZodObject).shape[f.name];
-            if (fieldSchema instanceof z.ZodDate) return [f.name, undefined];
-            if (fieldSchema instanceof z.ZodString) return [f.name, ''];
-            return [f.name, undefined]
-        }));
-        if (title === 'Event') {
-            values.time = '12:00';
-        }
-        return values;
-    }, [formFields, formSchema, title]);
+    
+    const defaultValues = useMemo(() => Object.fromEntries(formFields.map(f => [f.name, ''])), [formFields]);
 
     const addForm = useForm<z.infer<TSchema>>({
         resolver: zodResolver(formSchema),
@@ -133,16 +120,13 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
         }
 
         try {
-            const finalData = transformSubmitData ? transformSubmitData(itemData as any) : itemData;
-            await add(finalData as any, imageFile as File);
-            const displayName = itemData.title || itemData.name || title;
+            await add(itemData as Omit<T, 'id' | 'imageUrl'>, imageFile as File);
             toast({
                 title: `${title} Added!`,
-                description: `"${displayName}" has been added.`,
+                description: `"${getDisplayName(itemData)}" has been added.`,
             });
-            addForm.reset(defaultValues);
-            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-            if (fileInput) fileInput.value = '';
+            addForm.reset();
+            (addForm.control as any)._fields.imageFile._f.value = null;
         } catch (error: any) {
             toast({
                 variant: "destructive",
@@ -160,12 +144,10 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
         const { id, imageFile, ...itemData } = formData;
         
         try {
-            const finalData = transformSubmitData ? transformSubmitData(itemData as any) : itemData;
-            await update(id, finalData as any, imageFile as File | undefined);
-            const displayName = itemData.title || itemData.name || title;
+            await update(id, itemData, imageFile as File | undefined);
             toast({
                 title: `${title} Updated!`,
-                description: `"${displayName}" has been updated.`,
+                description: `"${getDisplayName(itemData)}" has been updated.`,
             });
             setIsEditDialogOpen(false);
         } catch (error: any) {
@@ -180,13 +162,12 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
     };
 
     const handleEditClick = (item: T) => {
-        const loadData = transformLoadData ? transformLoadData(item) : item;
-        editForm.reset(loadData as any);
+        editForm.reset(item as any);
         setIsEditDialogOpen(true);
     };
     
     const handleDeleteClick = async (item: T) => {
-        const displayName = item.title || item.name || title;
+        const displayName = getDisplayName(item);
         if(!confirm(`Are you sure you want to delete "${displayName}"?`)) return;
         try {
             await remove(item.id);
@@ -307,6 +288,3 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
         </div>
     );
 }
-
-
-    
