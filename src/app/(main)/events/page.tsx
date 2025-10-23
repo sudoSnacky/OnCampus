@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Skeleton } from '../../../components/ui/skeleton';
 
 export default function EventsPage() {
-  const { events, isEventsLoading } = useEvents();
+  const { data: events, isLoading: isEventsLoading } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
   // Consolidate date conversion at the beginning

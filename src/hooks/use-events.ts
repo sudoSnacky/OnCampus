@@ -7,6 +7,7 @@ import imageCompression from 'browser-image-compression';
 
 export interface CampusEvent {
   id: string;
+  created_at: string;
   title: string;
   date: string;
   location: string;
@@ -38,9 +39,9 @@ const uploadImage = async (file: File): Promise<string> => {
 };
 
 export function useEvents() {
-    const [events, setEvents] = useState<CampusEvent[]>([]);
-    const [isEventsLoading, setIsLoading] = useState(true);
-    const [eventsError, setEventsError] = useState<Error | null>(null);
+    const [data, setData] = useState<CampusEvent[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
     const fetchEvents = useCallback(async () => {
@@ -52,87 +53,61 @@ export function useEvents() {
 
         if (error) {
             console.error("Error fetching events:", error);
-            setEventsError(error as unknown as Error);
+            setError(error as unknown as Error);
         } else {
-            setEvents(data as CampusEvent[]);
+            setData(data as CampusEvent[]);
         }
         setIsLoading(false);
-        setIsInitialized(true);
-    }, []);
+        if (!isInitialized) setIsInitialized(true);
+    }, [isInitialized]);
 
     useEffect(() => {
         fetchEvents();
     }, [fetchEvents]);
 
-    const addEvent = async (event: Omit<CampusEvent, 'id' | 'imageUrl' | 'date'> & { date: Date; imageFile?: File }, imageFile: File) => {
+    const add = async (event: Omit<CampusEvent, 'id' | 'imageUrl' | 'created_at' >, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
-        const { id, imageFile: omitImageFile, ...newEvent } = event as any;
+        const { imageFile: omitImageFile, ...newEvent } = event as any;
         const { data, error } = await supabase
             .from('events')
-            .insert([{ ...newEvent, imageUrl, date: event.date.toISOString() }])
+            .insert([{ ...newEvent, imageUrl }])
             .select();
 
-        if (error) {
-            console.error("Error adding event:", error);
-            throw error;
-        }
-
-        if (data) {
-            // Refetch to ensure correct sorting
-            fetchEvents();
-        }
+        if (error) throw error;
+        if (data) fetchEvents();
     };
     
-    const removeEvent = async (eventId: string) => {
-        const { error } = await supabase
-            .from('events')
-            .delete()
-            .eq('id', eventId);
-        
-        if (error) {
-            console.error("Error removing event:", error);
-            throw error;
-        }
-
-        setEvents(prev => prev.filter(e => e.id !== eventId));
+    const remove = async (id: string) => {
+        const { error } = await supabase.from('events').delete().eq('id', id);
+        if (error) throw error;
+        fetchEvents();
     };
 
-    const updateEvent = async (eventId: string, event: Partial<Omit<CampusEvent, 'id' | 'date'>> & { date?: Date; imageFile?: File }, imageFile?: File) => {
+    const update = async (id: string, event: Partial<Omit<CampusEvent, 'id' | 'created_at'>>, imageFile?: File) => {
         let finalImageUrl = event.imageUrl;
         if (imageFile) {
             finalImageUrl = await uploadImage(imageFile);
         }
         
-        const { id, date, imageFile: _, ...updateData } = event as any;
-        const payload: { [key: string]: any } = { ...updateData, imageUrl: finalImageUrl };
-        if (date) {
-            payload.date = date.toISOString();
-        }
+        const { imageFile: _, ...updateData } = event as any;
 
         const { data, error } = await supabase
             .from('events')
-            .update(payload)
-            .eq('id', eventId)
+            .update({ ...updateData, imageUrl: finalImageUrl })
+            .eq('id', id)
             .select();
 
-        if (error) {
-            console.error("Error updating event:", error);
-            throw error;
-        }
-        
-        if(data) {
-             // Refetch to ensure correct sorting
-            fetchEvents();
-        }
+        if (error) throw error;
+        if(data) fetchEvents();
     };
 
   return {
-    events,
-    isEventsLoading,
-    eventsError,
-    addEvent,
-    removeEvent,
-    updateEvent,
+    data,
+    isLoading,
+    error,
     isInitialized,
+    add,
+    remove,
+    update,
   };
 }

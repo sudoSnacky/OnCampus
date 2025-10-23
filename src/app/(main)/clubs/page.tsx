@@ -11,7 +11,7 @@ import { Skeleton } from '../../../components/ui/skeleton';
 import { Instagram, Linkedin } from 'lucide-react';
 
 export default function ClubsPage() {
-  const { clubs, isClubsLoading } = useClubs();
+  const { data: clubs, isLoading: isClubsLoading } = useClubs();
 
   return (
     <div className="container mx-auto">

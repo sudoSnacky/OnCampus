@@ -7,6 +7,7 @@ import imageCompression from 'browser-image-compression';
 
 export interface Club {
   id: string;
+  created_at: string;
   name: string;
   category: string;
   description: string;
@@ -39,9 +40,9 @@ const uploadImage = async (file: File): Promise<string> => {
 };
 
 export function useClubs() {
-    const [clubs, setClubs] = useState<Club[]>([]);
-    const [isClubsLoading, setIsLoading] = useState(true);
-    const [clubsError, setClubsError] = useState<Error | null>(null);
+    const [data, setData] = useState<Club[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
     const fetchClubs = useCallback(async () => {
@@ -53,19 +54,19 @@ export function useClubs() {
 
         if (error) {
             console.error("Error fetching clubs:", error);
-            setClubsError(error as unknown as Error);
+            setError(error as unknown as Error);
         } else {
-            setClubs(data as Club[]);
+            setData(data as Club[]);
         }
         setIsLoading(false);
-        setIsInitialized(true);
-    }, []);
+        if (!isInitialized) setIsInitialized(true);
+    }, [isInitialized]);
 
     useEffect(() => {
         fetchClubs();
     }, [fetchClubs]);
 
-    const addClub = async (club: Omit<Club, 'id' | 'imageUrl'>, imageFile: File) => {
+    const add = async (club: Omit<Club, 'id' | 'imageUrl' | 'created_at'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
         const { imageFile: _, ...clubData } = club as any;
         const { data, error } = await supabase
@@ -73,62 +74,42 @@ export function useClubs() {
             .insert([{ ...clubData, imageUrl }])
             .select();
 
-        if (error) {
-            console.error("Error adding club:", error);
-            throw error;
-        }
-
-        if (data) {
-            setClubs(prev => [data[0], ...prev]);
-        }
+        if (error) throw error;
+        if (data) fetchClubs();
     };
     
-    const removeClub = async (clubId: string) => {
-        const { error } = await supabase
-            .from('clubs')
-            .delete()
-            .eq('id', clubId);
-        
-        if (error) {
-            console.error("Error removing club:", error);
-            throw error;
-        }
-
-        setClubs(prev => prev.filter(c => c.id !== clubId));
+    const remove = async (id: string) => {
+        const { error } = await supabase.from('clubs').delete().eq('id', id);
+        if (error) throw error;
+        fetchClubs();
     };
 
-    const updateClub = async (clubId: string, updatedClub: Partial<Omit<Club, 'id'>> & { imageFile?: File }, imageFile?: File) => {
+    const update = async (id: string, updatedClub: Partial<Omit<Club, 'id' | 'created_at'>>, imageFile?: File) => {
         let imageUrl = updatedClub.imageUrl;
         if (imageFile) {
             imageUrl = await uploadImage(imageFile);
         }
         
-        const { id, imageFile: _, ...updateData } = updatedClub as any;
+        const { imageFile: _, ...updateData } = updatedClub as any;
 
         const { data, error } = await supabase
             .from('clubs')
             .update({ ...updateData, imageUrl })
-            .eq('id', clubId)
+            .eq('id', id)
             .select();
 
-        if (error) {
-            console.error("Error updating club:", error);
-            throw error;
-        }
-        
-        if(data) {
-            setClubs(prev => prev.map(c => c.id === clubId ? data[0] : c));
-        }
+        if (error) throw error;
+        if(data) fetchClubs();
     };
 
 
   return {
-    clubs,
-    isClubsLoading,
-    clubsError,
-    addClub,
-    removeClub,
-    updateClub,
+    data,
+    isLoading,
+    error,
+    add,
+    remove,
+    update,
     isInitialized,
   };
 }

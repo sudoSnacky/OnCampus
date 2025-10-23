@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { Skeleton } from '../../../components/ui/skeleton';
 
 export default function BenefitsPage() {
-  const { benefits, isBenefitsLoading } = useBenefits();
+  const { data: benefits, isLoading: isBenefitsLoading } = useBenefits();
 
   return (
     <div className="container mx-auto">
