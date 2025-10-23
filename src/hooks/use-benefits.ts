@@ -42,9 +42,10 @@ export function useBenefits() {
     }, [fetchBenefits]);
 
     const addBenefit = async (benefit: Omit<Benefit, 'id'>) => {
+        const { id, ...benefitData } = benefit as any;
         const { data, error } = await supabase
             .from('benefits')
-            .insert([benefit])
+            .insert([benefitData])
             .select();
 
         if (error) {
