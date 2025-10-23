@@ -81,7 +81,7 @@ export default function EventsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1">
             <Card>
-                <CardContent className="p-2">
+                <CardContent className="p-0 flex justify-center">
                     <Calendar
                         mode="single"
                         selected={selectedDate}
