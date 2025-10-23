@@ -68,39 +68,37 @@ export function useEvents() {
     const add = async (event: Omit<CampusEvent, 'id' | 'imageUrl' | 'created_at' >, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
         const { imageFile: omitImageFile, ...newEvent } = event as any;
-        const { data, error } = await supabase
+        const { data: newData, error } = await supabase
             .from('events')
             .insert([{ ...newEvent, imageUrl }])
-            .select();
+            .select()
+            .single();
 
         if (error) throw error;
-        if (data) fetchEvents();
+        if (newData) {
+            setData(prevData => [...prevData, newData].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+        }
     };
     
     const remove = async (id: string) => {
         const itemToDelete = data.find(item => item.id === id);
-        if (!itemToDelete) throw new Error("Item not found");
+        if (!itemToDelete) throw new Error("Event not found");
 
-        try {
-            const imageUrl = itemToDelete.imageUrl;
-            const urlParts = imageUrl.split('/');
-            const imagePath = urlParts.slice(urlParts.indexOf('events')).join('/');
-            
-            if (imagePath) {
-                 const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
-                 if (storageError) {
-                    // Log the error but don't block DB deletion
-                    console.error("Could not delete image from storage, but proceeding with DB record deletion:", storageError.message);
-                 }
-            }
-        } catch(e) {
-            console.error("Error parsing image URL for deletion:", e);
+        const imageUrl = itemToDelete.imageUrl;
+        const imagePath = imageUrl.substring(imageUrl.indexOf('/events/') + 1);
+        
+        if (imagePath) {
+             const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
+             if (storageError) {
+                console.error("Could not delete image from storage:", storageError.message);
+                throw storageError;
+             }
         }
 
-        const { error } = await supabase.from('events').delete().eq('id', id);
-        if (error) throw error;
+        const { error: dbError } = await supabase.from('events').delete().eq('id', id);
+        if (dbError) throw dbError;
         
-        fetchEvents();
+        setData(prevData => prevData.filter(item => item.id !== id));
     };
 
     const update = async (id: string, event: Partial<Omit<CampusEvent, 'id' | 'created_at'>>, imageFile?: File) => {
@@ -111,14 +109,18 @@ export function useEvents() {
         
         const { imageFile: _, ...updateData } = event as any;
 
-        const { data, error } = await supabase
+        const { data: updatedData, error } = await supabase
             .from('events')
             .update({ ...updateData, imageUrl: finalImageUrl })
             .eq('id', id)
-            .select();
+            .select()
+            .single();
 
         if (error) throw error;
-        if(data) fetchEvents();
+        if(updatedData) {
+            setData(prevData => prevData.map(item => item.id === id ? updatedData : item)
+              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+        }
     };
 
   return {

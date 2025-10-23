@@ -71,38 +71,35 @@ export function useBenefits() {
         
         const { imageFile: _, ...benefitData } = benefit as any;
 
-        const { data, error } = await supabase
+        const { data: newData, error } = await supabase
             .from('benefits')
             .insert([{ ...benefitData, imageUrl }])
-            .select();
+            .select()
+            .single();
 
         if (error) throw error;
-        if (data) fetchBenefits();
+        if (newData) setData(prevData => [newData, ...prevData]);
     };
     
     const remove = async (id: string) => {
         const itemToDelete = data.find(item => item.id === id);
-        if (!itemToDelete) throw new Error("Item not found");
+        if (!itemToDelete) throw new Error("Benefit not found");
 
-        try {
-            const imageUrl = itemToDelete.imageUrl;
-            const urlParts = imageUrl.split('/');
-            const imagePath = urlParts.slice(urlParts.indexOf('benefits')).join('/');
-            
-            if (imagePath) {
-                 const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
-                 if (storageError) {
-                    console.error("Could not delete image from storage, but proceeding with DB record deletion:", storageError.message);
-                 }
+        const imageUrl = itemToDelete.imageUrl;
+        const imagePath = imageUrl.substring(imageUrl.indexOf('/benefits/') + 1);
+
+        if (imagePath) {
+            const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
+            if (storageError) {
+                console.error("Could not delete image from storage:", storageError.message);
+                throw storageError;
             }
-        } catch(e) {
-            console.error("Error parsing image URL for deletion:", e);
         }
-
-        const { error } = await supabase.from('benefits').delete().eq('id', id);
-        if (error) throw error;
         
-        fetchBenefits();
+        const { error: dbError } = await supabase.from('benefits').delete().eq('id', id);
+        if (dbError) throw dbError;
+        
+        setData(prevData => prevData.filter(item => item.id !== id));
     };
 
     const update = async (id: string, updatedBenefit: Partial<Omit<Benefit, 'id' | 'created_at'>>, imageFile?: File) => {
@@ -113,14 +110,17 @@ export function useBenefits() {
 
         const { imageFile: _, ...updateData } = updatedBenefit as any;
         
-        const { data, error } = await supabase
+        const { data: updatedData, error } = await supabase
             .from('benefits')
             .update({ ...updateData, imageUrl })
             .eq('id', id)
-            .select();
+            .select()
+            .single();
 
         if (error) throw error;
-        if(data) fetchBenefits();
+        if(updatedData) {
+            setData(prevData => prevData.map(item => item.id === id ? updatedData : item));
+        }
     };
 
     return {

@@ -69,38 +69,35 @@ export function useClubs() {
     const add = async (club: Omit<Club, 'id' | 'imageUrl' | 'created_at'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
         const { imageFile: _, ...clubData } = club as any;
-        const { data, error } = await supabase
+        const { data: newData, error } = await supabase
             .from('clubs')
             .insert([{ ...clubData, imageUrl }])
-            .select();
+            .select()
+            .single();
 
         if (error) throw error;
-        if (data) fetchClubs();
+        if (newData) setData(prevData => [newData, ...prevData]);
     };
     
     const remove = async (id: string) => {
         const itemToDelete = data.find(item => item.id === id);
-        if (!itemToDelete) throw new Error("Item not found");
+        if (!itemToDelete) throw new Error("Club not found");
 
-        try {
-            const imageUrl = itemToDelete.imageUrl;
-            const urlParts = imageUrl.split('/');
-            const imagePath = urlParts.slice(urlParts.indexOf('clubs')).join('/');
-            
-            if (imagePath) {
-                 const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
-                 if (storageError) {
-                    console.error("Could not delete image from storage, but proceeding with DB record deletion:", storageError.message);
-                 }
-            }
-        } catch(e) {
-            console.error("Error parsing image URL for deletion:", e);
-        }
-
-        const { error } = await supabase.from('clubs').delete().eq('id', id);
-        if (error) throw error;
+        const imageUrl = itemToDelete.imageUrl;
+        const imagePath = imageUrl.substring(imageUrl.indexOf('/clubs/') + 1);
         
-        fetchClubs();
+        if (imagePath) {
+             const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
+             if (storageError) {
+                console.error("Could not delete image from storage:", storageError.message);
+                throw storageError;
+             }
+        }
+        
+        const { error: dbError } = await supabase.from('clubs').delete().eq('id', id);
+        if (dbError) throw dbError;
+        
+        setData(prevData => prevData.filter(item => item.id !== id));
     };
 
     const update = async (id: string, updatedClub: Partial<Omit<Club, 'id' | 'created_at'>>, imageFile?: File) => {
@@ -111,14 +108,17 @@ export function useClubs() {
         
         const { imageFile: _, ...updateData } = updatedClub as any;
 
-        const { data, error } = await supabase
+        const { data: updatedData, error } = await supabase
             .from('clubs')
             .update({ ...updateData, imageUrl })
             .eq('id', id)
-            .select();
+            .select()
+            .single();
 
         if (error) throw error;
-        if(data) fetchClubs();
+        if(updatedData) {
+            setData(prevData => prevData.map(item => item.id === id ? updatedData : item));
+        }
     };
 
 
