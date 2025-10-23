@@ -59,7 +59,10 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-foreground">
-                  Your IET DAVV Life,{" "}
+                  <span style={{ color: '#4285F4' }}>Your</span>{' '}
+                  <span style={{ color: '#DB4437' }}>IET</span>{' '}
+                  <span style={{ color: '#F4B400' }}>DAVV</span>{' '}
+                  <span style={{ color: '#0F9D58' }}>Life,</span>{" "}
                   <span className="text-animated-gradient">Supercharged</span>.
                 </h1>
                 <p className="max-w-xl text-lg text-foreground/80">
