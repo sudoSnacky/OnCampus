@@ -68,20 +68,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-    background-image:
-      radial-gradient(#4285F4 1px, transparent 1px),
-      radial-gradient(#DB4437 1px, transparent 1px),
-      radial-gradient(#F4B400 1px, transparent_1px),
-      radial-gradient(#0F9D58 1px, transparent 1px);
-    background-size: 80px 80px;
-    background-position: 0 0, 20px 20px, 40px 40px, 60px 60px;
-  }
-  .dark body {
-     background-image:
-      radial-gradient(hsla(221, 89%, 60%, 0.5) 1px, transparent 1px),
-      radial-gradient(hsla(5, 69%, 54%, 0.5) 1px, transparent 1px),
-      radial-gradient(hsla(45, 93%, 47%, 0.5) 1px, transparent 1px),
-      radial-gradient(hsla(145, 83%, 34%, 0.5) 1px, transparent 1px);
   }
 }
 
@@ -97,29 +83,5 @@ body {
     }
     .shadow-glow-yellow {
         box-shadow: 0 0 12px 2px #F4B400;
-    }
-    .day-google-blue:not([aria-selected="true"]):hover {
-        @apply bg-accent;
-    }
-    .day-google-blue[aria-selected="true"] {
-        @apply bg-[#4285F4] text-white;
-    }
-    .day-google-red:not([aria-selected="true"]):hover {
-        @apply bg-accent;
-    }
-    .day-google-red[aria-selected="true"] {
-        @apply bg-[#DB4437] text-white;
-    }
-    .day-google-yellow:not([aria-selected="true"]):hover {
-        @apply bg-accent;
-    }
-    .day-google-yellow[aria-selected="true"] {
-        @apply bg-[#F4B400] text-white;
-    }
-    .day-google-green:not([aria-selected="true"]):hover {
-        @apply bg-accent;
-    }
-    .day-google-green[aria-selected="true"] {
-        @apply bg-[#0F9D58] text-white;
     }
 }
