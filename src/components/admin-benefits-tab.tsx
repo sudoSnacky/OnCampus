@@ -70,7 +70,6 @@ export default function AdminBenefitsTab() {
         toast({ title: "Benefit Added", description: `"${data.title}" has been successfully created.` });
         addForm.reset();
         setImagePreview(null);
-        (addForm.control as any)._fields.imageFile._f.value = null;
         setIsAddDialogOpen(false);
     } catch (error) {
         console.error(error);
