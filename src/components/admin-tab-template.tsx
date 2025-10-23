@@ -137,7 +137,7 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
         try {
             const finalData = transformSubmitData ? transformSubmitData(itemData as any) : itemData;
             await add(finalData as any, imageFile as File);
-            const displayName = getDisplayName ? getDisplayName(formData as T) : title;
+            const displayName = itemData.title || itemData.name || title;
             toast({
                 title: `${title} Added!`,
                 description: `"${displayName}" has been added.`,
