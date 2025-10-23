@@ -134,16 +134,21 @@ export default function Home() {
 
       <footer className="bg-gray-100 dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Icons.logo />
             </div>
-            <p className="text-sm text-foreground/60 mt-4 md:mt-0">
-              Made with ❤️ by{' '}
-              <a href="https://www.linkedin.com/in/prakrat-porwal-4688b3385/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #DB4437, 0 0 3px white' }}>Prakrat</a> &{' '}
-              <a href="https://www.linkedin.com/in/manan-chimnani/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #4285F4, 0 0 3px white' }}>Manan</a> &{' '}
-              <a href="https://www.linkedin.com/in/atharv-porwal-354149381/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #0F9D58, 0 0 3px white' }}>Atharv</a>
-            </p>
+            <div className="text-center md:text-right">
+                <p className="text-sm text-foreground/60">
+                Made with ❤️ by{' '}
+                <a href="https://www.linkedin.com/in/prakrat-porwal-4688b3385/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #DB4437, 0 0 3px white' }}>Prakrat</a> &{' '}
+                <a href="https://www.linkedin.com/in/manan-chimnani/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #4285F4, 0 0 3px white' }}>Manan</a> &{' '}
+                <a href="https://www.linkedin.com/in/atharv-porwal-354149381/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #0F9D58, 0 0 3px white' }}>Atharv</a>
+                </p>
+                <p className="text-xs text-foreground/50 mt-2">
+                © 2025 GDGoC IET DAVV. All rights reserved.
+                </p>
+            </div>
           </div>
         </div>
       </footer>
