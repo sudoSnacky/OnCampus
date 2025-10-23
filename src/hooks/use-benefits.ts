@@ -64,9 +64,9 @@ export function useBenefits() {
         fetchBenefits();
     }, [fetchBenefits]);
 
-    const addBenefit = async (benefit: Omit<Benefit, 'id' | 'imageUrl'>, imageFile: File) => {
+    const addBenefit = async (benefit: Omit<Benefit, 'id' | 'imageUrl'> & { imageFile?: File }, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
-        const { id, ...newBenefit } = benefit as any;
+        const { id, imageFile: omitImageFile, ...newBenefit } = benefit as any;
         
         const { data, error } = await supabase
             .from('benefits')
@@ -103,7 +103,7 @@ export function useBenefits() {
             finalImageUrl = await uploadImage(imageFile);
         }
 
-        const { id, ...updateData } = { ...updatedBenefit, imageUrl: finalImageUrl };
+        const { id, imageFile: omitImageFile, ...updateData } = { ...updatedBenefit, imageUrl: finalImageUrl };
         
         const { data, error } = await supabase
             .from('benefits')

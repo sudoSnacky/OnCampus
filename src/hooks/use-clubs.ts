@@ -62,9 +62,9 @@ export function useClubs() {
         fetchClubs();
     }, [fetchClubs]);
 
-    const addClub = async (club: Omit<Club, 'id' | 'imageUrl'>, imageFile: File) => {
+    const addClub = async (club: Omit<Club, 'id' | 'imageUrl'> & { imageFile?: File }, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
-        const { id, ...newClub } = club as any;
+        const { id, imageFile: omitImageFile, ...newClub } = club as any;
         const { data, error } = await supabase
             .from('clubs')
             .insert([{ ...newClub, imageUrl }])
@@ -100,7 +100,7 @@ export function useClubs() {
             finalImageUrl = await uploadImage(imageFile);
         }
         
-        const { id, ...updateData } = { ...updatedClub, imageUrl: finalImageUrl };
+        const { id, imageFile: omitImageFile, ...updateData } = { ...updatedClub, imageUrl: finalImageUrl };
         const { data, error } = await supabase
             .from('clubs')
             .update(updateData)
