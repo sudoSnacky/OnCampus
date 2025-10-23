@@ -43,6 +43,7 @@ export default function ClubsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {clubs.map((club) => {
+            const tags = club.tags?.split(',').map(tag => tag.trim()).filter(tag => tag);
             return (
               <Card key={club.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="relative h-48 w-full">
@@ -70,11 +71,15 @@ export default function ClubsPage() {
                         </Link>
                       )}
                     </div>
-                    <Badge variant="secondary" className="bg-primary/20 text-primary-foreground border-primary/30">{club.category}</Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow flex flex-col">
                   <p className="text-sm text-foreground/80 flex-grow">{club.description}</p>
+                   <div className="flex flex-wrap gap-2 mt-4">
+                        {tags?.map(tag => (
+                            <Badge key={tag} variant="secondary" className="bg-primary/20 text-primary-foreground border-primary/30">{tag}</Badge>
+                        ))}
+                    </div>
                   <Button asChild={!!club.instagramUrl} className="mt-4 w-full" disabled={!club.instagramUrl}>
                     {club.instagramUrl ? (
                          <Link href={club.instagramUrl} target="_blank" rel="noopener noreferrer">Join Club</Link>

@@ -8,7 +8,7 @@ import imageCompression from 'browser-image-compression';
 export interface Club {
   id: string;
   name: string;
-  category: string;
+  tags: string;
   description: string;
   imageUrl: string;
   instagramUrl?: string;
@@ -22,12 +22,20 @@ const uploadImage = async (file: File): Promise<string> => {
         useWebWorker: true,
     }
 
-    const compressedFile = await imageCompression(file, options);
+    const imageFile = await imageCompression(file, options);
+    const canvas = await imageCompression.loadImage(URL.createObjectURL(imageFile));
+    const resizedFile = await imageCompression.canvasToFile(
+      canvas,
+      imageFile.type,
+      imageFile.name,
+      imageFile.lastModified,
+      1 // Set quality to 1
+    );
     
-    const filePath = `clubs/${Date.now()}-${compressedFile.name}`;
+    const filePath = `clubs/${Date.now()}-${resizedFile.name}`;
     const { data, error } = await supabase.storage
         .from('images')
-        .upload(filePath, compressedFile);
+        .upload(filePath, resizedFile);
 
     if (error) {
         console.error('Error uploading image:', error);
@@ -65,12 +73,11 @@ export function useClubs() {
         fetchClubs();
     }, [fetchClubs]);
 
-    const addClub = async (club: Omit<Club, 'id' | 'imageUrl'> & { imageFile?: File }, imageFile: File) => {
+    const addClub = async (club: Omit<Club, 'id' | 'imageUrl'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
-        const { id, imageFile: omitImageFile, ...newClub } = club as any;
         const { data, error } = await supabase
             .from('clubs')
-            .insert([{ ...newClub, imageUrl }])
+            .insert([{ ...club, imageUrl }])
             .select();
 
         if (error) {
@@ -97,13 +104,15 @@ export function useClubs() {
         setClubs(prev => prev.filter(c => c.id !== clubId));
     };
 
-    const updateClub = async (clubId: string, updatedClub: Partial<Club> & { imageFile?: File }, imageFile?: File) => {
+    const updateClub = async (clubId: string, updatedClub: Partial<Omit<Club, 'id'>> & { imageFile?: File }, imageFile?: File) => {
         let finalImageUrl = updatedClub.imageUrl;
         if (imageFile) {
             finalImageUrl = await uploadImage(imageFile);
         }
         
-        const { id, imageFile: omitImageFile, ...updateData } = { ...updatedClub, imageUrl: finalImageUrl };
+        const updateData = { ...updatedClub, imageUrl: finalImageUrl };
+        delete updateData.imageFile;
+
         const { data, error } = await supabase
             .from('clubs')
             .update(updateData)

@@ -10,7 +10,7 @@ export interface Benefit {
   title: string;
   provider: string;
   description: string;
-  category: string;
+  tags: string;
   imageUrl: string;
   redirectUrl?: string;
 }
@@ -20,21 +20,22 @@ const uploadImage = async (file: File): Promise<string> => {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
-        // The following options are needed for the canvasToFile part
-        canvas: true, 
-        originalCanvas: true
     }
-
-    const compressedFileBlob = await imageCompression(file, options);
-    const compressedFile = new File([compressedFileBlob], file.name, {
-      type: file.type,
-      lastModified: Date.now(),
-    });
     
-    const filePath = `benefits/${Date.now()}-${compressedFile.name}`;
+    const imageFile = await imageCompression(file, options);
+    const canvas = await imageCompression.loadImage(URL.createObjectURL(imageFile));
+    const resizedFile = await imageCompression.canvasToFile(
+      canvas,
+      imageFile.type,
+      imageFile.name,
+      imageFile.lastModified,
+      1 // Set quality to 1
+    );
+
+    const filePath = `benefits/${Date.now()}-${resizedFile.name}`;
     const { data, error } = await supabase.storage
         .from('images')
-        .upload(filePath, compressedFile);
+        .upload(filePath, resizedFile);
 
     if (error) {
         console.error('Error uploading image:', error);
@@ -72,13 +73,12 @@ export function useBenefits() {
         fetchBenefits();
     }, [fetchBenefits]);
 
-    const addBenefit = async (benefit: Omit<Benefit, 'id' | 'imageUrl'> & { imageFile?: File }, imageFile: File) => {
+    const addBenefit = async (benefit: Omit<Benefit, 'id' | 'imageUrl'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
-        const { id, imageFile: omitImageFile, ...newBenefit } = benefit as any;
         
         const { data, error } = await supabase
             .from('benefits')
-            .insert([{ ...newBenefit, imageUrl }])
+            .insert([{ ...benefit, imageUrl }])
             .select();
 
         if (error) {
@@ -105,13 +105,14 @@ export function useBenefits() {
         setBenefits(prev => prev.filter(b => b.id !== benefitId));
     };
 
-    const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Benefit> & { imageFile?: File }, imageFile?: File) => {
+    const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Omit<Benefit, 'id'>> & { imageFile?: File }, imageFile?: File) => {
         let finalImageUrl = updatedBenefit.imageUrl;
         if (imageFile) {
             finalImageUrl = await uploadImage(imageFile);
         }
 
-        const { id, imageFile: omitImageFile, ...updateData } = { ...updatedBenefit, imageUrl: finalImageUrl };
+        const updateData = { ...updatedBenefit, imageUrl: finalImageUrl };
+        delete updateData.imageFile;
         
         const { data, error } = await supabase
             .from('benefits')

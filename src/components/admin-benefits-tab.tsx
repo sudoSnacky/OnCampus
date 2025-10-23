@@ -33,7 +33,7 @@ const FormSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(3, "Title is required."),
   provider: z.string().min(2, "Provider is required."),
-  category: z.string().min(2, "Category is required."),
+  tags: z.string().min(2, "Tags are required."),
   description: z.string().min(10, "Description is required."),
   imageFile: z.instanceof(File).optional(),
   imageUrl: z.string().optional(),
@@ -53,7 +53,7 @@ export default function AdminBenefitsTab() {
     defaultValues: {
       title: "",
       provider: "",
-      category: "",
+      tags: "",
       description: "",
       imageUrl: "",
       redirectUrl: "",
@@ -82,10 +82,11 @@ export default function AdminBenefitsTab() {
         return;
     }
     try {
+      const { imageFile, ...benefitData } = data;
       await addBenefit({
-        ...data,
+        ...benefitData,
         redirectUrl: data.redirectUrl || '',
-      }, data.imageFile);
+      }, imageFile);
       toast({
         title: "Benefit Added!",
         description: `"${data.title}" has been added.`,
@@ -193,13 +194,16 @@ export default function AdminBenefitsTab() {
               </div>
               <FormField
                 control={form.control}
-                name="category"
+                name="tags"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Tags</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Entertainment" {...field} />
+                      <Input placeholder="e.g. Entertainment, Food, Travel" {...field} />
                     </FormControl>
+                     <FormDescription>
+                        Separate tags with a comma.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -343,13 +347,16 @@ export default function AdminBenefitsTab() {
               />
               <FormField
                 control={editForm.control}
-                name="category"
+                name="tags"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Tags</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
+                     <FormDescription>
+                        Separate tags with a comma.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

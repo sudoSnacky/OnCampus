@@ -32,7 +32,7 @@ import { useState, useEffect } from "react";
 const FormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(3, "Club name is required."),
-  category: z.string().min(2, "Category is required."),
+  tags: z.string().min(2, "Tags are required."),
   description: z.string().min(10, "Description is required."),
   imageFile: z.instanceof(File).optional(),
   imageUrl: z.string().optional(),
@@ -52,7 +52,7 @@ export default function AdminClubsTab() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
-      category: "",
+      tags: "",
       description: "",
       imageUrl: "",
       instagramUrl: "",
@@ -82,11 +82,12 @@ export default function AdminClubsTab() {
         return;
     }
     try {
+      const { imageFile, ...clubData } = data;
       await addClub({
-        ...data,
+        ...clubData,
         instagramUrl: data.instagramUrl || '',
         linkedinUrl: data.linkedinUrl || '',
-      }, data.imageFile);
+      }, imageFile);
       toast({
         title: "Club Added!",
         description: `"${data.name}" has been added.`,
@@ -180,13 +181,16 @@ export default function AdminClubsTab() {
                 />
                 <FormField
                   control={form.control}
-                  name="category"
+                  name="tags"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category</FormLabel>
+                      <FormLabel>Tags</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Technology" {...field} />
+                        <Input placeholder="e.g., Technology, Coding" {...field} />
                       </FormControl>
+                      <FormDescription>
+                        Separate tags with a comma.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -285,7 +289,7 @@ export default function AdminClubsTab() {
               >
                 <div>
                   <p className="font-semibold">{club.name}</p>
-                   <p className="text-sm text-muted-foreground">{club.category}</p>
+                   <p className="text-sm text-muted-foreground">{club.tags}</p>
                 </div>
                  <div className="flex items-center gap-2">
                     <Button
@@ -331,13 +335,16 @@ export default function AdminClubsTab() {
               />
               <FormField
                 control={editForm.control}
-                name="category"
+                name="tags"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Tags</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
+                     <FormDescription>
+                        Separate tags with a comma.
+                      </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
