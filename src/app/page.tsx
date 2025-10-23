@@ -30,8 +30,8 @@ const features = [
 ];
 
 const heroImage = {
-  imageUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHVkZW50cyUyMGNvbGxhYm9yYXRpbmd8ZW58MHx8fHwxNzYwNzMzNDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-  description: "Students collaborating in a modern campus environment."
+  imageUrl: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdHVkZW50cyUyMGdyb3VwfGVufDB8fHx8MTc2MDczMzk1OHww&ixlib=rb-4.1.0&q=80&w=1080",
+  description: "A group of diverse students in graduation gowns celebrating on campus."
 };
 
 export default function Home() {
