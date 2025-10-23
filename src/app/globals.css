@@ -71,6 +71,58 @@ body {
   }
 }
 
+.rdp {
+    --rdp-cell-size: 40px;
+    --rdp-caption-font-size: 18px;
+    --rdp-background-color: transparent;
+    --rdp-accent-color: hsl(var(--primary));
+    --rdp-accent-color-dark: hsl(var(--primary));
+    --rdp-foreground-color: hsl(var(--primary-foreground));
+    --rdp-border: 1px solid hsl(var(--border));
+    --rdp-ring: 2px solid hsl(var(--ring));
+}
+
+.day-google-blue,
+.day-google-red,
+.day-google-yellow,
+.day-google-green {
+    border-radius: 9999px;
+    position: relative;
+    font-weight: 600;
+}
+
+.day-google-blue {
+    color: #4285F4;
+    border: 2px solid #4285F4;
+}
+.day-google-blue:hover {
+    background-color: #4285F41A;
+}
+
+.day-google-red {
+    color: #DB4437;
+    border: 2px solid #DB4437;
+}
+.day-google-red:hover {
+    background-color: #DB44371A;
+}
+
+.day-google-yellow {
+    color: #F4B400;
+    border: 2px solid #F4B400;
+}
+.day-google-yellow:hover {
+    background-color: #F4B4001A;
+}
+
+.day-google-green {
+    color: #0F9D58;
+    border: 2px solid #0F9D58;
+}
+.day-google-green:hover {
+    background-color: #0F9D581A;
+}
+
 @layer components {
     .shadow-glow-blue {
         box-shadow: 0 0 12px 2px #4285F4;
