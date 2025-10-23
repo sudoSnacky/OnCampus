@@ -17,9 +17,16 @@ const uploadImage = async (file: File): Promise<string> => {
     const options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
-        useWebWorker: true
+        useWebWorker: true,
+        canvas: true, 
+        originalCanvas: true
     }
-    const compressedFile = await imageCompression(file, options);
+    
+    const compressedFileBlob = await imageCompression(file, options);
+    const compressedFile = new File([compressedFileBlob], file.name, {
+      type: file.type,
+      lastModified: Date.now(),
+    });
 
     const filePath = `clubs/${Date.now()}-${compressedFile.name}`;
     const { data, error } = await supabase.storage
@@ -94,7 +101,7 @@ export function useClubs() {
         setClubs(prev => prev.filter(c => c.id !== clubId));
     };
 
-    const updateClub = async (clubId: string, updatedClub: Partial<Club>, imageFile?: File) => {
+    const updateClub = async (clubId: string, updatedClub: Partial<Club> & { imageFile?: File }, imageFile?: File) => {
         let finalImageUrl = updatedClub.imageUrl;
         if (imageFile) {
             finalImageUrl = await uploadImage(imageFile);

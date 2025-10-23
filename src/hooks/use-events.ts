@@ -18,10 +18,17 @@ const uploadImage = async (file: File): Promise<string> => {
     const options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
-        useWebWorker: true
+        useWebWorker: true,
+        canvas: true,
+        originalCanvas: true
     }
-    const compressedFile = await imageCompression(file, options);
 
+    const compressedFileBlob = await imageCompression(file, options);
+    const compressedFile = new File([compressedFileBlob], file.name, {
+      type: file.type,
+      lastModified: Date.now(),
+    });
+    
     const filePath = `events/${Date.now()}-${compressedFile.name}`;
     const { data, error } = await supabase.storage
         .from('images')

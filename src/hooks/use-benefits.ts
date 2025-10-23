@@ -19,9 +19,17 @@ const uploadImage = async (file: File): Promise<string> => {
     const options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
-        useWebWorker: true
+        useWebWorker: true,
+        // The following options are needed for the canvasToFile part
+        canvas: true, 
+        originalCanvas: true
     }
-    const compressedFile = await imageCompression(file, options);
+
+    const compressedFileBlob = await imageCompression(file, options);
+    const compressedFile = new File([compressedFileBlob], file.name, {
+      type: file.type,
+      lastModified: Date.now(),
+    });
     
     const filePath = `benefits/${Date.now()}-${compressedFile.name}`;
     const { data, error } = await supabase.storage
@@ -97,7 +105,7 @@ export function useBenefits() {
         setBenefits(prev => prev.filter(b => b.id !== benefitId));
     };
 
-    const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Benefit>, imageFile?: File) => {
+    const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Benefit> & { imageFile?: File }, imageFile?: File) => {
         let finalImageUrl = updatedBenefit.imageUrl;
         if (imageFile) {
             finalImageUrl = await uploadImage(imageFile);
