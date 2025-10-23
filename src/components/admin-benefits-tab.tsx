@@ -121,7 +121,7 @@ export default function AdminBenefitsTab() {
         <div className="flex justify-end mb-4">
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-                <Button onClick={openAddDialog}>
+                <Button onClick={openAddDialog} className="btn-animated-gradient">
                     <PlusCircle className="mr-2" /> Add Benefit
                 </Button>
             </DialogTrigger>
