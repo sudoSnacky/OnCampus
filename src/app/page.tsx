@@ -9,22 +9,34 @@ import { Icons } from "../components/icons";
 
 const features = [
   {
-    icon: <Ticket className="h-8 w-8 text-primary" />,
+    icon: <Ticket className="h-8 w-8 text-blue-600" />,
     title: "Benefits Hub",
     description: "Unlock exclusive student discounts on your favorite brands, software, and services across India.",
     href: "/benefits",
+    bgColor: "bg-blue-50/50 dark:bg-blue-900/10",
+    hoverBgColor: "hover:bg-blue-100/50 dark:hover:bg-blue-900/20",
+    iconBgColor: "bg-blue-100 dark:bg-blue-900/30",
+    buttonColor: "text-blue-600",
   },
   {
-    icon: <Users className="h-8 w-8 text-primary" />,
+    icon: <Users className="h-8 w-8 text-green-600" />,
     title: "Club Directory",
     description: "Discover and join vibrant student communities, from coding clubs to cultural societies.",
     href: "/clubs",
+    bgColor: "bg-green-50/50 dark:bg-green-900/10",
+    hoverBgColor: "hover:bg-green-100/50 dark:hover:bg-green-900/20",
+    iconBgColor: "bg-green-100 dark:bg-green-900/30",
+    buttonColor: "text-green-600",
   },
   {
-    icon: <Calendar className="h-8 w-8 text-primary" />,
+    icon: <Calendar className="h-8 w-8 text-red-600" />,
     title: "Event Calendar",
     description: "Stay updated with the latest workshops, seminars, and fests happening on your campus.",
     href: "/events",
+    bgColor: "bg-red-50/50 dark:bg-red-900/10",
+    hoverBgColor: "hover:bg-red-100/50 dark:hover:bg-red-900/20",
+    iconBgColor: "bg-red-100 dark:bg-red-900/30",
+    buttonColor: "text-red-600",
   },
 ];
 
@@ -102,13 +114,13 @@ export default function Home() {
             </div>
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
               {features.map((feature) => (
-                <Card key={feature.title} className="text-center flex flex-col items-center p-8 bg-card hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 transform hover:-translate-y-2 shadow-lg hover:shadow-2xl rounded-2xl">
-                    <div className="bg-primary/10 p-4 rounded-full">
+                <Card key={feature.title} className={`text-center flex flex-col items-center p-8 transition-all duration-300 transform hover:-translate-y-2 shadow-lg hover:shadow-2xl rounded-2xl ${feature.bgColor} ${feature.hoverBgColor}`}>
+                    <div className={`p-4 rounded-full ${feature.iconBgColor}`}>
                       {feature.icon}
                     </div>
                     <h3 className="mt-6 font-headline text-xl font-semibold">{feature.title}</h3>
                     <p className="mt-2 text-sm text-foreground/60 flex-grow">{feature.description}</p>
-                    <Button variant="link" asChild className="mt-4 text-primary">
+                    <Button variant="link" asChild className={`mt-4 ${feature.buttonColor}`}>
                       <Link href={feature.href}>
                         Explore Now <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
