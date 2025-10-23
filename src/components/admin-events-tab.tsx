@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { FormControl } from "./ui/form";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
-import { format } from "date-fns";
+import { format, setHours, setMinutes, parse } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 
@@ -22,6 +22,7 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "A date for the event is required.",
   }),
+  time: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Please enter a valid time in HH:mm format."),
   imageFile: z.instanceof(File).optional(),
   imageUrl: z.string().optional(),
 });
@@ -39,7 +40,8 @@ const formFields: AdminTabProps<CampusEvent, typeof FormSchema>['formFields'] = 
     },
     {
         name: "date",
-        label: "Event Date & Time",
+        label: "Event Date",
+        colSpan: "md:col-span-1",
         render: (field) => (
             <Popover>
                 <PopoverTrigger asChild>
@@ -61,12 +63,18 @@ const formFields: AdminTabProps<CampusEvent, typeof FormSchema>['formFields'] = 
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
+                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                         initialFocus
                     />
                 </PopoverContent>
             </Popover>
         ),
+    },
+    {
+        name: "time",
+        label: "Event Time",
+        colSpan: "md:col-span-1",
+        render: (field) => <Input type="time" {...field} />,
     },
     {
         name: "description",
@@ -78,6 +86,25 @@ const formFields: AdminTabProps<CampusEvent, typeof FormSchema>['formFields'] = 
 export default function AdminEventsTab() {
   const eventHook = useEvents();
 
+  const transformSubmitData = (data: z.infer<typeof FormSchema>) => {
+    const [hours, minutes] = data.time.split(':').map(Number);
+    const combinedDate = setMinutes(setHours(data.date, hours), minutes);
+    return {
+        ...data,
+        date: combinedDate.toISOString(),
+    };
+  };
+
+  const transformLoadData = (item: CampusEvent) => {
+    const date = new Date(item.date);
+    return {
+        ...item,
+        date: date,
+        time: format(date, "HH:mm"),
+    }
+  };
+
+
   return (
     <AdminTab
       title="Event"
@@ -86,12 +113,12 @@ export default function AdminEventsTab() {
       formSchema={FormSchema}
       formFields={formFields}
       getDisplayName={(item) => item.title}
-      transformSubmitData={(data) => ({...data, date: (data.date as Date).toISOString()}) as any}
-      transformLoadData={(item) => ({...item, date: new Date(item.date)})}
+      transformSubmitData={transformSubmitData as any}
+      transformLoadData={transformLoadData}
       renderItem={(item) => (
         <>
           <p className="font-semibold">{item.title}</p>
-          <p className="text-sm text-muted-foreground">{format(new Date(item.date), "PPP")}</p>
+          <p className="text-sm text-muted-foreground">{format(new Date(item.date), "PPP p")}</p>
         </>
       )}
     />

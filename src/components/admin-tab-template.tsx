@@ -93,7 +93,12 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const defaultValues = useMemo(() => Object.fromEntries(formFields.map(f => [f.name, ''])), [formFields]);
+    const defaultValues = useMemo(() => Object.fromEntries(formFields.map(f => {
+        const fieldSchema = (formSchema as z.AnyZodObject).shape[f.name];
+        if (fieldSchema instanceof z.ZodDate) return [f.name, undefined];
+        if (fieldSchema instanceof z.ZodString) return [f.name, ''];
+        return [f.name, undefined]
+    })), [formFields, formSchema]);
 
     const addForm = useForm<z.infer<TSchema>>({
         resolver: zodResolver(formSchema),
@@ -179,6 +184,7 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
     
     const handleDeleteClick = async (item: T) => {
         const displayName = getDisplayName ? getDisplayName(item) : title;
+        if(!confirm(`Are you sure you want to delete "${displayName}"?`)) return;
         try {
             await remove(item.id);
             toast({
@@ -262,7 +268,9 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
                     <DialogHeader><DialogTitle>Edit {title}</DialogTitle></DialogHeader>
                     <Form {...editForm}>
                         <form onSubmit={editForm.handleSubmit(handleEditSubmit)} className="space-y-6">
-                            <MemoizedFormFields form={editForm} fields={formFields} />
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <MemoizedFormFields form={editForm} fields={formFields} />
+                            </div>
                             <FormField
                                 control={editForm.control}
                                 name="imageFile"
