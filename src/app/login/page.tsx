@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -26,15 +27,14 @@ import { useToast } from "../../hooks/use-toast";
 import { Icons } from "../../components/icons";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from "../../lib/supabaseClient";
 
 const FormSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  email: z.string().email("Please enter a valid email address."),
+  password: z.string().min(1, "Password is required."),
 });
 
 type FormData = z.infer<typeof FormSchema>;
-
-const AUTH_KEY = "oncampus_auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,43 +42,45 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check auth status on mount
-    const isAuthenticated = localStorage.getItem(AUTH_KEY) === "true";
-    if (isAuthenticated) {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
         router.replace("/admin");
-    }
+      }
+    };
+    checkUser();
   }, [router]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-        if (data.username === "ABC1234" && data.password === "ABC1234") {
-          localStorage.setItem(AUTH_KEY, "true");
-          toast({
-            title: "Login Successful",
-            description: "Redirecting to admin dashboard...",
-          });
-          router.push("/admin");
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Login Failed",
-            description: "Incorrect username or password.",
-          });
-          setIsLoading(false);
-        }
-    }, 500);
-  };
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error.message,
+      });
+      setIsLoading(false);
+    } else {
+      toast({
+        title: "Login Successful",
+        description: "Redirecting to admin dashboard...",
+      });
+      router.push("/admin");
+    }
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -101,12 +103,12 @@ export default function LoginPage() {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
                                 control={form.control}
-                                name="username"
+                                name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Username</FormLabel>
+                                        <FormLabel>Email</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="ABC1234" {...field} disabled={isLoading} />
+                                            <Input placeholder="admin@oncampus.com" {...field} disabled={isLoading} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
