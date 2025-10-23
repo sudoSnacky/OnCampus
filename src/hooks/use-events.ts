@@ -65,9 +65,10 @@ export function useEvents() {
 
     const addEvent = async (event: Omit<CampusEvent, 'id' | 'imageUrl' | 'date'> & { date: Date }, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
+        const { id, ...newEvent } = event as any;
         const { data, error } = await supabase
             .from('events')
-            .insert([{ ...event, imageUrl, date: event.date.toISOString() }])
+            .insert([{ ...newEvent, imageUrl, date: event.date.toISOString() }])
             .select();
 
         if (error) {
@@ -96,13 +97,13 @@ export function useEvents() {
     };
 
     const updateEvent = async (eventId: string, event: Partial<Omit<CampusEvent, 'id' | 'date'>> & { date?: Date }, imageFile?: File) => {
-        let imageUrl = event.imageUrl;
+        let finalImageUrl = event.imageUrl;
         if (imageFile) {
-            imageUrl = await uploadImage(imageFile);
+            finalImageUrl = await uploadImage(imageFile);
         }
         
         const { id, date, ...updateData } = event as any;
-        const payload: { [key: string]: any } = { ...updateData, imageUrl };
+        const payload: { [key: string]: any } = { ...updateData, imageUrl: finalImageUrl };
         if (date) {
             payload.date = date.toISOString();
         }

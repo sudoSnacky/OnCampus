@@ -66,10 +66,11 @@ export function useBenefits() {
 
     const addBenefit = async (benefit: Omit<Benefit, 'id' | 'imageUrl'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
+        const { id, ...newBenefit } = benefit as any;
         
         const { data, error } = await supabase
             .from('benefits')
-            .insert([{ ...benefit, imageUrl }])
+            .insert([{ ...newBenefit, imageUrl }])
             .select();
 
         if (error) {
@@ -97,12 +98,12 @@ export function useBenefits() {
     };
 
     const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Benefit>, imageFile?: File) => {
-        let imageUrl = updatedBenefit.imageUrl;
+        let finalImageUrl = updatedBenefit.imageUrl;
         if (imageFile) {
-            imageUrl = await uploadImage(imageFile);
+            finalImageUrl = await uploadImage(imageFile);
         }
 
-        const { id, ...updateData } = { ...updatedBenefit, imageUrl };
+        const { id, ...updateData } = { ...updatedBenefit, imageUrl: finalImageUrl };
         
         const { data, error } = await supabase
             .from('benefits')

@@ -64,9 +64,10 @@ export function useClubs() {
 
     const addClub = async (club: Omit<Club, 'id' | 'imageUrl'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
+        const { id, ...newClub } = club as any;
         const { data, error } = await supabase
             .from('clubs')
-            .insert([{ ...club, imageUrl }])
+            .insert([{ ...newClub, imageUrl }])
             .select();
 
         if (error) {
@@ -94,12 +95,12 @@ export function useClubs() {
     };
 
     const updateClub = async (clubId: string, updatedClub: Partial<Club>, imageFile?: File) => {
-        let imageUrl = updatedClub.imageUrl;
+        let finalImageUrl = updatedClub.imageUrl;
         if (imageFile) {
-            imageUrl = await uploadImage(imageFile);
+            finalImageUrl = await uploadImage(imageFile);
         }
         
-        const { id, ...updateData } = { ...updatedClub, imageUrl };
+        const { id, ...updateData } = { ...updatedClub, imageUrl: finalImageUrl };
         const { data, error } = await supabase
             .from('clubs')
             .update(updateData)
