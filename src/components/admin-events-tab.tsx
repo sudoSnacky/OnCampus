@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useEvents, type CampusEvent } from "../hooks/use-events";
-import { Calendar as CalendarIcon, PlusCircle, Trash2, Upload, Pencil } from "lucide-react";
+import { Calendar as CalendarIcon, PlusCircle, Trash2, Upload, Pencil, Loader2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import {
   Popover,
@@ -55,8 +55,9 @@ type FormData = z.infer<typeof FormSchema>;
 
 export default function AdminEventsTab() {
   const { toast } = useToast();
-  const { events, addEvent, removeEvent, updateEvent, isInitialized } = useEvents();
+  const { events, addEvent, removeEvent, updateEvent, isInitialized, isEventsLoading } = useEvents();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -78,29 +79,67 @@ export default function AdminEventsTab() {
     }
   }, [isEditDialogOpen, editForm]);
 
-  const onAddSubmit: SubmitHandler<FormData> = (data) => {
-    addEvent(data);
-    toast({
-      title: "Event Created!",
-      description: `"${data.title}" has been added to the calendar.`,
-    });
-    form.reset();
+  const onAddSubmit: SubmitHandler<FormData> = async (data) => {
+    setIsSubmitting(true);
+    try {
+        await addEvent(data);
+        toast({
+          title: "Event Created!",
+          description: `"${data.title}" has been added to the calendar.`,
+        });
+        form.reset();
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not create event.",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
   
-  const onEditSubmit: SubmitHandler<FormData> = (data) => {
+  const onEditSubmit: SubmitHandler<FormData> = async (data) => {
     if (!data.id) return;
-    updateEvent(data.id, data);
-    toast({
-      title: "Event Updated!",
-      description: `"${data.title}" has been updated.`,
-    });
-    setIsEditDialogOpen(false);
+    setIsSubmitting(true);
+    try {
+        await updateEvent(data.id, data);
+        toast({
+          title: "Event Updated!",
+          description: `"${data.title}" has been updated.`,
+        });
+        setIsEditDialogOpen(false);
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not update event.",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   const handleEditClick = (event: CampusEvent) => {
     const eventDate = new Date(event.date);
     editForm.reset({ ...event, date: eventDate });
     setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteClick = async (eventId: string, eventTitle: string) => {
+    try {
+        await removeEvent(eventId);
+        toast({
+            title: "Event Removed",
+            description: `"${eventTitle}" has been removed.`,
+        });
+    } catch (error: any) {
+         toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not remove event.",
+        });
+    }
   };
 
   return (
@@ -112,7 +151,7 @@ export default function AdminEventsTab() {
             Add New Event
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new event to the calendar. The backend is disconnected, so changes will not persist.
+            Fill in the details to add a new event to the calendar.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -232,7 +271,8 @@ export default function AdminEventsTab() {
               />
               
               <div className="flex flex-col sm:flex-row gap-2">
-                <Button type="submit" className="w-full sm:w-auto" disabled={!isInitialized}>
+                <Button type="submit" className="w-full sm:w-auto" disabled={!isInitialized || isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Create Event
                 </Button>
               </div>
@@ -248,6 +288,8 @@ export default function AdminEventsTab() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+            {isEventsLoading && <div className="flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/></div>}
+            {!isEventsLoading && events.length === 0 && <p className="text-center text-muted-foreground">No events found.</p>}
           <ul className="space-y-4">
             {events.map((event) => (
               <li
@@ -263,15 +305,13 @@ export default function AdminEventsTab() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEditClick(event)}
-                        disabled
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => removeEvent(event.id)}
-                    disabled
+                    onClick={() => handleDeleteClick(event.id, event.title)}
                     >
                     <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -386,7 +426,10 @@ export default function AdminEventsTab() {
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>
                 </DialogClose>
-                <Button type="submit" disabled>Save Changes</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Changes
+                </Button>
               </div>
             </form>
           </Form>

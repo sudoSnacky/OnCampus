@@ -5,14 +5,15 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/card';
 import { useEvents } from '../../../hooks/use-events';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, MapPin, Loader2 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { Calendar } from '../../../components/ui/calendar';
 import { Button } from '../../../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '../../../components/ui/dialog';
+import { Skeleton } from '../../../components/ui/skeleton';
 
 export default function EventsPage() {
-  const { events } = useEvents();
+  const { events, isEventsLoading } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
   // Consolidate date conversion at the beginning
@@ -103,7 +104,23 @@ export default function EventsPage() {
             )}
         </div>
         <div className="md:col-span-2 space-y-8">
-            {filteredEvents.length > 0 ? (
+            {isEventsLoading ? (
+                <div className="space-y-8">
+                    {Array.from({ length: 2 }).map((_, i) => (
+                        <Card key={i} className="flex flex-col md:flex-row">
+                             <Skeleton className="relative h-48 md:h-auto md:w-1/3" />
+                             <div className="flex flex-col flex-1 p-6">
+                                <Skeleton className="h-6 w-3/4 mb-4" />
+                                <Skeleton className="h-4 w-full mb-2" />
+                                <Skeleton className="h-4 w-full mb-4" />
+                                <Skeleton className="h-5 w-1/4 mb-4" />
+                                <Skeleton className="h-5 w-1/3 mb-4" />
+                                <Skeleton className="h-10 w-1/2 mt-auto" />
+                             </div>
+                        </Card>
+                    ))}
+                </div>
+            ) : filteredEvents.length > 0 ? (
                 filteredEvents.map((event) => {
                 const eventDate = event.dateObj;
 

@@ -1,9 +1,8 @@
 
 'use client';
 
-import { initialClubs } from '../lib/data';
-import { useState } from 'react';
-
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 export interface Club {
   id: string;
@@ -14,28 +13,87 @@ export interface Club {
 }
 
 export function useClubs() {
-    const [clubs, setClubs] = useState<Club[]>(initialClubs);
+    const [clubs, setClubs] = useState<Club[]>([]);
+    const [isClubsLoading, setIsLoading] = useState(true);
+    const [clubsError, setClubsError] = useState<Error | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    const addClub = (club: Omit<Club, 'id'>) => {
-        setClubs(prev => [...prev, { ...club, id: `club-${Date.now()}` }]);
+    const fetchClubs = useCallback(async () => {
+        setIsLoading(true);
+        const { data, error } = await supabase
+            .from('clubs')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error("Error fetching clubs:", error);
+            setClubsError(error as unknown as Error);
+        } else {
+            setClubs(data as Club[]);
+        }
+        setIsLoading(false);
+        setIsInitialized(true);
+    }, []);
+
+    useEffect(() => {
+        fetchClubs();
+    }, [fetchClubs]);
+
+    const addClub = async (club: Omit<Club, 'id'>) => {
+        const { data, error } = await supabase
+            .from('clubs')
+            .insert([club])
+            .select();
+
+        if (error) {
+            console.error("Error adding club:", error);
+            throw error;
+        }
+
+        if (data) {
+            setClubs(prev => [data[0], ...prev]);
+        }
     };
     
-    const removeClub = (clubId: string) => {
+    const removeClub = async (clubId: string) => {
+        const { error } = await supabase
+            .from('clubs')
+            .delete()
+            .eq('id', clubId);
+        
+        if (error) {
+            console.error("Error removing club:", error);
+            throw error;
+        }
+
         setClubs(prev => prev.filter(c => c.id !== clubId));
     };
 
-    const updateClub = (clubId: string, updatedClub: Omit<Club, 'id'>) => {
-        setClubs(prev => prev.map(c => c.id === clubId ? { ...updatedClub, id: clubId } : c));
+    const updateClub = async (clubId: string, updatedClub: Omit<Club, 'id'>) => {
+        const { data, error } = await supabase
+            .from('clubs')
+            .update(updatedClub)
+            .eq('id', clubId)
+            .select();
+
+        if (error) {
+            console.error("Error updating club:", error);
+            throw error;
+        }
+        
+        if(data) {
+            setClubs(prev => prev.map(c => c.id === clubId ? data[0] : c));
+        }
     };
 
 
   return {
     clubs,
-    isClubsLoading: false,
-    clubsError: null,
+    isClubsLoading,
+    clubsError,
     addClub,
     removeClub,
     updateClub,
-    isInitialized: true,
+    isInitialized,
   };
 }

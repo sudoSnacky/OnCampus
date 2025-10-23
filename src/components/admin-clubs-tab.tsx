@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useClubs, type Club } from "../hooks/use-clubs";
-import { PlusCircle, Trash2, Upload, Pencil } from "lucide-react";
+import { PlusCircle, Trash2, Upload, Pencil, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -42,8 +42,9 @@ type FormData = z.infer<typeof FormSchema>;
 
 export default function AdminClubsTab() {
   const { toast } = useToast();
-  const { clubs, addClub, removeClub, updateClub, isInitialized } = useClubs();
+  const { clubs, addClub, removeClub, updateClub, isInitialized, isClubsLoading } = useClubs();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -65,28 +66,66 @@ export default function AdminClubsTab() {
     }
   }, [isEditDialogOpen, editForm]);
   
-  const onAddSubmit: SubmitHandler<FormData> = (data) => {
-    addClub(data);
-    toast({
-      title: "Club Added!",
-      description: `"${data.name}" has been added.`,
-    });
-    form.reset();
+  const onAddSubmit: SubmitHandler<FormData> = async (data) => {
+    setIsSubmitting(true);
+    try {
+      await addClub(data);
+      toast({
+        title: "Club Added!",
+        description: `"${data.name}" has been added.`,
+      });
+      form.reset();
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not add club.",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
-  const onEditSubmit: SubmitHandler<FormData> = (data) => {
+  const onEditSubmit: SubmitHandler<FormData> = async (data) => {
     if (!data.id) return;
-    updateClub(data.id, data);
-    toast({
-      title: "Club Updated!",
-      description: `"${data.name}" has been updated.`,
-    });
-    setIsEditDialogOpen(false);
+    setIsSubmitting(true);
+    try {
+        await updateClub(data.id, data);
+        toast({
+          title: "Club Updated!",
+          description: `"${data.name}" has been updated.`,
+        });
+        setIsEditDialogOpen(false);
+    } catch(error: any) {
+         toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not update club.",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
   
   const handleEditClick = (club: Club) => {
     editForm.reset(club);
     setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteClick = async (clubId: string, clubName: string) => {
+    try {
+        await removeClub(clubId);
+        toast({
+            title: "Club Removed",
+            description: `"${clubName}" has been removed.`,
+        });
+    } catch (error: any) {
+         toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not remove club.",
+        });
+    }
   };
 
   return (
@@ -98,7 +137,7 @@ export default function AdminClubsTab() {
             Add New Club
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new student club. The backend is disconnected, so changes will not persist.
+            Fill in the details to add a new student club.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -172,7 +211,8 @@ export default function AdminClubsTab() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={!isInitialized}>
+              <Button type="submit" disabled={!isInitialized || isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Club
               </Button>
             </form>
@@ -188,6 +228,8 @@ export default function AdminClubsTab() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {isClubsLoading && <div className="flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/></div>}
+          {!isClubsLoading && clubs.length === 0 && <p className="text-center text-muted-foreground">No clubs found.</p>}
           <ul className="space-y-4">
             {clubs.map((club) => (
               <li
@@ -203,7 +245,6 @@ export default function AdminClubsTab() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEditClick(club)}
-                        disabled
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
@@ -211,7 +252,6 @@ export default function AdminClubsTab() {
                     variant="ghost"
                     size="icon"
                     onClick={() => removeClub(club.id)}
-                    disabled
                     >
                     <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -285,7 +325,10 @@ export default function AdminClubsTab() {
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>
                 </DialogClose>
-                <Button type="submit" disabled>Save Changes</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Changes
+                </Button>
               </div>
             </form>
           </Form>
