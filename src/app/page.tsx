@@ -140,9 +140,9 @@ export default function Home() {
             </div>
             <p className="text-sm text-foreground/60 mt-4 md:mt-0">
               Made with ❤️ by{' '}
-              <a href="https://www.linkedin.com/in/prakrat-porwal-4688b3385/" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">Prakrat</a> &{' '}
-              <a href="https://www.linkedin.com/in/manan-chimnani/" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">Manan</a> &{' '}
-              <a href="https://www.linkedin.com/in/atharv-porwal-354149381/" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">Atharv</a>
+              <a href="https://www.linkedin.com/in/prakrat-porwal-4688b3385/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #DB4437' }}>Prakrat</a> &{' '}
+              <a href="https://www.linkedin.com/in/manan-chimnani/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #4285F4' }}>Manan</a> &{' '}
+              <a href="https://www.linkedin.com/in/atharv-porwal-354149381/" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 0 8px #0F9D58' }}>Atharv</a>
             </p>
           </div>
         </div>
