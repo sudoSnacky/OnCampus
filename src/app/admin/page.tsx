@@ -73,11 +73,11 @@ export default function AdminPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Tabs defaultValue="events" className="w-full">
+                    <Tabs defaultValue="benefits" className="w-full">
                         <TabsList className="grid w-full grid-cols-3">
-                            <TabsTrigger value="events">Events</TabsTrigger>
-                            <TabsTrigger value="clubs">Clubs</TabsTrigger>
                             <TabsTrigger value="benefits">Benefits</TabsTrigger>
+                            <TabsTrigger value="clubs">Clubs</TabsTrigger>
+                            <TabsTrigger value="events">Events</TabsTrigger>
                         </TabsList>
                         <TabsContent value="events">
                             <AdminEventsTab />
