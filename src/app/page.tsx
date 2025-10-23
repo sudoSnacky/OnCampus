@@ -30,8 +30,8 @@ const features = [
 ];
 
 const heroImage = {
-  imageUrl: "https://storage.googleapis.com/aif-stg-prompt-gallery/project-11933614-1721291880948.png",
-  description: "An illustration of a diverse group of students standing together with books and a tablet."
+  imageUrl: "https://phxoqyfttxqfpgehxxru.supabase.co/storage/v1/object/public/OnCampusStorage/Home.jpg",
+  description: "An illustration of diverse students collaborating and learning on campus."
 };
 
 export default function Home() {
