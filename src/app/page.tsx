@@ -139,7 +139,10 @@ export default function Home() {
               <Icons.logo />
             </div>
             <p className="text-sm text-foreground/60 mt-4 md:mt-0">
-              Made with ❤️ by Prakrat & Manan & Atharv
+              Made with ❤️ by{' '}
+              <a href="https://www.linkedin.com/in/prakrat-porwal-4688b3385/" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">Prakrat</a> &{' '}
+              <a href="https://www.linkedin.com/in/manan-chimnani/" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">Manan</a> &{' '}
+              <a href="https://www.linkedin.com/in/atharv-porwal-354149381/" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">Atharv</a>
             </p>
           </div>
         </div>
