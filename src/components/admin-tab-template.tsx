@@ -188,7 +188,7 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
     };
     
     const handleDeleteClick = async (item: T) => {
-        const displayName = getDisplayName ? getDisplayName(item) : (item.title || item.name || title);
+        const displayName = item.title || item.name || title;
         if(!confirm(`Are you sure you want to delete "${displayName}"?`)) return;
         try {
             await remove(item.id);
