@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useBenefits, type Benefit } from "../hooks/use-benefits";
-import { PlusCircle, Trash2, Upload, Pencil } from "lucide-react";
+import { PlusCircle, Trash2, Upload, Pencil, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -27,7 +27,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import Link from "next/link";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "./ui/dialog";
 import { useState, useEffect } from "react";
 
 const FormSchema = z.object({
@@ -44,8 +44,9 @@ type FormData = z.infer<typeof FormSchema>;
 
 export default function AdminBenefitsTab() {
   const { toast } = useToast();
-  const { benefits, addBenefit, removeBenefit, updateBenefit, isInitialized } = useBenefits();
+  const { benefits, addBenefit, removeBenefit, updateBenefit, isInitialized, isBenefitsLoading } = useBenefits();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -69,34 +70,72 @@ export default function AdminBenefitsTab() {
     }
   }, [isEditDialogOpen, editForm]);
 
-  const onAddSubmit: SubmitHandler<FormData> = (data) => {
-    addBenefit({
-      ...data,
-      redirectUrl: data.redirectUrl || '',
-    });
-    toast({
-      title: "Benefit Added!",
-      description: `"${data.title}" has been added.`,
-    });
-    form.reset();
-  };
-
-  const onEditSubmit: SubmitHandler<FormData> = (data) => {
-    if (!data.id) return;
-    updateBenefit(data.id, {
+  const onAddSubmit: SubmitHandler<FormData> = async (data) => {
+    setIsSubmitting(true);
+    try {
+      await addBenefit({
         ...data,
         redirectUrl: data.redirectUrl || '',
-    });
-    toast({
-      title: "Benefit Updated!",
-      description: `"${data.title}" has been updated.`,
-    });
-    setIsEditDialogOpen(false);
+      });
+      toast({
+        title: "Benefit Added!",
+        description: `"${data.title}" has been added.`,
+      });
+      form.reset();
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not add benefit.",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
+  };
+
+  const onEditSubmit: SubmitHandler<FormData> = async (data) => {
+    if (!data.id) return;
+    setIsSubmitting(true);
+    try {
+        await updateBenefit(data.id, {
+            ...data,
+            redirectUrl: data.redirectUrl || '',
+        });
+        toast({
+          title: "Benefit Updated!",
+          description: `"${data.title}" has been updated.`,
+        });
+        setIsEditDialogOpen(false);
+    } catch(error: any) {
+         toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not update benefit.",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
   
   const handleEditClick = (benefit: Benefit) => {
     editForm.reset(benefit);
     setIsEditDialogOpen(true);
+  };
+  
+  const handleDeleteClick = async (benefitId: string, benefitTitle: string) => {
+    try {
+        await removeBenefit(benefitId);
+        toast({
+            title: "Benefit Removed",
+            description: `"${benefitTitle}" has been removed.`,
+        });
+    } catch (error: any) {
+         toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: error.message || "Could not remove benefit.",
+        });
+    }
   };
 
 
@@ -109,7 +148,7 @@ export default function AdminBenefitsTab() {
             Add New Benefit
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new student benefit. The backend is disconnected, so changes will not persist.
+            Fill in the details to add a new student benefit.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -209,7 +248,8 @@ export default function AdminBenefitsTab() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={!isInitialized}>
+              <Button type="submit" disabled={!isInitialized || isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Benefit
               </Button>
             </form>
@@ -225,6 +265,8 @@ export default function AdminBenefitsTab() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {isBenefitsLoading && <div className="flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/></div>}
+          {!isBenefitsLoading && benefits.length === 0 && <p className="text-center text-muted-foreground">No benefits found.</p>}
           <ul className="space-y-4">
             {benefits.map((benefit) => (
               <li
@@ -240,15 +282,13 @@ export default function AdminBenefitsTab() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEditClick(benefit)}
-                        disabled
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => removeBenefit(benefit.id)}
-                    disabled
+                    onClick={() => handleDeleteClick(benefit.id, benefit.title)}
                     >
                     <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -348,7 +388,10 @@ export default function AdminBenefitsTab() {
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>
                 </DialogClose>
-                <Button type="submit" disabled>Save Changes</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Changes
+                </Button>
               </div>
             </form>
           </Form>

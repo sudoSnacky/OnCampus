@@ -1,8 +1,8 @@
 
 'use client';
 
-import { initialBenefits } from '../lib/data';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 export interface Benefit {
   id: string;
@@ -15,27 +15,86 @@ export interface Benefit {
 }
 
 export function useBenefits() {
-    const [benefits, setBenefits] = useState<Benefit[]>(initialBenefits);
+    const [benefits, setBenefits] = useState<Benefit[]>([]);
+    const [isBenefitsLoading, setIsLoading] = useState(true);
+    const [benefitsError, setBenefitsError] = useState<Error | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    const addBenefit = (benefit: Omit<Benefit, 'id'>) => {
-        setBenefits(prev => [...prev, { ...benefit, id: `benefit-${Date.now()}` }]);
+    const fetchBenefits = useCallback(async () => {
+        setIsLoading(true);
+        const { data, error } = await supabase
+            .from('benefits')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error("Error fetching benefits:", error);
+            setBenefitsError(error as unknown as Error);
+        } else {
+            setBenefits(data as Benefit[]);
+        }
+        setIsLoading(false);
+        setIsInitialized(true);
+    }, []);
+
+    useEffect(() => {
+        fetchBenefits();
+    }, [fetchBenefits]);
+
+    const addBenefit = async (benefit: Omit<Benefit, 'id'>) => {
+        const { data, error } = await supabase
+            .from('benefits')
+            .insert([benefit])
+            .select();
+
+        if (error) {
+            console.error("Error adding benefit:", error);
+            throw error;
+        }
+
+        if (data) {
+            setBenefits(prev => [data[0], ...prev]);
+        }
     };
     
-    const removeBenefit = (benefitId: string) => {
+    const removeBenefit = async (benefitId: string) => {
+        const { error } = await supabase
+            .from('benefits')
+            .delete()
+            .eq('id', benefitId);
+        
+        if (error) {
+            console.error("Error removing benefit:", error);
+            throw error;
+        }
+
         setBenefits(prev => prev.filter(b => b.id !== benefitId));
     };
 
-    const updateBenefit = (benefitId: string, updatedBenefit: Omit<Benefit, 'id'>) => {
-        setBenefits(prev => prev.map(b => b.id === benefitId ? { ...updatedBenefit, id: benefitId } : b));
+    const updateBenefit = async (benefitId: string, updatedBenefit: Omit<Benefit, 'id'>) => {
+        const { data, error } = await supabase
+            .from('benefits')
+            .update(updatedBenefit)
+            .eq('id', benefitId)
+            .select();
+
+        if (error) {
+            console.error("Error updating benefit:", error);
+            throw error;
+        }
+        
+        if(data) {
+            setBenefits(prev => prev.map(b => b.id === benefitId ? data[0] : b));
+        }
     };
 
     return {
         benefits,
-        isBenefitsLoading: false,
-        benefitsError: null,
+        isBenefitsLoading,
+        benefitsError,
         addBenefit,
         removeBenefit,
         updateBenefit,
-        isInitialized: true,
+        isInitialized,
     };
 }
