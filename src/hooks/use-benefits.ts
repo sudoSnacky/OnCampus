@@ -86,7 +86,7 @@ export function useBenefits() {
         if (!itemToDelete) throw new Error("Benefit not found");
 
         const imageUrl = itemToDelete.imageUrl;
-        const imagePath = imageUrl.substring(imageUrl.indexOf('/benefits/') + 1);
+        const imagePath = imageUrl.split('/images/')[1];
 
         if (imagePath) {
             const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);

@@ -48,7 +48,6 @@ export interface AdminTabProps<T extends DataItem, TSchema extends ZodType<any, 
       render: (field: any) => React.ReactNode;
   }[];
   renderItem: (item: T) => React.ReactNode;
-  getDisplayName?: (item: T) => string;
   transformSubmitData?: (data: z.infer<TSchema>) => T;
   transformLoadData?: (item: T) => z.infer<TSchema>;
 }
@@ -84,7 +83,6 @@ export function AdminTab<T extends DataItem, TSchema extends ZodType<any, any, a
   formSchema,
   formFields,
   renderItem,
-  getDisplayName,
   transformSubmitData,
   transformLoadData,
 }: AdminTabProps<T, TSchema>) {

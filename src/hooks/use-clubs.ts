@@ -84,7 +84,7 @@ export function useClubs() {
         if (!itemToDelete) throw new Error("Club not found");
 
         const imageUrl = itemToDelete.imageUrl;
-        const imagePath = imageUrl.substring(imageUrl.indexOf('/clubs/') + 1);
+        const imagePath = imageUrl.split('/images/')[1];
         
         if (imagePath) {
              const { error: storageError } = await supabase.storage.from('images').remove([imagePath]);
