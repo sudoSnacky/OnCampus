@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useClubs, type Club } from "../hooks/use-clubs";
-import { PlusCircle, Trash2, Upload, Pencil, Loader2 } from "lucide-react";
+import { PlusCircle, Trash2, Pencil, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,7 +26,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "./ui/dialog";
 import { useState, useEffect } from "react";
 
@@ -35,7 +34,8 @@ const FormSchema = z.object({
   name: z.string().min(3, "Club name is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
-  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
+  imageFile: z.instanceof(File).optional(),
+  imageUrl: z.string().optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -68,8 +68,17 @@ export default function AdminClubsTab() {
   
   const onAddSubmit: SubmitHandler<FormData> = async (data) => {
     setIsSubmitting(true);
+    if (!data.imageFile) {
+        toast({
+            variant: "destructive",
+            title: "Image required",
+            description: "Please select an image file to upload.",
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-      await addClub(data);
+      await addClub(data, data.imageFile);
       toast({
         title: "Club Added!",
         description: `"${data.name}" has been added.`,
@@ -90,7 +99,7 @@ export default function AdminClubsTab() {
     if (!data.id) return;
     setIsSubmitting(true);
     try {
-        await updateClub(data.id, data);
+        await updateClub(data.id, data, data.imageFile);
         toast({
           title: "Club Updated!",
           description: `"${data.name}" has been updated.`,
@@ -190,27 +199,27 @@ export default function AdminClubsTab() {
               />
                <FormField
                 control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                     <div className="flex items-center gap-2">
+                name="imageFile"
+                render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem>
+                        <FormLabel>Club Image</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://example.com/image.png" {...field} />
+                            <Input 
+                                type="file" 
+                                accept="image/png, image/jpeg, image/gif"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files.length > 0) {
+                                        onChange(e.target.files[0]);
+                                    }
+                                }}
+                                {...rest}
+                            />
                         </FormControl>
-                        <Button variant="outline" asChild>
-                            <Link href="https://postimages.org/" target="_blank">
-                                <Upload className="mr-2 h-4 w-4" /> Upload
-                            </Link>
-                        </Button>
-                    </div>
-                    <FormDescription>
-                      The URL of an image for the club.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+                        <FormDescription>Upload an image for the club.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
                 )}
-              />
+                />
               <Button type="submit" disabled={!isInitialized || isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Club
@@ -310,17 +319,27 @@ export default function AdminClubsTab() {
               />
               <FormField
                 control={editForm.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                name="imageFile"
+                render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem>
+                        <FormLabel>New Club Image (Optional)</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/png, image/jpeg, image/gif"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files.length > 0) {
+                                        onChange(e.target.files[0]);
+                                    }
+                                }}
+                                {...rest}
+                            />
+                        </FormControl>
+                        <FormDescription>Upload a new image to replace the existing one.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
                 )}
-              />
+                />
               <div className="flex justify-end gap-2">
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>

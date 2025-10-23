@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import imageCompression from 'browser-image-compression';
 
 export interface CampusEvent {
   id: string;
@@ -12,6 +13,28 @@ export interface CampusEvent {
   description: string;
   imageUrl: string;
 }
+
+const uploadImage = async (file: File): Promise<string> => {
+    const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+    }
+    const compressedFile = await imageCompression(file, options);
+
+    const filePath = `events/${Date.now()}-${compressedFile.name}`;
+    const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, compressedFile);
+
+    if (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+    }
+
+    const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
+    return publicUrl;
+};
 
 export function useEvents() {
     const [events, setEvents] = useState<CampusEvent[]>([]);
@@ -40,10 +63,11 @@ export function useEvents() {
         fetchEvents();
     }, [fetchEvents]);
 
-    const addEvent = async (event: Omit<CampusEvent, 'id' | 'date'> & { date: Date }) => {
+    const addEvent = async (event: Omit<CampusEvent, 'id' | 'imageUrl' | 'date'> & { date: Date }, imageFile: File) => {
+        const imageUrl = await uploadImage(imageFile);
         const { data, error } = await supabase
             .from('events')
-            .insert([{ ...event, date: event.date.toISOString() }])
+            .insert([{ ...event, imageUrl, date: event.date.toISOString() }])
             .select();
 
         if (error) {
@@ -71,9 +95,14 @@ export function useEvents() {
         setEvents(prev => prev.filter(e => e.id !== eventId));
     };
 
-    const updateEvent = async (eventId: string, event: Partial<Omit<CampusEvent, 'id' | 'date'>> & { date?: Date }) => {
+    const updateEvent = async (eventId: string, event: Partial<Omit<CampusEvent, 'id' | 'date'>> & { date?: Date }, imageFile?: File) => {
+        let imageUrl = event.imageUrl;
+        if (imageFile) {
+            imageUrl = await uploadImage(imageFile);
+        }
+        
         const { id, date, ...updateData } = event as any;
-        const payload: { [key: string]: any } = { ...updateData };
+        const payload: { [key: string]: any } = { ...updateData, imageUrl };
         if (date) {
             payload.date = date.toISOString();
         }

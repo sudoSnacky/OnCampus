@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useEvents, type CampusEvent } from "../hooks/use-events";
-import { Calendar as CalendarIcon, PlusCircle, Trash2, Upload, Pencil, Loader2 } from "lucide-react";
+import { Calendar as CalendarIcon, PlusCircle, Trash2, Pencil, Loader2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import {
   Popover,
@@ -34,7 +34,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "./ui/dialog";
 import { useState, useEffect } from "react";
 
@@ -48,7 +47,8 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "A date for the event is required.",
   }),
-  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
+  imageFile: z.instanceof(File).optional(),
+  imageUrl: z.string().optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -65,7 +65,6 @@ export default function AdminEventsTab() {
         title: "",
         location: "",
         description: "",
-        imageUrl: "",
     }
   });
 
@@ -81,8 +80,17 @@ export default function AdminEventsTab() {
 
   const onAddSubmit: SubmitHandler<FormData> = async (data) => {
     setIsSubmitting(true);
+    if (!data.imageFile) {
+        toast({
+            variant: "destructive",
+            title: "Image required",
+            description: "Please select an image file to upload.",
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-        await addEvent(data);
+        await addEvent(data, data.imageFile);
         toast({
           title: "Event Created!",
           description: `"${data.title}" has been added to the calendar.`,
@@ -103,7 +111,7 @@ export default function AdminEventsTab() {
     if (!data.id) return;
     setIsSubmitting(true);
     try {
-        await updateEvent(data.id, data);
+        await updateEvent(data.id, data, data.imageFile);
         toast({
           title: "Event Updated!",
           description: `"${data.title}" has been updated.`,
@@ -248,25 +256,25 @@ export default function AdminEventsTab() {
 
                <FormField
                 control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <div className="flex items-center gap-2">
-                      <FormControl>
-                        <Input placeholder="https://example.com/image.png" {...field} />
-                      </FormControl>
-                      <Button variant="outline" asChild>
-                        <Link href="https://postimages.org/" target="_blank">
-                          <Upload className="mr-2 h-4 w-4" /> Upload
-                        </Link>
-                      </Button>
-                    </div>
-                    <FormDescription>
-                      The URL of an image for the event.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+                name="imageFile"
+                render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem>
+                        <FormLabel>Event Image</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/png, image/jpeg, image/gif"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files.length > 0) {
+                                        onChange(e.target.files[0]);
+                                    }
+                                }}
+                                {...rest}
+                            />
+                        </FormControl>
+                        <FormDescription>Upload an image for the event.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
                 )}
               />
               
@@ -411,15 +419,25 @@ export default function AdminEventsTab() {
               />
               <FormField
                 control={editForm.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                name="imageFile"
+                render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem>
+                        <FormLabel>New Event Image (Optional)</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/png, image/jpeg, image/gif"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files.length > 0) {
+                                        onChange(e.target.files[0]);
+                                    }
+                                }}
+                                {...rest}
+                            />
+                        </FormControl>
+                        <FormDescription>Upload a new image to replace the existing one.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
                 )}
               />
               <div className="flex justify-end gap-2">

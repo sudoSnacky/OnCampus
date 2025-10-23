@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import imageCompression from 'browser-image-compression';
 
 export interface Benefit {
   id: string;
@@ -13,6 +14,28 @@ export interface Benefit {
   imageUrl: string;
   redirectUrl?: string;
 }
+
+const uploadImage = async (file: File): Promise<string> => {
+    const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+    }
+    const compressedFile = await imageCompression(file, options);
+    
+    const filePath = `benefits/${Date.now()}-${compressedFile.name}`;
+    const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, compressedFile);
+
+    if (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+    }
+
+    const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
+    return publicUrl;
+};
 
 export function useBenefits() {
     const [benefits, setBenefits] = useState<Benefit[]>([]);
@@ -41,11 +64,12 @@ export function useBenefits() {
         fetchBenefits();
     }, [fetchBenefits]);
 
-    const addBenefit = async (benefit: Omit<Benefit, 'id'>) => {
-        const { id, ...benefitData } = benefit as any;
+    const addBenefit = async (benefit: Omit<Benefit, 'id' | 'imageUrl'>, imageFile: File) => {
+        const imageUrl = await uploadImage(imageFile);
+        
         const { data, error } = await supabase
             .from('benefits')
-            .insert([benefitData])
+            .insert([{ ...benefit, imageUrl }])
             .select();
 
         if (error) {
@@ -72,8 +96,14 @@ export function useBenefits() {
         setBenefits(prev => prev.filter(b => b.id !== benefitId));
     };
 
-    const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Benefit>) => {
-        const { id, ...updateData } = updatedBenefit;
+    const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Benefit>, imageFile?: File) => {
+        let imageUrl = updatedBenefit.imageUrl;
+        if (imageFile) {
+            imageUrl = await uploadImage(imageFile);
+        }
+
+        const { id, ...updateData } = { ...updatedBenefit, imageUrl };
+        
         const { data, error } = await supabase
             .from('benefits')
             .update(updateData)

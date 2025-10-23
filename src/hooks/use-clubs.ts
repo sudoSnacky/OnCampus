@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import imageCompression from 'browser-image-compression';
 
 export interface Club {
   id: string;
@@ -11,6 +12,28 @@ export interface Club {
   description: string;
   imageUrl: string;
 }
+
+const uploadImage = async (file: File): Promise<string> => {
+    const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+    }
+    const compressedFile = await imageCompression(file, options);
+
+    const filePath = `clubs/${Date.now()}-${compressedFile.name}`;
+    const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, compressedFile);
+
+    if (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+    }
+
+    const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
+    return publicUrl;
+};
 
 export function useClubs() {
     const [clubs, setClubs] = useState<Club[]>([]);
@@ -39,10 +62,11 @@ export function useClubs() {
         fetchClubs();
     }, [fetchClubs]);
 
-    const addClub = async (club: Omit<Club, 'id'>) => {
+    const addClub = async (club: Omit<Club, 'id' | 'imageUrl'>, imageFile: File) => {
+        const imageUrl = await uploadImage(imageFile);
         const { data, error } = await supabase
             .from('clubs')
-            .insert([club])
+            .insert([{ ...club, imageUrl }])
             .select();
 
         if (error) {
@@ -69,8 +93,13 @@ export function useClubs() {
         setClubs(prev => prev.filter(c => c.id !== clubId));
     };
 
-    const updateClub = async (clubId: string, updatedClub: Partial<Club>) => {
-        const { id, ...updateData } = updatedClub;
+    const updateClub = async (clubId: string, updatedClub: Partial<Club>, imageFile?: File) => {
+        let imageUrl = updatedClub.imageUrl;
+        if (imageFile) {
+            imageUrl = await uploadImage(imageFile);
+        }
+        
+        const { id, ...updateData } = { ...updatedClub, imageUrl };
         const { data, error } = await supabase
             .from('clubs')
             .update(updateData)

@@ -18,7 +18,7 @@ import {
 } from "./ui/form";
 import { useToast } from "../hooks/use-toast";
 import { useBenefits, type Benefit } from "../hooks/use-benefits";
-import { PlusCircle, Trash2, Upload, Pencil, Loader2 } from "lucide-react";
+import { PlusCircle, Trash2, Pencil, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,7 +26,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "./ui/dialog";
 import { useState, useEffect } from "react";
 
@@ -36,7 +35,8 @@ const FormSchema = z.object({
   provider: z.string().min(2, "Provider is required."),
   category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
-  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
+  imageFile: z.instanceof(File).optional(),
+  imageUrl: z.string().optional(),
   redirectUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
 });
 
@@ -72,11 +72,20 @@ export default function AdminBenefitsTab() {
 
   const onAddSubmit: SubmitHandler<FormData> = async (data) => {
     setIsSubmitting(true);
+    if (!data.imageFile) {
+        toast({
+            variant: "destructive",
+            title: "Image required",
+            description: "Please select an image file to upload.",
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
       await addBenefit({
         ...data,
         redirectUrl: data.redirectUrl || '',
-      });
+      }, data.imageFile);
       toast({
         title: "Benefit Added!",
         description: `"${data.title}" has been added.`,
@@ -100,7 +109,7 @@ export default function AdminBenefitsTab() {
         await updateBenefit(data.id, {
             ...data,
             redirectUrl: data.redirectUrl || '',
-        });
+        }, data.imageFile);
         toast({
           title: "Benefit Updated!",
           description: `"${data.title}" has been updated.`,
@@ -214,27 +223,27 @@ export default function AdminBenefitsTab() {
               />
               <FormField
                 control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <div className="flex items-center gap-2">
-                      <FormControl>
-                        <Input placeholder="https://example.com/image.png" {...field} />
-                      </FormControl>
-                      <Button variant="outline" asChild>
-                        <Link href="https://postimages.org/" target="_blank">
-                          <Upload className="mr-2 h-4 w-4" /> Upload
-                        </Link>
-                      </Button>
-                    </div>
-                    <FormDescription>
-                      The URL of an image for the benefit.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+                name="imageFile"
+                render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem>
+                        <FormLabel>Benefit Image</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/png, image/jpeg, image/gif"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files.length > 0) {
+                                        onChange(e.target.files[0]);
+                                    }
+                                }}
+                                {...rest}
+                            />
+                        </FormControl>
+                        <FormDescription>Upload an image for the benefit.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
                 )}
-              />
+                />
               <FormField
                 control={form.control}
                 name="redirectUrl"
@@ -360,17 +369,27 @@ export default function AdminBenefitsTab() {
               />
               <FormField
                 control={editForm.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                name="imageFile"
+                render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem>
+                        <FormLabel>New Benefit Image (Optional)</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="file" 
+                                accept="image/png, image/jpeg, image/gif"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files.length > 0) {
+                                        onChange(e.target.files[0]);
+                                    }
+                                }}
+                                {...rest}
+                            />
+                        </FormControl>
+                        <FormDescription>Upload a new image to replace the existing one.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
                 )}
-              />
+                />
               <FormField
                 control={editForm.control}
                 name="redirectUrl"
