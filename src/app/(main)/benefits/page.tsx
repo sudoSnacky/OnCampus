@@ -66,7 +66,7 @@ export default function BenefitsPage() {
                 <CardContent className="flex-grow flex flex-col">
                     <p className="text-sm text-foreground/80 flex-grow">{benefit.description}</p>
                     <div className="flex flex-wrap gap-2 mt-4">
-                        {benefit.category && <Badge variant="secondary" className="bg-accent/20 text-accent-foreground border-accent/30">{benefit.category}</Badge>}
+                        {benefit.category && <Badge variant="secondary" className="font-semibold bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-700">{benefit.category}</Badge>}
                     </div>
                     {benefit.redirectUrl && (
                     <Button asChild className="mt-4 w-full bg-primary/90 text-primary-foreground hover:bg-primary/100 backdrop-blur-lg border border-primary/30 transition-all duration-300">

@@ -75,7 +75,7 @@ export default function ClubsPage() {
                 <CardContent className="flex-grow flex flex-col">
                   <p className="text-sm text-foreground/80 flex-grow">{club.description}</p>
                    <div className="flex flex-wrap gap-2 mt-4">
-                        {club.category && <Badge variant="secondary" className="bg-primary/20 text-primary-foreground border-primary/30">{club.category}</Badge>}
+                        {club.category && <Badge variant="secondary" className="font-semibold bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700">{club.category}</Badge>}
                     </div>
                   <Button asChild={!!club.instagramUrl} className="mt-4 w-full" disabled={!club.instagramUrl}>
                     {club.instagramUrl ? (
