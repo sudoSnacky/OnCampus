@@ -36,6 +36,8 @@ const FormSchema = z.object({
   description: z.string().min(10, "Description is required."),
   imageFile: z.instanceof(File).optional(),
   imageUrl: z.string().optional(),
+  instagramUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  linkedinUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -52,7 +54,9 @@ export default function AdminClubsTab() {
       name: "",
       category: "",
       description: "",
-      imageUrl: ""
+      imageUrl: "",
+      instagramUrl: "",
+      linkedinUrl: "",
     },
   });
 
@@ -78,7 +82,11 @@ export default function AdminClubsTab() {
         return;
     }
     try {
-      await addClub(data, data.imageFile);
+      await addClub({
+        ...data,
+        instagramUrl: data.instagramUrl || '',
+        linkedinUrl: data.linkedinUrl || '',
+      }, data.imageFile);
       toast({
         title: "Club Added!",
         description: `"${data.name}" has been added.`,
@@ -99,7 +107,11 @@ export default function AdminClubsTab() {
     if (!data.id) return;
     setIsSubmitting(true);
     try {
-        await updateClub(data.id, data, data.imageFile);
+        await updateClub(data.id, {
+            ...data,
+            instagramUrl: data.instagramUrl || '',
+            linkedinUrl: data.linkedinUrl || '',
+        }, data.imageFile);
         toast({
           title: "Club Updated!",
           description: `"${data.name}" has been updated.`,
@@ -220,6 +232,32 @@ export default function AdminClubsTab() {
                     </FormItem>
                 )}
                 />
+                <FormField
+                  control={form.control}
+                  name="instagramUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Instagram URL (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://instagram.com/yourclub" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="linkedinUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>LinkedIn URL (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://linkedin.com/company/yourclub" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               <Button type="submit" disabled={!isInitialized || isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Club
@@ -339,6 +377,32 @@ export default function AdminClubsTab() {
                         <FormMessage />
                     </FormItem>
                 )}
+              />
+               <FormField
+                  control={editForm.control}
+                  name="instagramUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Instagram URL (Optional)</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="linkedinUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>LinkedIn URL (Optional)</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               <div className="flex justify-end gap-2">
                 <DialogClose asChild>

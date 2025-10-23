@@ -2,11 +2,13 @@
 "use client";
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 import { Badge } from '../../../components/ui/badge';
 import { useClubs } from '../../../hooks/use-clubs';
 import { Skeleton } from '../../../components/ui/skeleton';
+import { Instagram, Linkedin } from 'lucide-react';
 
 export default function ClubsPage() {
   const { clubs, isClubsLoading } = useClubs();
@@ -55,13 +57,31 @@ export default function ClubsPage() {
                 </div>
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <CardTitle className="font-headline text-xl">{club.name}</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="font-headline text-xl">{club.name}</CardTitle>
+                      {club.instagramUrl && (
+                        <Link href={club.instagramUrl} target="_blank" rel="noopener noreferrer">
+                            <Instagram className="h-5 w-5 text-pink-600 hover:text-pink-700 transition-colors" />
+                        </Link>
+                      )}
+                      {club.linkedinUrl && (
+                        <Link href={club.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                            <Linkedin className="h-5 w-5 text-blue-700 hover:text-blue-800 transition-colors" />
+                        </Link>
+                      )}
+                    </div>
                     <Badge variant="secondary" className="bg-primary/20 text-primary-foreground border-primary/30">{club.category}</Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow flex flex-col">
                   <p className="text-sm text-foreground/80 flex-grow">{club.description}</p>
-                  <Button className="mt-4 w-full" disabled>Join Club</Button>
+                  <Button asChild={!!club.instagramUrl} className="mt-4 w-full" disabled={!club.instagramUrl}>
+                    {club.instagramUrl ? (
+                         <Link href={club.instagramUrl} target="_blank" rel="noopener noreferrer">Join Club</Link>
+                    ) : (
+                        <span>Join Club</span>
+                    )}
+                  </Button>
                 </CardContent>
               </Card>
             );

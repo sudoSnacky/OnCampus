@@ -11,6 +11,8 @@ export interface Club {
   category: string;
   description: string;
   imageUrl: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
 }
 
 const uploadImage = async (file: File): Promise<string> => {
@@ -18,16 +20,10 @@ const uploadImage = async (file: File): Promise<string> => {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
-        canvas: true, 
-        originalCanvas: true
     }
-    
-    const compressedFileBlob = await imageCompression(file, options);
-    const compressedFile = new File([compressedFileBlob], file.name, {
-      type: file.type,
-      lastModified: Date.now(),
-    });
 
+    const compressedFile = await imageCompression(file, options);
+    
     const filePath = `clubs/${Date.now()}-${compressedFile.name}`;
     const { data, error } = await supabase.storage
         .from('images')
