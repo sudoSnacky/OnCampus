@@ -60,20 +60,7 @@ export default function Home() {
               <div className="space-y-6">
                 <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter text-foreground">
                   Your IET DAVV Life,{" "}
-                  <span className="text-primary">
-                    <span style={{ color: '#4285F4' }}>S</span>
-                    <span style={{ color: '#DB4437' }}>u</span>
-                    <span style={{ color: '#F4B400' }}>p</span>
-                    <span style={{ color: '#4285F4' }}>e</span>
-                    <span style={{ color: '#0F9D58' }}>r</span>
-                    <span style={{ color: '#DB4437' }}>c</span>
-                    <span style={{ color: '#F4B400' }}>h</span>
-                    <span style={{ color: '#4285F4' }}>a</span>
-                    <span style={{ color: '#0F9D58' }}>r</span>
-                    <span style={{ color: '#DB4437' }}>g</span>
-                    <span style={{ color: '#F4B400' }}>e</span>
-                    <span style={{ color: '#4285F4' }}>d</span>
-                  </span>.
+                  <span className="text-animated-gradient">Supercharged</span>.
                 </h1>
                 <p className="max-w-xl text-lg text-foreground/80">
                   Welcome to OnCampus for IET DAVV! Your exclusive platform to discover student benefits, join exciting clubs, and never miss an event right here at our college.
