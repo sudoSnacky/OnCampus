@@ -79,7 +79,7 @@ export default function Home() {
                   Welcome to OnCampus for IET DAVV! Your exclusive platform to discover student benefits, join exciting clubs, and never miss an event right here at our college.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" asChild>
+                  <Button size="lg" asChild className="btn-animated-gradient hover:scale-105 transition-transform duration-300">
                     <Link href="#features">
                       Get Started <ArrowRight className="ml-2" />
                     </Link>
