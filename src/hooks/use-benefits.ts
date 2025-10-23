@@ -10,7 +10,7 @@ export interface Benefit {
   title: string;
   provider: string;
   description: string;
-  tags: string;
+  category: string;
   imageUrl: string;
   redirectUrl?: string;
 }
@@ -68,9 +68,11 @@ export function useBenefits() {
     const addBenefit = async (benefit: Omit<Benefit, 'id' | 'imageUrl'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
         
+        const { imageFile: _, ...benefitData } = benefit as any;
+
         const { data, error } = await supabase
             .from('benefits')
-            .insert([{ ...benefit, imageUrl }])
+            .insert([{ ...benefitData, imageUrl }])
             .select();
 
         if (error) {
@@ -98,16 +100,16 @@ export function useBenefits() {
     };
 
     const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Omit<Benefit, 'id'>> & { imageFile?: File }, imageFile?: File) => {
-        let finalImageUrl = updatedBenefit.imageUrl;
+        let imageUrl = updatedBenefit.imageUrl;
         if (imageFile) {
-            finalImageUrl = await uploadImage(imageFile);
+            imageUrl = await uploadImage(imageFile);
         }
 
         const { id, imageFile: _, ...updateData } = updatedBenefit as any;
         
         const { data, error } = await supabase
             .from('benefits')
-            .update({ ...updateData, imageUrl: finalImageUrl })
+            .update({ ...updateData, imageUrl })
             .eq('id', benefitId)
             .select();
 

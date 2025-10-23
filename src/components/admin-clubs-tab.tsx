@@ -32,7 +32,7 @@ import { useState, useEffect } from "react";
 const FormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(3, "Club name is required."),
-  tags: z.string().min(2, "Tags are required."),
+  category: z.string().min(2, "Category is required."),
   description: z.string().min(10, "Description is required."),
   imageFile: z.instanceof(File).optional(),
   imageUrl: z.string().optional(),
@@ -52,7 +52,7 @@ export default function AdminClubsTab() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
-      tags: "",
+      category: "",
       description: "",
       imageUrl: "",
       instagramUrl: "",
@@ -181,16 +181,13 @@ export default function AdminClubsTab() {
                 />
                 <FormField
                   control={form.control}
-                  name="tags"
+                  name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tags</FormLabel>
+                      <FormLabel>Category</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., Technology, Coding" {...field} />
                       </FormControl>
-                      <FormDescription>
-                        Separate tags with a comma.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -289,7 +286,7 @@ export default function AdminClubsTab() {
               >
                 <div>
                   <p className="font-semibold">{club.name}</p>
-                   <p className="text-sm text-muted-foreground">{club.tags}</p>
+                   <p className="text-sm text-muted-foreground">{club.category}</p>
                 </div>
                  <div className="flex items-center gap-2">
                     <Button
@@ -335,16 +332,13 @@ export default function AdminClubsTab() {
               />
               <FormField
                 control={editForm.control}
-                name="tags"
+                name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tags</FormLabel>
+                    <FormLabel>Category</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
-                     <FormDescription>
-                        Separate tags with a comma.
-                      </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -8,7 +8,7 @@ import imageCompression from 'browser-image-compression';
 export interface Club {
   id: string;
   name: string;
-  tags: string;
+  category: string;
   description: string;
   imageUrl: string;
   instagramUrl?: string;
@@ -67,9 +67,10 @@ export function useClubs() {
 
     const addClub = async (club: Omit<Club, 'id' | 'imageUrl'>, imageFile: File) => {
         const imageUrl = await uploadImage(imageFile);
+        const { imageFile: _, ...clubData } = club as any;
         const { data, error } = await supabase
             .from('clubs')
-            .insert([{ ...club, imageUrl }])
+            .insert([{ ...clubData, imageUrl }])
             .select();
 
         if (error) {
@@ -97,16 +98,16 @@ export function useClubs() {
     };
 
     const updateClub = async (clubId: string, updatedClub: Partial<Omit<Club, 'id'>> & { imageFile?: File }, imageFile?: File) => {
-        let finalImageUrl = updatedClub.imageUrl;
+        let imageUrl = updatedClub.imageUrl;
         if (imageFile) {
-            finalImageUrl = await uploadImage(imageFile);
+            imageUrl = await uploadImage(imageFile);
         }
         
         const { id, imageFile: _, ...updateData } = updatedClub as any;
 
         const { data, error } = await supabase
             .from('clubs')
-            .update({ ...updateData, imageUrl: finalImageUrl })
+            .update({ ...updateData, imageUrl })
             .eq('id', clubId)
             .select();
 

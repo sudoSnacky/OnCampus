@@ -43,7 +43,6 @@ export default function BenefitsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit) => {
-            const tags = benefit.tags?.split(',').map(tag => tag.trim()).filter(tag => tag);
             return (
                 <Card key={benefit.id} className="flex flex-col overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                 <div className="relative h-48 w-full">
@@ -67,9 +66,7 @@ export default function BenefitsPage() {
                 <CardContent className="flex-grow flex flex-col">
                     <p className="text-sm text-foreground/80 flex-grow">{benefit.description}</p>
                     <div className="flex flex-wrap gap-2 mt-4">
-                        {tags?.map(tag => (
-                            <Badge key={tag} variant="secondary" className="bg-accent/20 text-accent-foreground border-accent/30">{tag}</Badge>
-                        ))}
+                        {benefit.category && <Badge variant="secondary" className="bg-accent/20 text-accent-foreground border-accent/30">{benefit.category}</Badge>}
                     </div>
                     {benefit.redirectUrl && (
                     <Button asChild className="mt-4 w-full bg-primary/90 text-primary-foreground hover:bg-primary/100 backdrop-blur-lg border border-primary/30 transition-all duration-300">
