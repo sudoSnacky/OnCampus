@@ -30,8 +30,8 @@ const features = [
 ];
 
 const heroImage = {
-  imageUrl: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdHVkZW50cyUyMGdyb3VwfGVufDB8fHx8MTc2MDczMzk1OHww&ixlib=rb-4.1.0&q=80&w=1080",
-  description: "A group of diverse students in graduation gowns celebrating on campus."
+  imageUrl: "https://storage.googleapis.com/aif-stg-prompt-gallery/project-11933614-1721291880948.png",
+  description: "An illustration of a diverse group of students standing together with books and a tablet."
 };
 
 export default function Home() {
