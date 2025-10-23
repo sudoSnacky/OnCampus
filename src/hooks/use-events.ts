@@ -1,70 +1,41 @@
 
 'use client';
 
-import {
-  collection,
-  doc,
-  Timestamp,
-} from 'firebase/firestore';
+import { initialEvents } from '../lib/data';
+import { useState } from 'react';
 
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface CampusEvent {
   id: string;
   title: string;
-  date: string | Timestamp;
+  date: string;
   location: string;
   description: string;
   imageUrl: string;
 }
 
 export function useEvents() {
-  const firestore = useFirestore();
+    const [events, setEvents] = useState<CampusEvent[]>(initialEvents);
 
-  const eventsCollection = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'events') : null),
-    [firestore]
-  );
+    const addEvent = (event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
+        setEvents(prev => [...prev, { ...event, id: `event-${Date.now()}`, date: event.date.toISOString() }]);
+    };
+    
+    const removeEvent = (eventId: string) => {
+        setEvents(prev => prev.filter(e => e.id !== eventId));
+    };
 
-  const {
-    data: events,
-    isLoading: isEventsLoading,
-    error: eventsError,
-  } = useCollection<CampusEvent>(eventsCollection);
-
-  const addEvent = (event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
-    if (!eventsCollection) return;
-    addDocumentNonBlocking(eventsCollection, {
-      ...event,
-      date: Timestamp.fromDate(event.date),
-    });
-  };
-
-  const removeEvent = (eventId: string) => {
-    if (!firestore) return;
-    const eventDoc = doc(firestore, 'events', eventId);
-    deleteDocumentNonBlocking(eventDoc);
-  };
-
-  const updateEvent = (eventId: string, event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
-    if (!firestore) return;
-    const eventDoc = doc(firestore, 'events', eventId);
-    updateDocumentNonBlocking(eventDoc, {
-        ...event,
-        date: Timestamp.fromDate(event.date),
-    });
+    const updateEvent = (eventId: string, event: Omit<CampusEvent, 'id' | 'date'> & {date: Date}) => {
+        setEvents(prev => prev.map(e => e.id === eventId ? { ...event, id: eventId, date: event.date.toISOString() } : e));
     };
 
   return {
-    events: events || [],
-    isEventsLoading,
-    eventsError,
+    events: events,
+    isEventsLoading: false,
+    eventsError: null,
     addEvent,
     removeEvent,
     updateEvent,
-    isInitialized: !!firestore,
+    isInitialized: true,
   };
 }
-
-    

@@ -98,7 +98,7 @@ export default function AdminClubsTab() {
             Add New Club
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new student club.
+            Fill in the details to add a new student club. The backend is disconnected, so changes will not persist.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -203,6 +203,7 @@ export default function AdminClubsTab() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEditClick(club)}
+                        disabled
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
@@ -210,6 +211,7 @@ export default function AdminClubsTab() {
                     variant="ghost"
                     size="icon"
                     onClick={() => removeClub(club.id)}
+                    disabled
                     >
                     <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -283,7 +285,7 @@ export default function AdminClubsTab() {
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled>Save Changes</Button>
               </div>
             </form>
           </Form>
@@ -292,5 +294,3 @@ export default function AdminClubsTab() {
     </div>
   );
 }
-
-    

@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../..
 import { useEvents } from '../../../hooks/use-events';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, MapPin } from 'lucide-react';
-import { Timestamp } from 'firebase/firestore';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Calendar } from '../../../components/ui/calendar';
 import { Button } from '../../../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '../../../components/ui/dialog';
@@ -20,7 +19,7 @@ export default function EventsPage() {
   const processedEvents = useMemo(() => {
     return events.map(event => ({
       ...event,
-      dateObj: event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date),
+      dateObj: new Date(event.date),
     })).sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
   }, [events]);
 
@@ -168,7 +167,7 @@ export default function EventsPage() {
                                     <p>{event.description}</p>
                                   </div>
                                   <DialogFooter>
-                                    <Button type="button" variant="secondary">RSVP (Placeholder)</Button>
+                                    <Button type="button" variant="secondary" disabled>RSVP (Placeholder)</Button>
                                   </DialogFooter>
                                 </DialogContent>
                               </Dialog>

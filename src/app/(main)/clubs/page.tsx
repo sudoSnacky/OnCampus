@@ -43,7 +43,7 @@ export default function ClubsPage() {
               </CardHeader>
               <CardContent className="flex-grow flex flex-col">
                 <p className="text-sm text-foreground/80 flex-grow">{club.description}</p>
-                <Button className="mt-4 w-full">Join Club</Button>
+                <Button className="mt-4 w-full" disabled>Join Club</Button>
               </CardContent>
             </Card>
           );

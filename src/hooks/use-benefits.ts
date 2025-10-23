@@ -1,11 +1,8 @@
 
 'use client';
 
-import { collection, doc } from 'firebase/firestore';
-
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-
+import { initialBenefits } from '../lib/data';
+import { useState } from 'react';
 
 export interface Benefit {
   id: string;
@@ -18,46 +15,27 @@ export interface Benefit {
 }
 
 export function useBenefits() {
-  const firestore = useFirestore();
+    const [benefits, setBenefits] = useState<Benefit[]>(initialBenefits);
 
-  const benefitsCollection = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'benefits') : null),
-    [firestore]
-  );
-
-  const {
-    data: benefits,
-    isLoading: isBenefitsLoading,
-    error: benefitsError,
-  } = useCollection<Benefit>(benefitsCollection);
-
-  const addBenefit = (benefit: Omit<Benefit, 'id'>) => {
-    if (!benefitsCollection) return;
-    addDocumentNonBlocking(benefitsCollection, benefit);
-  };
-
-  const removeBenefit = (benefitId: string) => {
-    if (!firestore) return;
-    const benefitDoc = doc(firestore, 'benefits', benefitId);
-    deleteDocumentNonBlocking(benefitDoc);
-  };
-  
-  const updateBenefit = (benefitId: string, benefit: Omit<Benefit, 'id'>) => {
-    if (!firestore) return;
-    const benefitDoc = doc(firestore, 'benefits', benefitId);
-    updateDocumentNonBlocking(benefitDoc, benefit);
-  };
-
-
-  return {
-    benefits: benefits || [],
-    isBenefitsLoading,
-    benefitsError,
-    addBenefit,
-    removeBenefit,
-    updateBenefit,
-    isInitialized: !!firestore,
-  };
-}
-
+    const addBenefit = (benefit: Omit<Benefit, 'id'>) => {
+        setBenefits(prev => [...prev, { ...benefit, id: `benefit-${Date.now()}` }]);
+    };
     
+    const removeBenefit = (benefitId: string) => {
+        setBenefits(prev => prev.filter(b => b.id !== benefitId));
+    };
+
+    const updateBenefit = (benefitId: string, updatedBenefit: Omit<Benefit, 'id'>) => {
+        setBenefits(prev => prev.map(b => b.id === benefitId ? { ...updatedBenefit, id: benefitId } : b));
+    };
+
+    return {
+        benefits,
+        isBenefitsLoading: false,
+        benefitsError: null,
+        addBenefit,
+        removeBenefit,
+        updateBenefit,
+        isInitialized: true,
+    };
+}

@@ -34,7 +34,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Timestamp } from "firebase/firestore";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "./ui/dialog";
 import { useState, useEffect } from "react";
@@ -99,7 +98,7 @@ export default function AdminEventsTab() {
   };
 
   const handleEditClick = (event: CampusEvent) => {
-    const eventDate = event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date);
+    const eventDate = new Date(event.date);
     editForm.reset({ ...event, date: eventDate });
     setIsEditDialogOpen(true);
   };
@@ -113,7 +112,7 @@ export default function AdminEventsTab() {
             Add New Event
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new event to the calendar.
+            Fill in the details to add a new event to the calendar. The backend is disconnected, so changes will not persist.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -257,13 +256,14 @@ export default function AdminEventsTab() {
               >
                 <div>
                   <p className="font-semibold">{event.title}</p>
-                   <p className="text-sm text-muted-foreground">{format(event.date instanceof Timestamp ? event.date.toDate() : new Date(event.date), "PPP")}</p>
+                   <p className="text-sm text-muted-foreground">{format(new Date(event.date), "PPP")}</p>
                 </div>
                  <div className="flex items-center gap-2">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEditClick(event)}
+                        disabled
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
@@ -271,6 +271,7 @@ export default function AdminEventsTab() {
                     variant="ghost"
                     size="icon"
                     onClick={() => removeEvent(event.id)}
+                    disabled
                     >
                     <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -385,7 +386,7 @@ export default function AdminEventsTab() {
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled>Save Changes</Button>
               </div>
             </form>
           </Form>
@@ -394,5 +395,3 @@ export default function AdminEventsTab() {
     </div>
   );
 }
-
-    

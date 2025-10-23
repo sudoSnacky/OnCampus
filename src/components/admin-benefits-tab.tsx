@@ -109,7 +109,7 @@ export default function AdminBenefitsTab() {
             Add New Benefit
           </CardTitle>
           <CardDescription>
-            Fill in the details to add a new student benefit.
+            Fill in the details to add a new student benefit. The backend is disconnected, so changes will not persist.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -240,6 +240,7 @@ export default function AdminBenefitsTab() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEditClick(benefit)}
+                        disabled
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
@@ -247,6 +248,7 @@ export default function AdminBenefitsTab() {
                     variant="ghost"
                     size="icon"
                     onClick={() => removeBenefit(benefit.id)}
+                    disabled
                     >
                     <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -346,7 +348,7 @@ export default function AdminBenefitsTab() {
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled>Save Changes</Button>
               </div>
             </form>
           </Form>
@@ -355,5 +357,3 @@ export default function AdminBenefitsTab() {
     </div>
   );
 }
-
-    

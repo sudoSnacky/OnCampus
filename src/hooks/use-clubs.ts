@@ -1,10 +1,9 @@
 
 'use client';
 
-import { collection, doc } from 'firebase/firestore';
+import { initialClubs } from '../lib/data';
+import { useState } from 'react';
 
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface Club {
   id: string;
@@ -15,45 +14,28 @@ export interface Club {
 }
 
 export function useClubs() {
-  const firestore = useFirestore();
+    const [clubs, setClubs] = useState<Club[]>(initialClubs);
 
-  const clubsCollection = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'clubs') : null),
-    [firestore]
-  );
+    const addClub = (club: Omit<Club, 'id'>) => {
+        setClubs(prev => [...prev, { ...club, id: `club-${Date.now()}` }]);
+    };
+    
+    const removeClub = (clubId: string) => {
+        setClubs(prev => prev.filter(c => c.id !== clubId));
+    };
 
-  const {
-    data: clubs,
-    isLoading: isClubsLoading,
-    error: clubsError,
-  } = useCollection<Club>(clubsCollection);
+    const updateClub = (clubId: string, updatedClub: Omit<Club, 'id'>) => {
+        setClubs(prev => prev.map(c => c.id === clubId ? { ...updatedClub, id: clubId } : c));
+    };
 
-  const addClub = (club: Omit<Club, 'id'>) => {
-    if (!clubsCollection) return;
-    addDocumentNonBlocking(clubsCollection, club);
-  };
-
-  const removeClub = (clubId: string) => {
-    if (!firestore) return;
-    const clubDoc = doc(firestore, 'clubs', clubId);
-    deleteDocumentNonBlocking(clubDoc);
-  };
-  
-  const updateClub = (clubId: string, club: Omit<Club, 'id'>) => {
-    if (!firestore) return;
-    const clubDoc = doc(firestore, 'clubs', clubId);
-    updateDocumentNonBlocking(clubDoc, club);
-  };
 
   return {
-    clubs: clubs || [],
-    isClubsLoading,
-    clubsError,
+    clubs,
+    isClubsLoading: false,
+    clubsError: null,
     addClub,
     removeClub,
     updateClub,
-    isInitialized: !!firestore,
+    isInitialized: true,
   };
 }
-
-    

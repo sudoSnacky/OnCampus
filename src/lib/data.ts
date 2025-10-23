@@ -1,6 +1,4 @@
 
-import { Timestamp } from 'firebase/firestore';
-
 export type Benefit = {
   id: string;
   title: string;
@@ -22,7 +20,7 @@ export type Club = {
 export type CampusEvent = {
   id: string;
   title: string;
-  date: string | Timestamp;
+  date: string;
   location: string;
   description: string;
   imageUrl: string;
@@ -62,7 +60,7 @@ export const initialBenefits: Benefit[] = [
     provider: "GitHub",
     description: "Get free access to the best developer tools in one place, including cloud hosting, domains, and more.",
     category: "Software",
-    imageUrl: "https://images.unsplash.com/photo-1610416343589-952b07987251?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnaXRodWIlMjBhYnN0cmFjdHxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageUrl: "https://images.unsplash.com/photo-1610416343589-952b07987251?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnaXRodWIlMjBhYnN0cmFjdHxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib.rb-4.1.0&q=80&w=1080",
     redirectUrl: "https://education.github.com/pack",
   },
   {
@@ -118,7 +116,7 @@ export const initialEvents: CampusEvent[] = [
   {
     id: "event-1",
     title: "AI & Machine Learning Workshop",
-    date: Timestamp.fromDate(new Date("2025-08-15T10:00:00Z")),
+    date: new Date("2025-08-15T10:00:00Z").toISOString(),
     location: "Auditorium",
     description: "An introductory workshop on the fundamentals of AI and Machine Learning by industry experts.",
     imageUrl: "https://images.unsplash.com/photo-1573495627361-ab2b3c41e873?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3b3Jrc2hvcHxlbnwwfHx8fDE3NjA3NzEwMDF8MA&ixlib.rb-4.1.0&q=80&w=1080",
@@ -126,7 +124,7 @@ export const initialEvents: CampusEvent[] = [
   {
     id: "event-2",
     title: "Startup Pitching Seminar",
-    date: Timestamp.fromDate(new Date("2025-09-02T14:30:00Z")),
+    date: new Date("2025-09-02T14:30:00Z").toISOString(),
     location: "Convention Hall",
     description: "Learn the art of pitching your startup idea to investors. Featuring successful founders from the Indian startup ecosystem.",
     imageUrl: "https://images.unsplash.com/photo-1543269865-cbf427effbad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZW1pbmFyJTIwcHJlc2VudGF0aW9ufGVufDB8fHx8MTc2MDc3MTAwMXww&ixlib.rb-4.1.0&q=80&w=1080",
