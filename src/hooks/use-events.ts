@@ -71,10 +71,16 @@ export function useEvents() {
         setEvents(prev => prev.filter(e => e.id !== eventId));
     };
 
-    const updateEvent = async (eventId: string, event: Omit<CampusEvent, 'id' | 'date'> & { date: Date }) => {
+    const updateEvent = async (eventId: string, event: Partial<Omit<CampusEvent, 'id' | 'date'>> & { date?: Date }) => {
+        const { id, date, ...updateData } = event as any;
+        const payload: { [key: string]: any } = { ...updateData };
+        if (date) {
+            payload.date = date.toISOString();
+        }
+
         const { data, error } = await supabase
             .from('events')
-            .update({ ...event, date: event.date.toISOString() })
+            .update(payload)
             .eq('id', eventId)
             .select();
 

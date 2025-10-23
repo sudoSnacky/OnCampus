@@ -69,10 +69,11 @@ export function useClubs() {
         setClubs(prev => prev.filter(c => c.id !== clubId));
     };
 
-    const updateClub = async (clubId: string, updatedClub: Omit<Club, 'id'>) => {
+    const updateClub = async (clubId: string, updatedClub: Partial<Club>) => {
+        const { id, ...updateData } = updatedClub;
         const { data, error } = await supabase
             .from('clubs')
-            .update(updatedClub)
+            .update(updateData)
             .eq('id', clubId)
             .select();
 

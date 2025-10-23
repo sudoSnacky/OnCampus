@@ -72,10 +72,11 @@ export function useBenefits() {
         setBenefits(prev => prev.filter(b => b.id !== benefitId));
     };
 
-    const updateBenefit = async (benefitId: string, updatedBenefit: Omit<Benefit, 'id'>) => {
+    const updateBenefit = async (benefitId: string, updatedBenefit: Partial<Benefit>) => {
+        const { id, ...updateData } = updatedBenefit;
         const { data, error } = await supabase
             .from('benefits')
-            .update(updatedBenefit)
+            .update(updateData)
             .eq('id', benefitId)
             .select();
 
